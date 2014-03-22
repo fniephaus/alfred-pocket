@@ -1,5 +1,4 @@
 import sys
-import json
 from pocket import Pocket, RateLimitException
 from workflow import Workflow, PasswordNotFound
 
@@ -21,16 +20,13 @@ def main(wf):
             'pocket_list', data_func=get_list, max_age=60)
         for item in item_list.values():
             if user_input in item['resolved_title']:
-                argument = json.dumps(
-                    {'item_id': item['item_id'], 'url': item['resolved_url']})
                 wf.add_item(item['resolved_title'], item[
-                            'resolved_url'], arg=argument, valid=True)
+                            'resolved_url'], arg=item['resolved_url'] + ' ' + item['item_id'], valid=True)
 
     except PasswordNotFound:
-        argument = json.dumps({'url': get_auth_url(wf)})
         wf.add_item(
             'Please press enter and click on "Authorize" on Pocket\'s website',
-            'Then try again...', arg=argument, valid=True)
+            'Then try again...', arg=get_auth_url(wf), valid=True)
 
     wf.send_feedback()
 

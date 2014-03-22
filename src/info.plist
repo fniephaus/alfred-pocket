@@ -18,6 +18,30 @@
 				<key>modifiersubtext</key>
 				<string></string>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>BDE6CFBA-0F32-404C-A485-1170DD1AF1E4</string>
+				<key>modifiers</key>
+				<integer>262144</integer>
+				<key>modifiersubtext</key>
+				<string>Open link but don't archive</string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>57616E01-C313-4A24-84AA-9F744E0A3561</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Archive link but don't visit</string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>76A6819C-6977-4167-AE2D-2FCEDF1309C7</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Delete link</string>
+			</dict>
 		</array>
 	</dict>
 	<key>createdby</key>
@@ -42,7 +66,7 @@
 				<key>runningsubtext</key>
 				<string>Contacting getpocket.com...</string>
 				<key>script</key>
-				<string>python pocket_alfred.py '{query}'</string>
+				<string>python pocket_alfred.py "{query}"</string>
 				<key>subtext</key>
 				<string>Manage your Pocket list with Alfred</string>
 				<key>title</key>
@@ -76,11 +100,77 @@
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_launcher.py --visit "{query}"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.script</string>
+			<key>uid</key>
+			<string>BDE6CFBA-0F32-404C-A485-1170DD1AF1E4</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_launcher.py --archive "{query}"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.script</string>
+			<key>uid</key>
+			<string>57616E01-C313-4A24-84AA-9F744E0A3561</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_launcher.py --delete "{query}"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.script</string>
+			<key>uid</key>
+			<string>76A6819C-6977-4167-AE2D-2FCEDF1309C7</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
 	<key>uidata</key>
 	<dict>
+		<key>57616E01-C313-4A24-84AA-9F744E0A3561</key>
+		<dict>
+			<key>ypos</key>
+			<real>250</real>
+		</dict>
+		<key>76A6819C-6977-4167-AE2D-2FCEDF1309C7</key>
+		<dict>
+			<key>ypos</key>
+			<real>370</real>
+		</dict>
+		<key>BDE6CFBA-0F32-404C-A485-1170DD1AF1E4</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
+		</dict>
 		<key>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</key>
 		<dict>
 			<key>ypos</key>

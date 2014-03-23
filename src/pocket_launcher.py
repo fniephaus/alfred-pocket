@@ -31,13 +31,21 @@ def execute(wf):
         open_url(url)
     elif args.archive:
         archive_item(item_id)
+        print "Link archived"
+        return 0
     elif args.delete:
         delete_item(item_id)
+        print "Link deleted"
+        return 0
     elif args.deauthorize:
         wf.delete_password('pocket_access_token')
+        print "Workflow deauthorized"
+        return 0
     else:
         open_url(url)
         archive_item(item_id)
+        print "Link archived"
+        return 0
 
 
 def open_url(url):

@@ -1,4 +1,5 @@
 import sys
+import datetime
 from pocket import Pocket, RateLimitException, AuthException
 from workflow import Workflow, PasswordNotFound
 
@@ -26,11 +27,15 @@ def main(wf):
             wf.add_item('Your Pocket list is empty!', valid=True)
         else:
             for item in item_list:
-                if user_input.lower() in item['resolved_title'].lower() or user_input.lower() in item['given_title'].lower() or user_input.lower() in item['resolved_url'].lower():
-                    title = item['resolved_title'] if item[
-                        'resolved_title'] != '' else item['given_title']
-                    wf.add_item(title, item[
-                                'resolved_url'], arg=item['resolved_url'] + ' ' + item['item_id'], valid=True)
+                title = item['resolved_title'] if item[
+                    'resolved_title'] != '' else item['given_title']
+                time_updated = datetime.datetime.fromtimestamp(
+                    int(item['time_added'])).strftime('%Y-%m-%d %H:%M')
+                subtitle = time_updated + ': ' + item['resolved_url']
+
+                if user_input.lower() in title.lower() or user_input.lower() in subtitle.lower():
+                    wf.add_item(title, subtitle, arg=item[
+                                'resolved_url'] + ' ' + item['item_id'], valid=True)
 
     except PasswordNotFound:
         wf.add_item(

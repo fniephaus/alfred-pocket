@@ -1,5 +1,5 @@
 import sys
-from pocket import Pocket, RateLimitException
+from pocket import Pocket, RateLimitException, AuthException
 from workflow import Workflow, PasswordNotFound
 
 CONSUMER_KEY = '25349-924436f8cc1abc8370f02d9d'
@@ -17,14 +17,18 @@ def main(wf):
     try:
         wf.get_password('pocket_access_token')
         item_list = wf.cached_data(
-            'pocket_list', data_func=get_list, max_age=1)
+            'pocket_list', data_func=get_list, max_age=60)
         if item_list is None:
-            wf.add_item("Your Pocket list is empty!", valid=True)
+            wf.delete_password('pocket_access_token')
+            wf.add_item('There was a problem receiving your Pocket list.',
+                        'The workflow has been deauthorized automatically. Please try again!', valid=True)
+        elif len(item_list) == 0:
+            wf.add_item('Your Pocket list is empty!', valid=True)
         else:
             for item in item_list:
                 if user_input.lower() in item['resolved_title'].lower():
                     title = item['resolved_title'] if item[
-                        'resolved_title'] != "" else item['given_title']
+                        'resolved_title'] != '' else item['given_title']
                     wf.add_item(title, item[
                                 'resolved_url'], arg=item['resolved_url'] + ' ' + item['item_id'], valid=True)
 
@@ -38,18 +42,21 @@ def main(wf):
 
 def get_list():
     access_token = wf.get_password('pocket_access_token')
-    pocket_instance = Pocket(CONSUMER_KEY, access_token)
-    get = pocket_instance.get()
-    get_list = get[0]['list']
-    if get_list == []:
+    try:
+        pocket_instance = Pocket(CONSUMER_KEY, access_token)
+        get = pocket_instance.get()
+        get_list = get[0]['list']
+        if get_list == []:
+            return None
+
+        # unpack and sort items
+        item_list = []
+        for i in reversed(sorted(get_list.keys())):
+            item_list.append(get_list[i])
+
+        return item_list
+    except AuthException:
         return None
-
-    # unpack and sort items
-    item_list = []
-    for i in reversed(sorted(get_list.keys())):
-        item_list.append(get_list[i])
-
-    return item_list
 
 
 def get_auth_url(wf):
@@ -72,6 +79,9 @@ def authorize():
                 consumer_key=CONSUMER_KEY, code=request_token)
             wf.save_password(
                 'pocket_access_token', user_credentials['access_token'])
+
+            # we don't need the cache anymore. clear it for security reasons
+            wf.clear_cache()
         except RateLimitException:
             pass
 

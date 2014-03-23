@@ -16,11 +16,14 @@ def execute(wf):
         '--archive', dest='archive', action='store_true', default=None)
     parser.add_argument(
         '--delete', dest='delete', action='store_true', default=None)
+    parser.add_argument(
+        '--deauthorize', dest='deauthorize', action='store_true', default=None)
     parser.add_argument('query', nargs='?', default=None)
     args = parser.parse_args(wf.args)
 
     query = args.query.split()
-    url = query[0]
+    if len(query) > 0:
+        url = query[0]
     if len(query) > 1:
         item_id = query[1]
 
@@ -30,6 +33,8 @@ def execute(wf):
         archive_item(item_id)
     elif args.delete:
         delete_item(item_id)
+    elif args.deauthorize:
+        wf.delete_password('pocket_access_token')
     else:
         open_url(url)
         archive_item(item_id)

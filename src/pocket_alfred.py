@@ -1,6 +1,7 @@
 import sys
 from pocket import Pocket, RateLimitException
 from workflow import Workflow, PasswordNotFound
+import pprint
 
 CONSUMER_KEY = '25349-924436f8cc1abc8370f02d9d'
 REDIRECT_URI = 'https://github.com/fniephaus/alfred-pocket'
@@ -17,11 +18,14 @@ def main(wf):
     try:
         wf.get_password('pocket_access_token')
         item_list = wf.cached_data(
-            'pocket_list', data_func=get_list, max_age=60)
-        for item in item_list.values():
-            if user_input in item['resolved_title']:
-                wf.add_item(item['resolved_title'], item[
-                            'resolved_url'], arg=item['resolved_url'] + ' ' + item['item_id'], valid=True)
+            'pocket_list', data_func=get_list, max_age=1)
+        if item_list == []:
+            wf.add_item("Your Pocket list is empty!", valid=True)
+        else:
+            for item in item_list.values():
+                if user_input in item['resolved_title']:
+                    wf.add_item(item['resolved_title'], item[
+                                'resolved_url'], arg=item['resolved_url'] + ' ' + item['item_id'], valid=True)
 
     except PasswordNotFound:
         wf.add_item(

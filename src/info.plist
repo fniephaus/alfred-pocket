@@ -42,6 +42,14 @@
 				<key>modifiersubtext</key>
 				<string>Delete link</string>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>A2895531-99F9-439D-AFFD-26C67A6E6CB6</string>
+				<key>modifiers</key>
+				<integer>131072</integer>
+				<key>modifiersubtext</key>
+				<string>Deauthorize workflow</string>
+			</dict>
 		</array>
 	</dict>
 	<key>createdby</key>
@@ -151,6 +159,23 @@
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_launcher.py --deauthorize "{query}"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.script</string>
+			<key>uid</key>
+			<string>A2895531-99F9-439D-AFFD-26C67A6E6CB6</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -165,6 +190,11 @@
 		<dict>
 			<key>ypos</key>
 			<real>370</real>
+		</dict>
+		<key>A2895531-99F9-439D-AFFD-26C67A6E6CB6</key>
+		<dict>
+			<key>ypos</key>
+			<real>490</real>
 		</dict>
 		<key>BDE6CFBA-0F32-404C-A485-1170DD1AF1E4</key>
 		<dict>

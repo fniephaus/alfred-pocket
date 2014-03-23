@@ -8,4 +8,4 @@ Manage your Pocket list with Alfred
 
 ## Credits
 
-This workflow uses [requests](https://github.com/kennethreitz/requests) and [pocket](https://github.com/tapanpandita/pocket)
+This workflow uses [requests](https://github.com/kennethreitz/requests) and [pocket](https://github.com/tapanpandita/pocket).

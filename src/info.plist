@@ -31,8 +31,6 @@
 			</dict>
 		</array>
 		<key>5E2199C2-314D-447F-BA91-52B1AC449F40</key>
-		<array/>
-		<key>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -43,6 +41,8 @@
 				<string></string>
 			</dict>
 		</array>
+		<key>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</key>
+		<array/>
 		<key>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</key>
 		<array>
 			<dict>
@@ -59,7 +59,7 @@
 				<key>modifiers</key>
 				<integer>262144</integer>
 				<key>modifiersubtext</key>
-				<string>Open link but don't archive</string>
+				<string>Open and archive link</string>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -67,7 +67,7 @@
 				<key>modifiers</key>
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
-				<string>Archive link but don't visit</string>
+				<string>Archive link</string>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -131,7 +131,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python pocket_launcher.py --visit "{query}"</string>
+				<string>python pocket_launcher.py --visit-and-archive "{query}"</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>

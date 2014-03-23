@@ -11,7 +11,7 @@ CONSUMER_KEY = '25349-924436f8cc1abc8370f02d9d'
 def execute(wf):
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--visit', dest='visit', action='store_true', default=None)
+        '--visit-and-archive', dest='visit_archive', action='store_true', default=None)
     parser.add_argument(
         '--archive', dest='archive', action='store_true', default=None)
     parser.add_argument(
@@ -27,8 +27,11 @@ def execute(wf):
     if len(query) > 1:
         item_id = query[1]
 
-    if len(query) == 1 or args.visit:
+    if args.visit_archive:
         open_url(url)
+        archive_item(item_id)
+        print "Link archived"
+        return 0
     elif args.archive:
         archive_item(item_id)
         print "Link archived"
@@ -43,8 +46,6 @@ def execute(wf):
         return 0
     else:
         open_url(url)
-        archive_item(item_id)
-        print "Link archived"
         return 0
 
 

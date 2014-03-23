@@ -18,12 +18,14 @@ def main(wf):
         wf.get_password('pocket_access_token')
         item_list = wf.cached_data(
             'pocket_list', data_func=get_list, max_age=1)
-        if item_list == []:
+        if item_list is None:
             wf.add_item("Your Pocket list is empty!", valid=True)
         else:
-            for item in item_list.values():
+            for item in item_list:
                 if user_input.lower() in item['resolved_title'].lower():
-                    wf.add_item(item['resolved_title'], item[
+                    title = item['resolved_title'] if item[
+                        'resolved_title'] != "" else item['given_title']
+                    wf.add_item(title, item[
                                 'resolved_url'], arg=item['resolved_url'] + ' ' + item['item_id'], valid=True)
 
     except PasswordNotFound:
@@ -37,8 +39,17 @@ def main(wf):
 def get_list():
     access_token = wf.get_password('pocket_access_token')
     pocket_instance = Pocket(CONSUMER_KEY, access_token)
-    get = pocket_instance.get(sort='newest')
-    return get[0]['list']
+    get = pocket_instance.get()
+    get_list = get[0]['list']
+    if get_list == []:
+        return None
+
+    # unpack and sort items
+    item_list = []
+    for i in reversed(sorted(get_list.keys())):
+        item_list.append(get_list[i])
+
+    return item_list
 
 
 def get_auth_url(wf):

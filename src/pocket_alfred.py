@@ -26,7 +26,7 @@ def main(wf):
             wf.add_item('Your Pocket list is empty!', valid=True)
         else:
             for item in item_list:
-                if user_input.lower() in item['resolved_title'].lower():
+                if user_input.lower() in item['resolved_title'].lower() or user_input.lower() in item['given_title'].lower() or user_input.lower() in item['resolved_url'].lower():
                     title = item['resolved_title'] if item[
                         'resolved_title'] != '' else item['given_title']
                     wf.add_item(title, item[

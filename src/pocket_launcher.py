@@ -67,5 +67,4 @@ def delete_item(item_id):
 
 if __name__ == '__main__':
     wf = Workflow()
-    log = wf.logger
     sys.exit(wf.run(execute))

@@ -43,6 +43,17 @@
 		</array>
 		<key>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</key>
 		<array/>
+		<key>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>94B5A64D-BE8D-43B8-847A-F84CA4214C44</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</key>
 		<array>
 			<dict>
@@ -84,6 +95,14 @@
 				<integer>131072</integer>
 				<key>modifiersubtext</key>
 				<string>Deauthorize workflow</string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
+				<key>modifiers</key>
+				<integer>8388608</integer>
+				<key>modifiersubtext</key>
+				<string>Add link from Chrome, Safari or clipboard</string>
 			</dict>
 		</array>
 		<key>FA9D7CD0-C30A-4E9C-A595-869F6868675F</key>
@@ -247,6 +266,23 @@
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_save.py</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -276,6 +312,11 @@
 		<dict>
 			<key>ypos</key>
 			<real>250</real>
+		</dict>
+		<key>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</key>
+		<dict>
+			<key>ypos</key>
+			<real>610</real>
 		</dict>
 		<key>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</key>
 		<dict>

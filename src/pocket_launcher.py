@@ -30,14 +30,17 @@ def execute(wf):
     if args.visit_archive:
         open_url(url)
         archive_item(item_id)
+        wf.clear_cache()
         print "Link archived"
         return 0
     elif args.archive:
         archive_item(item_id)
+        wf.clear_cache()
         print "Link archived"
         return 0
     elif args.delete:
         delete_item(item_id)
+        wf.clear_cache()
         print "Link deleted"
         return 0
     elif args.deauthorize:

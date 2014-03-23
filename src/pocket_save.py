@@ -11,10 +11,12 @@ def main(wf):
     if is_running('Google Chrome'):
         add_item(get_Chrome_item())
         print "Chrome link added to Pocket"
+        wf.clear_cache()
         return 0
     elif is_running('Safari'):
         add_item(get_Safari_item())
         print "Safari link added to Pocket"
+        wf.clear_cache()
         return 0
     else:
         item = get_clipboard_item()
@@ -22,6 +24,7 @@ def main(wf):
         if item is not None:
             add_item(item)
             print "Clipboard link added to Pocket"
+            wf.clear_cache()
             return 0
 
         print "No link found!"

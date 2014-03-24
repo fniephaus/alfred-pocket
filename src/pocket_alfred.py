@@ -27,7 +27,7 @@ def main(wf):
             wf.add_item('Your Pocket list is empty!', valid=True)
         else:
             for item in item_list:
-                if ('resolved_title' in item or 'given_title' in item) and 'resolved_url' in item and 'time_added' in item:
+                if all(x in item for x in ['item_id', 'given_title', 'resolved_url', 'time_added']):
                     title = item['resolved_title'] if 'resolved_title' in item and item[
                         'resolved_title'] != '' else item['given_title']
                     time_updated = datetime.datetime.fromtimestamp(

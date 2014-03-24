@@ -27,7 +27,7 @@ def main(wf):
             wf.add_item('Your Pocket list is empty!', valid=True)
         else:
             for item in item_list:
-                title = item['resolved_title'] if item[
+                title = item['resolved_title'] if 'resolved_title' in item and item[
                     'resolved_title'] != '' else item['given_title']
                 time_updated = datetime.datetime.fromtimestamp(
                     int(item['time_added'])).strftime('%Y-%m-%d %H:%M')

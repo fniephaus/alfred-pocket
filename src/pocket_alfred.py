@@ -1,6 +1,7 @@
 import sys
 import datetime
 from pocket import Pocket, RateLimitException, AuthException
+from requests.exceptions import ConnectionError
 from workflow import Workflow, PasswordNotFound
 
 CONSUMER_KEY = '25349-924436f8cc1abc8370f02d9d'
@@ -19,24 +20,25 @@ def main(wf):
         wf.get_password('pocket_access_token')
         item_list = wf.cached_data(
             'pocket_list', data_func=get_list, max_age=60)
-        if item_list is None:
-            wf.delete_password('pocket_access_token')
-            wf.add_item('There was a problem receiving your Pocket list.',
-                        'The workflow has been deauthorized automatically. Please try again!', valid=True)
-        elif len(item_list) == 0:
-            wf.add_item('Your Pocket list is empty!', valid=True)
-        else:
-            for item in item_list:
-                if all(x in item for x in ['item_id', 'given_title', 'resolved_url', 'time_added']):
-                    title = item['resolved_title'] if 'resolved_title' in item and item[
-                        'resolved_title'] != '' else item['given_title']
-                    time_updated = datetime.datetime.fromtimestamp(
-                        int(item['time_added'])).strftime('%Y-%m-%d %H:%M')
-                    subtitle = time_updated + ': ' + item['resolved_url']
+        if item_list is None and len(wf._items) == 0:
+            wf.clear_cache()
+            item_list = wf.cached_data(
+                'pocket_list', data_func=get_list, max_age=60)
+        if item_list is not None:
+            if len(item_list) == 0:
+                wf.add_item('Your Pocket list is empty!', valid=True)
+            else:
+                for item in item_list:
+                    if all(x in item for x in ['item_id', 'given_title', 'resolved_url', 'time_added']):
+                        title = item['resolved_title'] if 'resolved_title' in item and item[
+                            'resolved_title'] != '' else item['given_title']
+                        time_updated = datetime.datetime.fromtimestamp(
+                            int(item['time_added'])).strftime('%Y-%m-%d %H:%M')
+                        subtitle = time_updated + ': ' + item['resolved_url']
 
-                    if user_input.lower() in title.lower() or user_input.lower() in subtitle.lower():
-                        wf.add_item(title, subtitle, arg=item[
-                                    'resolved_url'] + ' ' + item['item_id'], valid=True)
+                        if user_input.lower() in title.lower() or user_input.lower() in subtitle.lower():
+                            wf.add_item(title, subtitle, arg=item[
+                                        'resolved_url'] + ' ' + item['item_id'], valid=True)
 
     except PasswordNotFound:
         wf.add_item(
@@ -48,8 +50,8 @@ def main(wf):
 
 def get_list():
     access_token = wf.get_password('pocket_access_token')
+    pocket_instance = Pocket(CONSUMER_KEY, access_token)
     try:
-        pocket_instance = Pocket(CONSUMER_KEY, access_token)
         get = pocket_instance.get()
         get_list = get[0]['list']
         if get_list == []:
@@ -62,7 +64,14 @@ def get_list():
 
         return item_list
     except AuthException:
-        return None
+        wf.delete_password('pocket_access_token')
+        wf.add_item('There was a problem receiving your Pocket list.',
+                    'The workflow has been deauthorized automatically. Please try again!', valid=True)
+
+    except ConnectionError:
+        wf.add_item('Could not contact getpocket.com.',
+                    'Please check your internet connection and try again!', valid=True)
+    return None
 
 
 def get_auth_url(wf):

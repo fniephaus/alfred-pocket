@@ -2,6 +2,7 @@ import sys
 import os
 import json
 from pocket import Pocket
+from requests.exceptions import ConnectionError
 from workflow import Workflow
 import argparse
 
@@ -29,19 +30,16 @@ def execute(wf):
 
     if args.visit_archive:
         open_url(url)
-        archive_item(item_id)
         wf.clear_cache()
-        print "Link archived"
+        print archive_item(item_id)
         return 0
     elif args.archive:
-        archive_item(item_id)
         wf.clear_cache()
-        print "Link archived"
+        print archive_item(item_id)
         return 0
     elif args.delete:
-        delete_item(item_id)
         wf.clear_cache()
-        print "Link deleted"
+        print delete_item(item_id)
         return 0
     elif args.deauthorize:
         wf.delete_password('pocket_access_token')
@@ -59,13 +57,21 @@ def open_url(url):
 def archive_item(item_id):
     access_token = wf.get_password('pocket_access_token')
     pocket_instance = Pocket(CONSUMER_KEY, access_token)
-    pocket_instance.archive(item_id, wait=False)
+    try:
+        pocket_instance.archive(item_id, wait=False)
+        return 'Link archived'
+    except ConnectionError:
+        return 'Connection error'
 
 
 def delete_item(item_id):
     access_token = wf.get_password('pocket_access_token')
     pocket_instance = Pocket(CONSUMER_KEY, access_token)
-    pocket_instance.delete(item_id, wait=False)
+    try:
+        pocket_instance.delete(item_id, wait=False)
+        return 'Link deleted'
+    except ConnectionError:
+        return 'Connection error'
 
 
 if __name__ == '__main__':

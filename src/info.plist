@@ -4,8 +4,6 @@
 <dict>
 	<key>bundleid</key>
 	<string>com.fniephaus.pocket</string>
-	<key>category</key>
-	<string>Internet</string>
 	<key>connections</key>
 	<dict>
 		<key>2543D2DD-E0F7-479A-8CA8-525B97003DB7</key>
@@ -106,14 +104,6 @@
 				<integer>131072</integer>
 				<key>modifiersubtext</key>
 				<string>Deauthorize workflow</string>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
-				<key>modifiers</key>
-				<integer>8388608</integer>
-				<key>modifiersubtext</key>
-				<string>Add link from Chrome, Safari or clipboard</string>
 			</dict>
 		</array>
 		<key>FA9D7CD0-C30A-4E9C-A595-869F6868675F</key>

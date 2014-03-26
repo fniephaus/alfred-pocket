@@ -8,12 +8,12 @@ This workflow let's you manage your Pocket list with Alfred.
 
 ## Features
 
-- actions to visit and archive, archive and delete links from your Pocket list (```ctrl```, ```alt``` and ```cmd```)
-- hotkey (```ctrl + L```) and action (```fn```) to add new links from Chrome, Safari or your clipboard
-- action to deauthorize the workflow (```shift```)
-- supports notifications
-- uses OAuth 2.0 to authorize the workflow
-- saves your access_token securely in OS X's keychain
+- Actions to visit and archive, archive and delete links from your Pocket list (```ctrl```, ```alt``` and ```cmd```)
+- Hotkey to add new links from Chrome, Safari or your clipboard (```ctrl + L```)
+- Action to deauthorize the workflow (```shift```)
+- Supports notifications
+- Uses OAuth 2.0 to authorize the workflow
+- Saves your access_token securely in OS X's keychain
 
 
 ## Credits

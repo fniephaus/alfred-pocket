@@ -3,9 +3,7 @@ import datetime
 from pocket import Pocket, RateLimitException, AuthException
 from requests.exceptions import ConnectionError
 from workflow import Workflow, PasswordNotFound
-
-CONSUMER_KEY = '25349-924436f8cc1abc8370f02d9d'
-REDIRECT_URI = 'https://github.com/fniephaus/alfred-pocket'
+import config
 
 
 def main(wf):
@@ -50,7 +48,7 @@ def main(wf):
 
 def get_list():
     access_token = wf.get_password('pocket_access_token')
-    pocket_instance = Pocket(CONSUMER_KEY, access_token)
+    pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         get = pocket_instance.get()
         get_list = get[0]['list']
@@ -76,7 +74,7 @@ def get_list():
 
 def get_auth_url(wf):
     request_token = Pocket.get_request_token(
-        consumer_key=CONSUMER_KEY, redirect_uri=REDIRECT_URI)
+        consumer_key=config.CONSUMER_KEY, redirect_uri=config.REDIRECT_URI)
     wf.cache_data('pocket_request_token', request_token)
 
     auth_url = Pocket.get_auth_url(
@@ -91,7 +89,7 @@ def authorize():
     if request_token:
         try:
             user_credentials = Pocket.get_credentials(
-                consumer_key=CONSUMER_KEY, code=request_token)
+                consumer_key=config.CONSUMER_KEY, code=request_token)
             wf.save_password(
                 'pocket_access_token', user_credentials['access_token'])
 

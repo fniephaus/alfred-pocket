@@ -1,12 +1,10 @@
 import sys
 import os
-import json
 from pocket import Pocket
 from requests.exceptions import ConnectionError
 from workflow import Workflow
 import argparse
-
-CONSUMER_KEY = '25349-924436f8cc1abc8370f02d9d'
+import config
 
 
 def execute(wf):
@@ -56,7 +54,7 @@ def open_url(url):
 
 def archive_item(item_id):
     access_token = wf.get_password('pocket_access_token')
-    pocket_instance = Pocket(CONSUMER_KEY, access_token)
+    pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         pocket_instance.archive(item_id, wait=False)
         return 'Link archived'
@@ -66,7 +64,7 @@ def archive_item(item_id):
 
 def delete_item(item_id):
     access_token = wf.get_password('pocket_access_token')
-    pocket_instance = Pocket(CONSUMER_KEY, access_token)
+    pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         pocket_instance.delete(item_id, wait=False)
         return 'Link deleted'

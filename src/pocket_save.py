@@ -8,12 +8,12 @@ CONSUMER_KEY = '25349-924436f8cc1abc8370f02d9d'
 
 
 def main(wf):
-    if is_running('Google Chrome'):
+    if frontmost_app() == 'Google Chrome':
         add_item(get_Chrome_item())
         print "Chrome link added to Pocket"
         wf.clear_cache()
         return 0
-    elif is_running('Safari'):
+    elif frontmost_app() == 'Safari':
         add_item(get_Safari_item())
         print "Safari link added to Pocket"
         wf.clear_cache()
@@ -30,6 +30,9 @@ def main(wf):
         print "No link found!"
         return 0
 
+
+def frontmost_app():
+    return os.popen(""" osascript -e 'tell application "System Events"' -e 'set frontApp to name of first application process whose frontmost is true' -e 'end tell' """).readline().rstrip()
 
 def is_running(app):
     return os.popen("""osascript -e 'tell app "System Events" to count processes whose name is "%s"' """ % app).read().rstrip() == "1"
@@ -77,3 +80,4 @@ def add_item(item):
 if __name__ == '__main__':
     wf = Workflow()
     sys.exit(wf.run(main))
+

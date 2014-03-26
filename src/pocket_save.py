@@ -1,59 +1,51 @@
 import sys
 import os
 import urlparse
-from pocket import Pocket
+from pocket import Pocket, InvalidQueryException
 from workflow import Workflow
-
-CONSUMER_KEY = '25349-924436f8cc1abc8370f02d9d'
+import config
 
 
 def main(wf):
-    if frontmost_app() == 'Google Chrome':
-        add_item(get_Chrome_item())
-        print "Chrome link added to Pocket"
-        wf.clear_cache()
-        return 0
-    elif frontmost_app() == 'Safari':
-        add_item(get_Safari_item())
-        print "Safari link added to Pocket"
+    current_app = os.popen(
+        """ osascript -e 'application (path to frontmost application as text)' """).readline().rstrip()
+    if current_app in ['Google Chrome', 'Safari']:
+        if not add_item(get_browser_item(current_app)):
+            print "%s link invalid." % current_app
+            return 0
+        print "%s link added to Pocket." % current_app
         wf.clear_cache()
         return 0
     else:
         item = get_clipboard_item()
-
         if item is not None:
             add_item(item)
-            print "Clipboard link added to Pocket"
+            print "Clipboard link added to Pocket."
             wf.clear_cache()
             return 0
 
-        print "No link found!"
-        return 0
+    print "No link found!"
+    return 0
 
 
 def frontmost_app():
-    return os.popen(""" osascript -e 'tell application "System Events"' -e 'set frontApp to name of first application process whose frontmost is true' -e 'end tell' """).readline().rstrip()
-
-def is_running(app):
-    return os.popen("""osascript -e 'tell app "System Events" to count processes whose name is "%s"' """ % app).read().rstrip() == "1"
+    return os.popen(""" osascript -e 'application (path to frontmost application as text)' """).readline().rstrip()
 
 
-def get_Chrome_item():
-    url = os.popen(
-        """ osascript -e 'tell application "Google Chrome" to return URL of active tab of front window' """).readline()
-    title = os.popen(
-        """ osascript -e 'tell application "Google Chrome" to return title of active tab of front window' """).readline()
-    return {
-        'url': url,
-        'title': title
-    }
-
-
-def get_Safari_item():
-    url = os.popen(
-        """ osascript -e 'tell application "Safari" to return URL of front document' """).readline()
-    title = os.popen(
-        """ osascript -e 'tell application "Safari" to return name of front document' """).readline()
+def get_browser_item(browser):
+    url = title = None
+    if browser == 'Google Chrome':
+        url = os.popen(
+            """ osascript -e 'tell application "Google Chrome" to return URL of active tab of front window' """).readline()
+        title = os.popen(
+            """ osascript -e 'tell application "Google Chrome" to return title of active tab of front window' """).readline()
+    elif browser == 'Safari':
+        url = os.popen(
+            """ osascript -e 'tell application "Safari" to return URL of front document' """).readline()
+        title = os.popen(
+            """ osascript -e 'tell application "Safari" to return name of front document' """).readline()
+    if url is None:
+        return None
     return {
         'url': url,
         'title': title
@@ -72,12 +64,18 @@ def get_clipboard_item():
 
 
 def add_item(item):
-    access_token = wf.get_password('pocket_access_token')
-    pocket_instance = Pocket(CONSUMER_KEY, access_token)
-    pocket_instance.add(url=item['url'], title=item['title'], tags="alfred")
+    if item is not None:
+        access_token = wf.get_password('pocket_access_token')
+        pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
+        try:
+            pocket_instance.add(
+                url=item['url'], title=item['title'], tags="alfred")
+            return True
+        except InvalidQueryException:
+            pass
+    return False
 
 
 if __name__ == '__main__':
     wf = Workflow()
     sys.exit(wf.run(main))
-

@@ -78,7 +78,7 @@ def get_auth_url(wf):
     wf.cache_data('pocket_request_token', request_token)
 
     auth_url = Pocket.get_auth_url(
-        code=request_token, redirect_uri=REDIRECT_URI)
+        code=request_token, redirect_uri=config.REDIRECT_URI)
 
     return auth_url
 

@@ -8,7 +8,7 @@ This workflow let's you manage your Pocket list with Alfred.
 
 ## Features
 
-- Actions to visit and archive, archive and delete links from your Pocket list (```ctrl```, ```alt``` and ```cmd```)
+- Actions to copy, visit and archive, archive and delete links from your Pocket list (```fn```, ```ctrl```, ```alt``` and ```cmd```)
 - Hotkey to add new links from Chrome, Safari or your clipboard (```ctrl + L```)
 - Action to deauthorize the workflow (```shift```)
 - Supports notifications

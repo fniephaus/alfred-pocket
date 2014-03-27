@@ -10,6 +10,8 @@ import config
 def execute(wf):
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        '--copy', dest='copy', action='store_true', default=None)
+    parser.add_argument(
         '--visit-and-archive', dest='visit_archive', action='store_true', default=None)
     parser.add_argument(
         '--archive', dest='archive', action='store_true', default=None)
@@ -26,7 +28,10 @@ def execute(wf):
     if len(query) > 1:
         item_id = query[1]
 
-    if args.visit_archive:
+    if args.copy:
+        print set_clipboard(url)
+        return 0
+    elif args.visit_archive:
         open_url(url)
         wf.clear_cache()
         print archive_item(item_id)
@@ -50,6 +55,12 @@ def execute(wf):
 
 def open_url(url):
     os.system('open %s' % url)
+
+
+def set_clipboard(url):
+    clipboard = os.popen(
+        """ osascript -e 'set the clipboard to "%s"' """ % url).readline()
+    return 'Link copied to clipboard'
 
 
 def archive_item(item_id):

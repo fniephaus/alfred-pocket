@@ -4,6 +4,8 @@
 <dict>
 	<key>bundleid</key>
 	<string>com.fniephaus.pocket</string>
+	<key>category</key>
+	<string>Tools</string>
 	<key>connections</key>
 	<dict>
 		<key>2543D2DD-E0F7-479A-8CA8-525B97003DB7</key>
@@ -29,6 +31,17 @@
 			</dict>
 		</array>
 		<key>2E5BB5E1-D7FC-495C-A76E-BB711EB8A469</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>94B5A64D-BE8D-43B8-847A-F84CA4214C44</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>34256840-2B17-4A55-83F2-86C4EF9B800A</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -72,6 +85,14 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>34256840-2B17-4A55-83F2-86C4EF9B800A</string>
+				<key>modifiers</key>
+				<integer>8388608</integer>
+				<key>modifiersubtext</key>
+				<string>Copy to clipboard</string>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -151,6 +172,23 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
+				<string>python pocket_launcher.py --copy "{query}"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>34256840-2B17-4A55-83F2-86C4EF9B800A</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
 				<string>python pocket_launcher.py --visit-and-archive "{query}"</string>
 				<key>type</key>
 				<integer>0</integer>
@@ -194,23 +232,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>python pocket_launcher.py --archive "{query}"</string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>2E5BB5E1-D7FC-495C-A76E-BB711EB8A469</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>lastpathcomponent</key>
 				<false/>
 				<key>onlyshowifquerypopulated</key>
@@ -230,6 +251,23 @@
 			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
 			<string>94B5A64D-BE8D-43B8-847A-F84CA4214C44</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_launcher.py --archive "{query}"</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>2E5BB5E1-D7FC-495C-A76E-BB711EB8A469</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -317,22 +355,27 @@
 		<key>2543D2DD-E0F7-479A-8CA8-525B97003DB7</key>
 		<dict>
 			<key>ypos</key>
-			<real>610</real>
+			<real>670</real>
 		</dict>
 		<key>2A555E39-C9A2-44C6-86BB-62F2203985E9</key>
 		<dict>
 			<key>ypos</key>
-			<real>370</real>
+			<real>450</real>
 		</dict>
 		<key>2E5BB5E1-D7FC-495C-A76E-BB711EB8A469</key>
 		<dict>
 			<key>ypos</key>
-			<real>250</real>
+			<real>340</real>
+		</dict>
+		<key>34256840-2B17-4A55-83F2-86C4EF9B800A</key>
+		<dict>
+			<key>ypos</key>
+			<real>120</real>
 		</dict>
 		<key>5E2199C2-314D-447F-BA91-52B1AC449F40</key>
 		<dict>
 			<key>ypos</key>
-			<real>130</real>
+			<real>230</real>
 		</dict>
 		<key>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</key>
 		<dict>
@@ -347,7 +390,7 @@
 		<key>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</key>
 		<dict>
 			<key>ypos</key>
-			<real>610</real>
+			<real>670</real>
 		</dict>
 		<key>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</key>
 		<dict>
@@ -357,7 +400,7 @@
 		<key>FA9D7CD0-C30A-4E9C-A595-869F6868675F</key>
 		<dict>
 			<key>ypos</key>
-			<real>490</real>
+			<real>560</real>
 		</dict>
 	</dict>
 	<key>webaddress</key>

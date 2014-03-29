@@ -24,7 +24,7 @@ def main(wf):
                 'pocket_list', data_func=get_list, max_age=60)
         if item_list is not None:
             if len(item_list) == 0:
-                wf.add_item('Your Pocket list is empty!', valid=True)
+                wf.add_item('Your Pocket list is empty!', valid=False)
             else:
                 for item in item_list:
                     if all(x in item for x in ['item_id', 'given_title', 'resolved_url', 'time_added']):
@@ -64,11 +64,11 @@ def get_list():
     except AuthException:
         wf.delete_password('pocket_access_token')
         wf.add_item('There was a problem receiving your Pocket list.',
-                    'The workflow has been deauthorized automatically. Please try again!', valid=True)
+                    'The workflow has been deauthorized automatically. Please try again!', valid=False)
 
     except ConnectionError:
         wf.add_item('Could not contact getpocket.com.',
-                    'Please check your internet connection and try again!', valid=True)
+                    'Please check your internet connection and try again!', valid=False)
     return None
 
 

@@ -127,6 +127,17 @@
 				<string>Deauthorize workflow</string>
 			</dict>
 		</array>
+		<key>EFEB9D23-17CE-4FAF-8A7D-F9A1D8134606</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>FA9D7CD0-C30A-4E9C-A595-869F6868675F</key>
 		<array>
 			<dict>
@@ -251,6 +262,31 @@
 			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
 			<string>94B5A64D-BE8D-43B8-847A-F84CA4214C44</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>35</integer>
+				<key>hotmod</key>
+				<integer>262144</integer>
+				<key>hotstring</key>
+				<string>P</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>EFEB9D23-17CE-4FAF-8A7D-F9A1D8134606</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -397,6 +433,11 @@
 			<key>ypos</key>
 			<real>250</real>
 		</dict>
+		<key>EFEB9D23-17CE-4FAF-8A7D-F9A1D8134606</key>
+		<dict>
+			<key>ypos</key>
+			<real>250</real>
+		</dict>
 		<key>FA9D7CD0-C30A-4E9C-A595-869F6868675F</key>
 		<dict>
 			<key>ypos</key>
@@ -404,6 +445,6 @@
 		</dict>
 	</dict>
 	<key>webaddress</key>
-	<string>https://github.com/fniephaus/alfred-pocket/</string>
+	<string>https://github.com/fniephaus/alfred2/</string>
 </dict>
 </plist>

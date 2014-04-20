@@ -1,7 +1,7 @@
 Pocket for Alfred
 ==============
 
-This workflow let's you manage your Pocket list with Alfred.
+This workflow lets you manage your Pocket list with Alfred.
 
 ![Pocket for Alfred Screenshot](https://raw.github.com/fniephaus/alfred-pocket/master/screenshot.gif)
 

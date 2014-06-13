@@ -26,17 +26,20 @@ def main(wf):
             if len(item_list) == 0:
                 wf.add_item('Your Pocket list is empty!', valid=False)
             else:
-                for item in item_list:
+                for index, item in enumerate(item_list):
                     if all(x in item for x in ['item_id', 'given_title', 'resolved_url', 'time_added']):
-                        title = item['resolved_title'] if 'resolved_title' in item and item[
+                        item_title = item['resolved_title'] if 'resolved_title' in item and item[
                             'resolved_title'] != '' else item['given_title']
+                        title = '#%s %s' % (len(item_list) - index, item_title)
                         time_updated = datetime.datetime.fromtimestamp(
                             int(item['time_added'])).strftime('%Y-%m-%d %H:%M')
                         subtitle = time_updated + ': ' + item['resolved_url']
+                        argument = '%s %s' % (
+                            item['resolved_url'], item['item_id'])
 
                         if user_input.lower() in title.lower() or user_input.lower() in subtitle.lower():
-                            wf.add_item(title, subtitle, arg=item[
-                                        'resolved_url'] + ' ' + item['item_id'], valid=True)
+                            wf.add_item(
+                                title, subtitle, arg=argument, valid=True)
 
     except PasswordNotFound:
         wf.add_item(

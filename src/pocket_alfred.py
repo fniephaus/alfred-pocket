@@ -1,8 +1,10 @@
-import sys
 import datetime
-from pocket import Pocket, RateLimitException, AuthException
-from requests.exceptions import ConnectionError
+import sys
+from pocket import Pocket, RateLimitException
+from pocket_refresh import get_list
 from workflow import Workflow, PasswordNotFound
+from workflow.background import run_in_background, is_running
+
 import config
 
 
@@ -16,15 +18,17 @@ def main(wf):
 
     try:
         wf.get_password('pocket_access_token')
-        item_list = wf.cached_data(
-            'pocket_list', data_func=get_list, max_age=60)
-        if item_list is None and len(wf._items) == 0:
-            wf.clear_cache()
-            item_list = wf.cached_data(
-                'pocket_list', data_func=get_list, max_age=60)
+        item_list = wf.cached_data('pocket_list', None, max_age=0)
         if item_list is not None:
             if len(item_list) == 0:
                 wf.add_item('Your Pocket list is empty!', valid=False)
+            elif item_list == "error1":
+                wf.add_item(
+                    "There was a problem receiving your Pocket list...",
+                    "The workflow has been deauthorized automatically. Please try again!", valid=False)
+            elif item_list == "error2":
+                wf.add_item("Could not contact getpocket.com...",
+                            "Please check your Internet connection and try again!", valid=False)
             else:
                 for index, item in enumerate(item_list):
                     if all(x in item for x in ['item_id', 'given_title', 'resolved_url', 'time_added']):
@@ -40,6 +44,13 @@ def main(wf):
                         if user_input.lower() in title.lower() or user_input.lower() in subtitle.lower():
                             wf.add_item(
                                 title, subtitle, arg=argument, valid=True)
+        else:
+            wf.add_item("Could receive your Pocket list.",
+                        "Please try again or file a bug report!", valid=False)
+
+        # Update Pocket list in background
+        if not wf.cached_data_fresh('pocket_list', max_age=10):
+            refresh_list(wf)
 
     except PasswordNotFound:
         wf.add_item(
@@ -47,32 +58,6 @@ def main(wf):
             'Then try again...', arg=get_auth_url(wf), valid=True)
 
     wf.send_feedback()
-
-
-def get_list():
-    access_token = wf.get_password('pocket_access_token')
-    pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
-    try:
-        get = pocket_instance.get()
-        get_list = get[0]['list']
-        if get_list == []:
-            return None
-
-        # unpack and sort items
-        item_list = []
-        for i in reversed(sorted(get_list.keys())):
-            item_list.append(get_list[i])
-
-        return item_list
-    except AuthException:
-        wf.delete_password('pocket_access_token')
-        wf.add_item('There was a problem receiving your Pocket list.',
-                    'The workflow has been deauthenticated automatically. Please try again!', valid=False)
-
-    except ConnectionError:
-        wf.add_item('Could not contact getpocket.com.',
-                    'Please check your Internet connection and try again!', valid=False)
-    return None
 
 
 def get_auth_url(wf):
@@ -98,8 +83,19 @@ def authorize():
 
             # We don't need the cache anymore. clear it for security reasons
             wf.clear_cache()
+
+            def wrapper():
+                return get_list(wf, user_credentials['access_token'])
+
+            wf.cached_data('pocket_list', data_func=wrapper, max_age=1)
         except RateLimitException:
             pass
+
+
+def refresh_list(wf):
+    if not is_running('pocket_refresh'):
+        cmd = ['/usr/bin/python', wf.workflowfile('pocket_refresh.py')]
+        run_in_background('pocket_refresh', cmd)
 
 
 if __name__ == '__main__':

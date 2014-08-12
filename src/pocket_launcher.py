@@ -1,9 +1,11 @@
-import sys
-import os
-from pocket import Pocket
-from requests.exceptions import ConnectionError
-from workflow import Workflow
 import argparse
+import os
+import sys
+from pocket import Pocket
+from pocket_alfred import refresh_list
+from workflow import Workflow
+from workflow.background import run_in_background
+
 import config
 
 
@@ -22,35 +24,36 @@ def execute(wf):
     parser.add_argument('query', nargs='?', default=None)
     args = parser.parse_args(wf.args)
 
-    query = args.query.split()
-    if len(query) > 0:
-        url = query[0]
-    if len(query) > 1:
-        item_id = query[1]
+    if args.query is not None:
+        query = args.query.split()
+        if len(query) > 0:
+            url = query[0]
+        if len(query) > 1:
+            item_id = query[1]
 
-    if args.copy:
-        print set_clipboard(url)
-        return 0
-    elif args.visit_archive:
-        open_url(url)
-        wf.clear_cache()
-        print archive_item(item_id)
-        return 0
-    elif args.archive:
-        wf.clear_cache()
-        print archive_item(item_id)
-        return 0
-    elif args.delete:
-        wf.clear_cache()
-        print delete_item(item_id)
-        return 0
-    elif args.deauthorize:
-        wf.delete_password('pocket_access_token')
-        print "Workflow deauthorized"
-        return 0
-    else:
-        open_url(url)
-        return 0
+        if args.copy:
+            print set_clipboard(url)
+            return 0
+        elif args.visit_archive:
+            open_url(url)
+            refresh_list(wf)
+            print archive_item(item_id)
+            return 0
+        elif args.archive:
+            refresh_list(wf)
+            print archive_item(item_id)
+            return 0
+        elif args.delete:
+            refresh_list(wf)
+            print delete_item(item_id)
+            return 0
+        elif args.deauthorize:
+            wf.delete_password('pocket_access_token')
+            print "Workflow deauthorized"
+            return 0
+        else:
+            open_url(url)
+            return 0
 
 
 def open_url(url):
@@ -69,7 +72,7 @@ def archive_item(item_id):
     try:
         pocket_instance.archive(item_id, wait=False)
         return 'Link archived'
-    except ConnectionError:
+    except Exception:
         return 'Connection error'
 
 
@@ -79,7 +82,7 @@ def delete_item(item_id):
     try:
         pocket_instance.delete(item_id, wait=False)
         return 'Link deleted'
-    except ConnectionError:
+    except Exception:
         return 'Connection error'
 
 

@@ -1,4 +1,4 @@
-import requests
+import workflow.web as requests
 import json
 from functools import wraps
 

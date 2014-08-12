@@ -65,6 +65,28 @@
 		</array>
 		<key>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</key>
 		<array/>
+		<key>B4CEA177-3AB3-4953-852F-BB45F267E156</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>CA0E10C6-6C92-47E1-9A24-4AC6D507FA31</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>CA0E10C6-6C92-47E1-9A24-4AC6D507FA31</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>94B5A64D-BE8D-43B8-847A-F84CA4214C44</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</key>
 		<array>
 			<dict>
@@ -214,35 +236,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>keyword</key>
-				<string>pocket</string>
-				<key>runningsubtext</key>
-				<string>Contacting getpocket.com...</string>
-				<key>script</key>
-				<string>python pocket_alfred.py "{query}"</string>
-				<key>subtext</key>
-				<string>Manage your Pocket list with Alfred</string>
-				<key>title</key>
-				<string>Pocket</string>
-				<key>type</key>
-				<integer>0</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>lastpathcomponent</key>
 				<false/>
 				<key>onlyshowifquerypopulated</key>
@@ -282,11 +275,42 @@
 				<false/>
 				<key>modsmode</key>
 				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
 			<string>EFEB9D23-17CE-4FAF-8A7D-F9A1D8134606</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>pocket</string>
+				<key>runningsubtext</key>
+				<string>Contacting getpocket.com...</string>
+				<key>script</key>
+				<string>python pocket_alfred.py "{query}"</string>
+				<key>subtext</key>
+				<string>Manage your Pocket list with Alfred</string>
+				<key>title</key>
+				<string>Pocket</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -344,6 +368,23 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_save.py</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>action</key>
 				<integer>0</integer>
 				<key>argument</key>
@@ -358,11 +399,32 @@
 				<false/>
 				<key>modsmode</key>
 				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
 			<string>2543D2DD-E0F7-479A-8CA8-525B97003DB7</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>pocket-refresh</string>
+				<key>text</key>
+				<string>Refresh Pocket Cache</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>B4CEA177-3AB3-4953-852F-BB45F267E156</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -372,14 +434,14 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python pocket_save.py</string>
+				<string>python pocket_refresh.py</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
-			<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
+			<string>CA0E10C6-6C92-47E1-9A24-4AC6D507FA31</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -422,6 +484,16 @@
 		<dict>
 			<key>ypos</key>
 			<real>250</real>
+		</dict>
+		<key>B4CEA177-3AB3-4953-852F-BB45F267E156</key>
+		<dict>
+			<key>ypos</key>
+			<real>790</real>
+		</dict>
+		<key>CA0E10C6-6C92-47E1-9A24-4AC6D507FA31</key>
+		<dict>
+			<key>ypos</key>
+			<real>790</real>
 		</dict>
 		<key>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</key>
 		<dict>

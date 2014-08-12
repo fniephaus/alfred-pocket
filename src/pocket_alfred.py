@@ -67,11 +67,11 @@ def get_list():
     except AuthException:
         wf.delete_password('pocket_access_token')
         wf.add_item('There was a problem receiving your Pocket list.',
-                    'The workflow has been deauthorized automatically. Please try again!', valid=False)
+                    'The workflow has been deauthenticated automatically. Please try again!', valid=False)
 
     except ConnectionError:
         wf.add_item('Could not contact getpocket.com.',
-                    'Please check your internet connection and try again!', valid=False)
+                    'Please check your Internet connection and try again!', valid=False)
     return None
 
 
@@ -96,7 +96,7 @@ def authorize():
             wf.save_password(
                 'pocket_access_token', user_credentials['access_token'])
 
-            # we don't need the cache anymore. clear it for security reasons
+            # We don't need the cache anymore. clear it for security reasons
             wf.clear_cache()
         except RateLimitException:
             pass

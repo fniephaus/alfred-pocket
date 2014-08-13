@@ -1,5 +1,6 @@
 import datetime
 import sys
+import os
 from pocket import Pocket, RateLimitException
 from pocket_refresh import get_list
 from workflow import Workflow, PasswordNotFound
@@ -53,9 +54,7 @@ def main(wf):
             refresh_list(wf)
 
     except PasswordNotFound:
-        wf.add_item(
-            'Please press enter and click on "Authorize" on Pocket\'s website',
-            'Then try again...', arg=get_auth_url(wf), valid=True)
+        os.system('open "%s"' % get_auth_url(wf))
 
     wf.send_feedback()
 

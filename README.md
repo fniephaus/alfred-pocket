@@ -19,4 +19,4 @@ This workflow lets you manage your Pocket list with Alfred.
 
 ## Credits
 
-This workflow uses [requests](https://github.com/kennethreitz/requests), [pocket](https://github.com/tapanpandita/pocket) and [alfred-workflow](https://github.com/deanishe/alfred-workflow).
+This workflow uses [pocket](https://github.com/tapanpandita/pocket) and [alfred-workflow](https://github.com/deanishe/alfred-workflow).

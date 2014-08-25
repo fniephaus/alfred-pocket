@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import subprocess
 from pocket import Pocket
 from pocket_alfred import refresh_list
 from workflow import Workflow
@@ -35,7 +36,7 @@ def execute(wf):
             print set_clipboard(url)
             return 0
         elif args.visit_archive:
-            open_url(url)
+            subprocess.call(['open', url])
             refresh_list(wf)
             print archive_item(item_id)
             return 0
@@ -52,12 +53,8 @@ def execute(wf):
             print "Workflow deauthorized"
             return 0
         else:
-            open_url(url)
+            subprocess.call(['open', url])
             return 0
-
-
-def open_url(url):
-    os.system('open %s' % url)
 
 
 def set_clipboard(url):

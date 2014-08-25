@@ -7,25 +7,25 @@ import config
 def get_list(wf, access_token):
     pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
-        get = pocket_instance.get()
+        get = pocket_instance.get(sort='newest')
         get_list = get[0]['list']
         if get_list == []:
             return None
 
         # Unpack and sort items
         item_list = []
-        for i in reversed(sorted(get_list.keys())):
+        for i in sorted(get_list.keys(), key=lambda x: int(x), reverse=True):
             item_list.append(get_list[i])
 
         return item_list
 
     except AuthException:
-        return "error1"
+        return 'error1'
         wf.delete_password('pocket_access_token')
         wf.logger.error(
             'There was a problem receiving your Pocket list. The workflow has been deauthenticated automatically. Please try again!')
     except Exception:
-        return "error2"
+        return 'error2'
         wf.logger.error(
             'Could not contact getpocket.com. Please check your Internet connection and try again!')
 

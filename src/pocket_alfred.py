@@ -1,6 +1,6 @@
 import datetime
 import sys
-import os
+import subprocess
 from pocket import Pocket, RateLimitException
 from pocket_refresh import get_list
 from workflow import Workflow, PasswordNotFound
@@ -11,6 +11,11 @@ import config
 
 def main(wf):
     user_input = ''.join(wf.args)
+
+    if wf.update_available:
+        subtitle = 'New: %s' % wf.update_info['body']
+        wf.add_item("An update is available!", subtitle,
+                    autocomplete='workflow:update', valid=False)
 
     try:
         wf.get_password('pocket_access_token')
@@ -23,13 +28,14 @@ def main(wf):
         if item_list is not None:
             if len(item_list) == 0:
                 wf.add_item('Your Pocket list is empty!', valid=False)
-            elif item_list == "error1":
+            elif item_list == 'error1':
                 wf.add_item(
-                    "There was a problem receiving your Pocket list...",
-                    "The workflow has been deauthorized automatically. Please try again!", valid=False)
-            elif item_list == "error2":
-                wf.add_item("Could not contact getpocket.com...",
-                            "Please check your Internet connection and try again!", valid=False)
+                    'There was a problem receiving your Pocket list...',
+                    'The workflow has been deauthorized automatically. Please try again!', valid=False)
+            elif item_list == 'error2':
+                wf.add_item(
+                    'Could not connect to getpocket.com...',
+                    'Please check your Internet connection and try again!', valid=False)
             else:
                 for index, item in enumerate(item_list):
                     if all(x in item for x in ['item_id', 'given_title', 'resolved_url', 'time_added']):
@@ -46,15 +52,16 @@ def main(wf):
                             wf.add_item(
                                 title, subtitle, arg=argument, valid=True)
         else:
-            wf.add_item("Could receive your Pocket list.",
-                        "Please try again or file a bug report!", valid=False)
+            wf.add_item(
+                'Could receive your Pocket list...',
+                'Please try again or file a bug report!', valid=False)
 
         # Update Pocket list in background
         if not wf.cached_data_fresh('pocket_list', max_age=10):
             refresh_list(wf)
 
     except PasswordNotFound:
-        os.system('open "%s"' % get_auth_url(wf))
+        subprocess.call(['open', get_auth_url(wf)])
 
     wf.send_feedback()
 
@@ -98,5 +105,8 @@ def refresh_list(wf):
 
 
 if __name__ == '__main__':
-    wf = Workflow()
+    wf = Workflow(update_config={
+        'github_slug': 'fniephaus/alfred-pocket',
+        'version': 'v2.2',
+    })
     sys.exit(wf.run(main))

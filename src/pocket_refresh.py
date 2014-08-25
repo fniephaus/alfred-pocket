@@ -14,8 +14,8 @@ def get_list(wf, access_token):
 
         # Unpack and sort items
         item_list = []
-        for i in sorted(get_list.keys(), key=lambda x: int(x), reverse=True):
-            item_list.append(get_list[i])
+        for item in sorted(get_list.values(), key=lambda x: int(x['time_added']), reverse=True):
+            item_list.append(item)
 
         return item_list
 

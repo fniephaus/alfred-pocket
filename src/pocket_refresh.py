@@ -31,16 +31,15 @@ def get_list(wf, access_token):
 
     return None
 
-if __name__ == '__main__':
-    wf = Workflow()
 
+def refresh():
+    wf = Workflow()
     try:
         access_token = wf.get_password('pocket_access_token')
-
-        def wrapper():
-            return get_list(wf, access_token)
-
-        wf.cached_data('pocket_list', data_func=wrapper, max_age=1)
-
+        wf.cache_data('pocket_list', get_list(wf, access_token))
     except PasswordNotFound:
         wf.logger.error('Password not found!')
+
+
+if __name__ == '__main__':
+    refresh()

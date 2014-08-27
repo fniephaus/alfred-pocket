@@ -2,7 +2,7 @@ import datetime
 import sys
 import subprocess
 from pocket import Pocket, RateLimitException
-from pocket_refresh import get_list
+from pocket_refresh import refresh
 from workflow import Workflow, PasswordNotFound
 from workflow.background import run_in_background, is_running
 
@@ -24,7 +24,11 @@ def main(wf):
 
     try:
         wf.get_password('pocket_access_token')
-        item_list = wf.cached_data('pocket_list', None, max_age=0)
+        item_list = wf.cached_data('pocket_list', max_age=0)
+        if item_list is None:
+            refresh()
+            item_list = wf.cached_data('pocket_list', max_age=0)
+
         if item_list is not None:
             if len(item_list) == 0:
                 wf.add_item('Your Pocket list is empty!', valid=False)
@@ -53,7 +57,7 @@ def main(wf):
                                 title, subtitle, arg=argument, valid=True)
         else:
             wf.add_item(
-                'Could receive your Pocket list...',
+                'Could not receive your Pocket list...',
                 'Please try again or file a bug report!', valid=False)
 
         # Update Pocket list in background
@@ -89,11 +93,7 @@ def authorize():
 
             # We don't need the cache anymore. clear it for security reasons
             wf.clear_cache()
-
-            def wrapper():
-                return get_list(wf, user_credentials['access_token'])
-
-            wf.cached_data('pocket_list', data_func=wrapper, max_age=1)
+            refresh()
         except RateLimitException:
             pass
 
@@ -107,6 +107,6 @@ def refresh_list(wf):
 if __name__ == '__main__':
     wf = Workflow(update_config={
         'github_slug': 'fniephaus/alfred-pocket',
-        'version': 'v2.4',
+        'version': 'v2.5',
     })
     sys.exit(wf.run(main))

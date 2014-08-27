@@ -43,14 +43,17 @@ def execute(wf):
         elif args.archive:
             refresh_list(wf)
             print archive_item(item_id)
+            open_alfred()
             return 0
         elif args.delete:
             refresh_list(wf)
             print delete_item(item_id)
+            open_alfred()
             return 0
         elif args.deauthorize:
             wf.delete_password('pocket_access_token')
             print "Workflow deauthorized"
+            open_alfred()
             return 0
         else:
             subprocess.call(['open', url])
@@ -82,6 +85,8 @@ def delete_item(item_id):
     except Exception:
         return 'Connection error'
 
+def open_alfred():
+    os.system( """ osascript -e 'tell application "Alfred 2" to search "pocket "' """)
 
 if __name__ == '__main__':
     wf = Workflow()

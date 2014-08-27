@@ -39,12 +39,12 @@ def main(wf):
             else:
                 for index, item in enumerate(item_list):
                     if all(x in item for x in ['item_id', 'given_title', 'resolved_url', 'time_added']):
-                        item_title = item['resolved_title'] if 'resolved_title' in item and item[
+                        title = item['resolved_title'] if 'resolved_title' in item and item[
                             'resolved_title'] != '' else item['given_title']
-                        title = '#%s %s' % (len(item_list) - index, item_title)
+                        item_count = len(item_list) - index
                         time_updated = datetime.datetime.fromtimestamp(
                             int(item['time_added'])).strftime('%Y-%m-%d %H:%M')
-                        subtitle = time_updated + ': ' + item['resolved_url']
+                        subtitle = '#%s - %s - %s' % (item_count, time_updated, item['resolved_url'])
                         argument = '%s %s' % (
                             item['resolved_url'], item['item_id'])
 
@@ -107,6 +107,6 @@ def refresh_list(wf):
 if __name__ == '__main__':
     wf = Workflow(update_config={
         'github_slug': 'fniephaus/alfred-pocket',
-        'version': 'v2.3',
+        'version': 'v2.4',
     })
     sys.exit(wf.run(main))

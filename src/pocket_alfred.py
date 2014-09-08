@@ -12,10 +12,10 @@ import config
 def main(wf):
     user_input = ''.join(wf.args)
 
-    if wf.update_available:
-        subtitle = 'New: %s' % wf.update_info['body']
-        wf.add_item("An update is available!", subtitle,
-                    autocomplete='workflow:update', valid=False)
+    # if wf.update_available:
+    #     subtitle = 'New: %s' % wf.update_info['body']
+    #     wf.add_item("An update is available!", subtitle,
+    #                 autocomplete='workflow:update', valid=False)
 
     try:
         wf.get_password('pocket_access_token')
@@ -26,8 +26,7 @@ def main(wf):
         wf.get_password('pocket_access_token')
         item_list = wf.cached_data('pocket_list', max_age=0)
         if item_list is None:
-            refresh()
-            item_list = wf.cached_data('pocket_list', max_age=0)
+            item_list = refresh()
 
         if item_list is not None:
             if len(item_list) == 0:

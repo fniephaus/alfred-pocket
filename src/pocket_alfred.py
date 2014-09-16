@@ -47,7 +47,13 @@ def main(wf):
                         item_count = len(item_list) - index
                         time_updated = datetime.datetime.fromtimestamp(
                             int(item['time_added'])).strftime('%Y-%m-%d %H:%M')
-                        subtitle = '#%s - %s - %s' % (item_count, time_updated, item['resolved_url'])
+                        short_url = item['resolved_url'].replace('http://', '').replace('https://', '')
+                        if 'tags' in item:
+                            tags = ['#%s' % x for x in item['tags'].keys()]
+                            tags = ', '.join(tags)
+                            subtitle = '#%s - %s - %s - %s' % (item_count, time_updated, tags, short_url)
+                        else:
+                            subtitle = '#%s - %s - %s' % (item_count, time_updated, short_url)
                         argument = '%s %s' % (
                             item['resolved_url'], item['item_id'])
 

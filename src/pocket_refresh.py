@@ -23,7 +23,7 @@ def refresh():
             while True:
                 print offset
                 state = 'all' if len(item_list) > 0 else None
-                get = pocket_instance.get(sort='newest', since=since, state=state, count=LINK_LIMIT, offset=offset)[0]
+                get = pocket_instance.get(sort='newest', detailType='complete', since=since, state=state, count=LINK_LIMIT, offset=offset)[0]
 
                 if get['status'] != 1 or get['list'] == []:
                     break

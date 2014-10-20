@@ -12,10 +12,9 @@ import config
 def main(wf):
     user_input = ''.join(wf.args)
 
-    # if wf.update_available:
-    #     subtitle = 'New: %s' % wf.update_info['body']
-    #     wf.add_item("An update is available!", subtitle,
-    #                 autocomplete='workflow:update', valid=False)
+    if wf.update_available:
+        wf.add_item("An update is available!",
+                    autocomplete='workflow:update', valid=False)
 
     try:
         wf.get_password('pocket_access_token')
@@ -110,8 +109,8 @@ def refresh_list(wf):
 
 
 if __name__ == '__main__':
-    wf = Workflow(update_config={
+    wf = Workflow(update_settings={
         'github_slug': 'fniephaus/alfred-pocket',
-        'version': 'v2.5',
+        'version': 'v3.0',
     })
     sys.exit(wf.run(main))

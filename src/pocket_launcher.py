@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 import subprocess
-from pocket import Pocket
+from pocket import Pocket, PocketException
 from pocket_alfred import refresh_list
 from workflow import Workflow
 from workflow.background import run_in_background
@@ -72,7 +72,7 @@ def archive_item(item_id):
     try:
         pocket_instance.archive(item_id, wait=False)
         return 'Link archived'
-    except Exception:
+    except PocketException:
         return 'Connection error'
 
 
@@ -82,7 +82,7 @@ def delete_item(item_id):
     try:
         pocket_instance.delete(item_id, wait=False)
         return 'Link deleted'
-    except Exception:
+    except PocketException:
         return 'Connection error'
 
 def open_alfred():

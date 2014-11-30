@@ -1,8 +1,8 @@
 import datetime
 import sys
 import subprocess
+from time import sleep
 from pocket import Pocket, RateLimitException
-from pocket_refresh import refresh
 from workflow import Workflow, PasswordNotFound
 from workflow.background import run_in_background, is_running
 
@@ -23,9 +23,13 @@ def main(wf):
 
     try:
         wf.get_password('pocket_access_token')
-        item_list = wf.cached_data('pocket_list', max_age=0)
-        if item_list is None:
-            item_list = refresh()
+
+        item_list = wf.cached_data('pocket_list', max_age=120)
+        # Wait for data
+        while(item_list == None):
+            refresh_list(wf)
+            sleep(0.5)
+            item_list = wf.cached_data('pocket_list', max_age=120)
 
         if item_list is not None:
             if len(item_list) == 0:
@@ -39,20 +43,23 @@ def main(wf):
                     'Could not connect to getpocket.com...',
                     'Please check your Internet connection and try again!', valid=False)
             else:
-                for index, item in enumerate(item_list):
+                for index, item in enumerate(reversed(item_list)):
                     if all(x in item for x in ['item_id', 'given_title', 'resolved_url', 'time_added']):
                         title = item['resolved_title'] if 'resolved_title' in item and item[
                             'resolved_title'] != '' else item['given_title']
                         item_count = len(item_list) - index
                         time_updated = datetime.datetime.fromtimestamp(
                             int(item['time_added'])).strftime('%Y-%m-%d %H:%M')
-                        short_url = item['resolved_url'].replace('http://', '').replace('https://', '')
+                        short_url = item['resolved_url'].replace(
+                            'http://', '').replace('https://', '')
                         if 'tags' in item:
                             tags = ['#%s' % x for x in item['tags'].keys()]
                             tags = ', '.join(tags)
-                            subtitle = '#%s - %s - %s - %s' % (item_count, time_updated, tags, short_url)
+                            subtitle = '#%s - %s - %s - %s' % (
+                                item_count, time_updated, tags, short_url)
                         else:
-                            subtitle = '#%s - %s - %s' % (item_count, time_updated, short_url)
+                            subtitle = '#%s - %s - %s' % (
+                                item_count, time_updated, short_url)
                         argument = '%s %s' % (
                             item['resolved_url'], item['item_id'])
 
@@ -87,7 +94,6 @@ def get_auth_url(wf):
 
 def authorize():
     request_token = wf.cached_data('pocket_request_token')
-
     if request_token:
         try:
             user_credentials = Pocket.get_credentials(
@@ -97,7 +103,6 @@ def authorize():
 
             # We don't need the cache anymore. clear it for security reasons
             wf.clear_cache()
-            refresh()
         except RateLimitException:
             pass
 

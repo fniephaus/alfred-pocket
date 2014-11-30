@@ -7,7 +7,7 @@ import config
 
 LINK_LIMIT = 2000
 
-def refresh():
+if __name__ == '__main__':
     wf = Workflow()
     try:
         access_token = wf.get_password('pocket_access_token')
@@ -15,33 +15,40 @@ def refresh():
         try:
             since = wf.cached_data('pocket_since', max_age=0)
             item_list = wf.cached_data('pocket_list', max_age=0)
+            print since, len(item_list if item_list else [])
             if not type(item_list) is list:
                 item_list = []
 
-            next_since = time()
+            state = 'all' if len(item_list) > 0 else None
+
+            next_since = 0
             offset = 0
             while True:
                 print offset
-                state = 'all' if len(item_list) > 0 else None
-                get = pocket_instance.get(sort='newest', detailType='complete', since=since, state=state, count=LINK_LIMIT, offset=offset)[0]
+                get = pocket_instance.get(
+                    sort='newest', detailType='complete', since=since, state=state, count=LINK_LIMIT, offset=offset)[0]
+                # print get
+
+                offset += LINK_LIMIT
+                next_since = get['since']
 
                 if get['status'] != 1 or get['list'] == []:
                     break
 
                 # Unpack and sort items
-                for item in sorted(get['list'].values(), key=lambda x: int(x['time_added']), reverse=True):
-                    if item['time_read'] == '0':
-                        item_list.append(item)
+                for item in sorted(get['list'].values(), key=lambda x: int(x['item_id']), reverse=True):
+                    if item['status'] == u'0':
+                        item_list.insert(0, item)
                     else:
                         # Remove item
-                        item_list[:] = [d for d in item_list if d.get('item_id') != item['item_id']]
+                        item_list[:] = [
+                            d for d in item_list if d.get('item_id') != item['item_id']]
 
-                offset += LINK_LIMIT
-                next_since = get['since']
-                
-            wf.cache_data('pocket_since', next_since)
-            wf.cache_data('pocket_list', item_list)
-            return item_list
+            print since, next_since, len(item_list)
+
+            if next_since > since:
+                wf.cache_data('pocket_since', next_since)
+                wf.cache_data('pocket_list', item_list)
 
         except AuthException:
             wf.cache_data('pocket_list', 'error1')
@@ -55,9 +62,3 @@ def refresh():
 
     except PasswordNotFound:
         wf.logger.error('Password not found!')
-
-    return None
-
-
-if __name__ == '__main__':
-    refresh()

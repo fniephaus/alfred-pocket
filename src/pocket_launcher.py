@@ -81,6 +81,13 @@ def delete_item(item_id):
     pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         pocket_instance.delete(item_id, wait=False)
+
+        # remove entry in cache
+        item_list = wf.cached_data('pocket_list', max_age=0)
+        if type(item_list) is list and len(item_list) > 0:
+            item_list[:] = [d for d in item_list if d.get('item_id') != item_id]
+            wf.cache_data('pocket_list', item_list)
+
         return 'Link deleted'
     except PocketException:
         return 'Connection error'

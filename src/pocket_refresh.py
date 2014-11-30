@@ -15,7 +15,6 @@ if __name__ == '__main__':
         try:
             since = wf.cached_data('pocket_since', max_age=0)
             item_list = wf.cached_data('pocket_list', max_age=0)
-            print since, len(item_list if item_list else [])
             if not type(item_list) is list:
                 item_list = []
 
@@ -24,10 +23,8 @@ if __name__ == '__main__':
             next_since = 0
             offset = 0
             while True:
-                print offset
                 get = pocket_instance.get(
                     sort='newest', detailType='complete', since=since, state=state, count=LINK_LIMIT, offset=offset)[0]
-                # print get
 
                 offset += LINK_LIMIT
                 next_since = get['since']
@@ -43,8 +40,6 @@ if __name__ == '__main__':
                         # Remove item
                         item_list[:] = [
                             d for d in item_list if d.get('item_id') != item['item_id']]
-
-            print since, next_since, len(item_list)
 
             if next_since > since:
                 wf.cache_data('pocket_since', next_since)

@@ -116,6 +116,6 @@ def refresh_list(wf):
 if __name__ == '__main__':
     wf = Workflow(update_settings={
         'github_slug': 'fniephaus/alfred-pocket',
-        'version': 'v3.0',
+        'version': 'v2.7',
     })
     sys.exit(wf.run(main))

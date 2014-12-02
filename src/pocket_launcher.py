@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 import subprocess
-from pocket import Pocket
+from pocket import Pocket, PocketException
 from pocket_alfred import refresh_list
 from workflow import Workflow
 from workflow.background import run_in_background
@@ -72,7 +72,7 @@ def archive_item(item_id):
     try:
         pocket_instance.archive(item_id, wait=False)
         return 'Link archived'
-    except Exception:
+    except PocketException:
         return 'Connection error'
 
 
@@ -81,8 +81,15 @@ def delete_item(item_id):
     pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         pocket_instance.delete(item_id, wait=False)
+
+        # remove entry in cache
+        item_list = wf.cached_data('pocket_list', max_age=0)
+        if type(item_list) is list and len(item_list) > 0:
+            item_list[:] = [d for d in item_list if d.get('item_id') != item_id]
+            wf.cache_data('pocket_list', item_list)
+
         return 'Link deleted'
-    except Exception:
+    except PocketException:
         return 'Connection error'
 
 def open_alfred():

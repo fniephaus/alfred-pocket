@@ -15,8 +15,14 @@ if __name__ == '__main__':
         access_token = wf.get_password('pocket_access_token')
         pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
 
-        since = wf.cached_data('pocket_since', max_age=0)
         item_list = wf.cached_data('pocket_list', max_age=0)
+        
+        # only use delta syncing if list is not empty
+        if item_list and len(item_list) > 0:
+            since = wf.cached_data('pocket_since', max_age=0)
+        else:
+            since = 0
+
         if not type(item_list) is list:
             item_list = []
 

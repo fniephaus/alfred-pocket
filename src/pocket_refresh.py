@@ -1,6 +1,7 @@
 from time import time
 
-from pocket import Pocket, AuthException
+from urllib2 import URLError
+from pocket import Pocket, AuthException, PocketException
 from workflow import Workflow, PasswordNotFound
 
 import config
@@ -9,51 +10,63 @@ LINK_LIMIT = 2000
 
 if __name__ == '__main__':
     wf = Workflow()
+    error = None
     try:
         access_token = wf.get_password('pocket_access_token')
         pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
-        try:
+
+        item_list = wf.cached_data('pocket_list', max_age=0)
+        
+        # only use delta syncing if list is not empty
+        if item_list and len(item_list) > 0:
             since = wf.cached_data('pocket_since', max_age=0)
-            item_list = wf.cached_data('pocket_list', max_age=0)
-            if not type(item_list) is list:
-                item_list = []
+        else:
+            since = 0
 
-            state = 'all' if len(item_list) > 0 else None
+        if not type(item_list) is list:
+            item_list = []
 
-            next_since = 0
-            offset = 0
-            while True:
-                get = pocket_instance.get(
-                    sort='newest', detailType='complete', since=since, state=state, count=LINK_LIMIT, offset=offset)[0]
+        state = 'all' if len(item_list) > 0 else None
 
-                offset += LINK_LIMIT
-                next_since = get['since']
+        next_since = 0
+        offset = 0
+        while True:
+            get = pocket_instance.get(
+                sort='newest',
+                detailType='complete',
+                since=since,
+                state=state,
+                count=LINK_LIMIT,
+                offset=offset
+            )[0]
 
-                if get['status'] != 1 or get['list'] == []:
-                    break
+            offset += LINK_LIMIT
+            next_since = get['since']
 
-                # Unpack and sort items
-                for item in sorted(get['list'].values(), key=lambda x: int(x['item_id']), reverse=True):
-                    if item['status'] == u'0':
-                        item_list.insert(0, item)
-                    else:
-                        # Remove item
-                        item_list[:] = [
-                            d for d in item_list if d.get('item_id') != item['item_id']]
+            if get['status'] != 1 or get['list'] == []:
+                break
 
-            if next_since > since:
-                wf.cache_data('pocket_since', next_since)
-                wf.cache_data('pocket_list', item_list)
+            # Unpack and sort items
+            for item in sorted(get['list'].values(), key=lambda x: int(x['item_id'])):
+                if item['status'] == u'0':
+                    item_list.append(item)
+                else:
+                    # Remove item
+                    item_list[:] = [
+                        d for d in item_list if d.get('item_id') != item['item_id']]
 
-        except AuthException:
-            wf.cache_data('pocket_list', 'error1')
-            wf.delete_password('pocket_access_token')
-            wf.logger.error(
-                'There was a problem receiving your Pocket list. The workflow has been deauthenticated automatically. Please try again!')
-        # except Exception:
-        #     wf.cache_data('pocket_list', 'error2')
-        #     wf.logger.error(
-        #         'Could not contact getpocket.com. Please check your Internet connection and try again!')
+        if next_since > since:
+            wf.cache_data('pocket_since', next_since)
+            wf.cache_data('pocket_list', item_list)
 
-    except PasswordNotFound:
-        wf.logger.error('Password not found!')
+    except AuthException:
+        error = 'AuthException'
+        wf.cache_data('pocket_list', error)
+        wf.delete_password('pocket_access_token')
+
+    except (URLError, PocketException, PasswordNotFound), e:
+        error = type(e).__name__
+        wf.cache_data('pocket_list', error)
+
+    if error:
+        wf.logger.error(error)

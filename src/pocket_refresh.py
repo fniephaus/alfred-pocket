@@ -64,16 +64,9 @@ if __name__ == '__main__':
         wf.cache_data('pocket_list', error)
         wf.delete_password('pocket_access_token')
 
-    except URLError:
-        error = 'URLError'
+    except (URLError, PocketException, PasswordNotFound), e:
+        error = type(e).__name__
         wf.cache_data('pocket_list', error)
 
-    except PocketException:
-        error = 'PocketException'
-        wf.cache_data('pocket_list', error)
-
-    except PasswordNotFound:
-        error = 'Password not found!'
-    
     if error:
         wf.logger.error(error)

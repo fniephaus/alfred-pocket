@@ -11,7 +11,7 @@ import config
 
 WF = Workflow(update_settings={
     'github_slug': 'fniephaus/alfred-pocket',
-    'version': 'v3.0',
+    'version': 'v3.1',
 })
 
 ERROR_MESSAGES = {

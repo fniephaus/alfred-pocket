@@ -37,6 +37,10 @@ except ImportError:  # pragma: no cover
     import xml.etree.ElementTree as ET
 
 
+#: Sentinel for properties that haven't been set yet (that might
+#: correctly have the value ``None``)
+UNSET = object()
+
 ####################################################################
 # Standard system icons
 ####################################################################
@@ -369,6 +373,22 @@ ASCII_REPLACEMENTS = {
     'Ỹ': 'Y',
     'ỹ': 'y',
 }
+
+####################################################################
+# Smart-to-dumb punctuation mapping
+####################################################################
+
+DUMB_PUNCTUATION = {
+    '‘': "'",
+    '’': "'",
+    '‚': "'",
+    '“': '"',
+    '”': '"',
+    '„': '"',
+    '–': '-',
+    '—': '-'
+}
+
 
 ####################################################################
 # Used by `Workflow.filter`
@@ -714,13 +734,20 @@ class Item(object):
 
         """
 
+        # Attributes on <item> element
         attr = {}
         if self.valid:
             attr['valid'] = 'yes'
         else:
             attr['valid'] = 'no'
+        # Allow empty string for autocomplete. This is a useful value,
+        # as TABing the result will revert the query back to just the
+        # keyword
+        if self.autocomplete is not None:
+            attr['autocomplete'] = self.autocomplete
+
         # Optional attributes
-        for name in ('uid', 'type', 'autocomplete'):
+        for name in ('uid', 'type'):
             value = getattr(self, name, None)
             if value:
                 attr[name] = value
@@ -728,14 +755,18 @@ class Item(object):
         root = ET.Element('item', attr)
         ET.SubElement(root, 'title').text = self.title
         ET.SubElement(root, 'subtitle').text = self.subtitle
+
         # Add modifier subtitles
         for mod in ('cmd', 'ctrl', 'alt', 'shift', 'fn'):
             if mod in self.modifier_subtitles:
                 ET.SubElement(root, 'subtitle',
                               {'mod': mod}).text = self.modifier_subtitles[mod]
 
+        # Add arg as element instead of attribute on <item>, as it's more
+        # flexible (newlines aren't allowed in attributes)
         if self.arg:
             ET.SubElement(root, 'arg').text = self.arg
+
         # Add icon if there is one
         if self.icon:
             if self.icontype:
@@ -855,6 +886,13 @@ class Workflow(object):
         :param libraries: sequence of paths to directories containing
             libraries. These paths will be prepended to ``sys.path``.
         :type libraries: :class:`tuple` or :class:`list`
+        :param help_url: URL to webpage where a user can ask for help with
+            the workflow, report bugs, etc. This could be the GitHub repo
+            or a page on AlfredForum.com. If your workflow throws an error,
+            this URL will be displayed in the log and Alfred's debugger. It can
+            also be opened directly in a web browser with the ``workflow:help``
+            :ref:`magic argument <magic-arguments>`.
+        :type help_url: :class:`unicode` or :class:`str`
 
     """
 
@@ -864,13 +902,15 @@ class Workflow(object):
 
     def __init__(self, default_settings=None, update_settings=None,
                  input_encoding='utf-8', normalization='NFC',
-                 capture_args=True, libraries=None):
+                 capture_args=True, libraries=None,
+                 help_url=None):
 
         self._default_settings = default_settings or {}
         self._update_settings = update_settings or {}
         self._input_encoding = input_encoding
         self._normalizsation = normalization
         self._capture_args = capture_args
+        self.help_url = help_url
         self._workflowdir = None
         self._settings_path = None
         self._settings = None
@@ -885,13 +925,31 @@ class Workflow(object):
         self._logger = None
         self._items = []
         self._alfred_env = None
+        # Version number of the workflow
+        self._version = UNSET
+        # Version from last workflow run
+        self._last_version_run = UNSET
+        # Cache for regex patterns created for filter keys
         self._search_pattern_cache = {}
+        # Magic arguments
+        #: The prefix for all magic arguments. Default is ``workflow:``
+        self.magic_prefix = 'workflow:'
+        #: Mapping of available magic arguments. The built-in magic
+        #: arguments are registered by default. To add your own magic arguments
+        #: (or override built-ins), add a key:value pair where the key is
+        #: what the user should enter (prefixed with :attr:`magic_prefix`)
+        #: and the value is a callable that will be called when the argument
+        #: is entered. If you would like to display a message in Alfred, the
+        #: function should return a ``unicode`` string.
+        #:
+        #: By default, the magic arguments documented
+        #: :ref:`here <magic-arguments>` are registered.
+        self.magic_arguments = {}
+
+        self._register_default_magic()
 
         if libraries:
             sys.path = libraries + sys.path
-
-        if update_settings:
-            self.check_update()
 
     ####################################################################
     # API methods
@@ -1018,6 +1076,46 @@ class Workflow(object):
 
         return self._name
 
+    @property
+    def version(self):
+        """Return the version of the workflow
+
+        .. versionadded:: 1.9.10
+
+        Get the version from the ``update_settings`` dict passed on
+        instantiation or the ``version`` file located in the workflow's
+        root directory. Return ``None`` if neither exist or
+        :class:`ValueError` if the version number is invalid (i.e. not
+        semantic).
+
+        :returns: Version of the workflow (not Alfred-Workflow)
+        :rtype: :class:`~workflow.update.Version` object
+
+        """
+
+        if self._version is UNSET:
+
+            version = None
+            # First check `update_settings`
+            if self._update_settings:
+                version = self._update_settings.get('version')
+
+            # Fallback to `version` file
+            if not version:
+                filepath = self.workflowfile('version')
+
+                if os.path.exists(filepath):
+                    with open(filepath, 'rb') as fileobj:
+                        version = fileobj.read()
+
+            if version:
+                from update import Version
+                version = Version(version)
+
+            self._version = version
+
+        return self._version
+
     # Workflow utility methods -----------------------------------------
 
     @property
@@ -1041,49 +1139,13 @@ class Workflow(object):
 
         msg = None
         args = [self.decode(arg) for arg in sys.argv[1:]]
+
+        # Handle magic args
         if len(args) and self._capture_args:
-            if 'workflow:openlog' in args:
-                msg = 'Opening workflow log file'
-                self.open_log()
-            elif 'workflow:reset' in args:
-                self.reset()
-                msg = 'Reset workflow'
-            elif 'workflow:delcache' in args:
-                self.clear_cache()
-                msg = 'Deleted workflow cache'
-            elif 'workflow:deldata' in args:
-                self.clear_data()
-                msg = 'Deleted workflow data'
-            elif 'workflow:delsettings' in args:
-                self.clear_settings()
-                msg = 'Deleted workflow settings'
-            elif 'workflow:openworkflow' in args:
-                msg = 'Opening workflow directory'
-                self.open_workflowdir()
-            elif 'workflow:opendata' in args:
-                msg = 'Opening workflow data directory'
-                self.open_datadir()
-            elif 'workflow:opencache' in args:
-                msg = 'Opening workflow cache directory'
-                self.open_cachedir()
-            elif 'workflow:openterm' in args:
-                msg = 'Opening workflow root directory in Terminal'
-                self.open_terminal()
-            elif 'workflow:foldingon' in args:
-                msg = 'Diacritics will always be folded'
-                self.settings['__workflow_diacritic_folding'] = True
-            elif 'workflow:foldingoff' in args:
-                msg = 'Diacritics will never be folded'
-                self.settings['__workflow_diacritic_folding'] = False
-            elif 'workflow:foldingdefault' in args:
-                msg = 'Diacritics folding reset'
-                if '__workflow_diacritic_folding' in self.settings:
-                    del self.settings['__workflow_diacritic_folding']
-            elif 'workflow:update' in args:
-                if self.start_update():
-                    msg = 'Downloading and installing update ...'
-                else:
-                    msg = 'No update available'
+            for name in self.magic_arguments:
+                key = '{}{}'.format(self.magic_prefix, name)
+                if key in args:
+                    msg = self.magic_arguments[name]()
 
             if msg:
                 self.logger.debug(msg)
@@ -1320,6 +1382,8 @@ class Workflow(object):
         """
 
         if not self._settings:
+            self.logger.debug('Reading settings from `{}` ...'.format(
+                              self.settings_path))
             self._settings = Settings(self.settings_path,
                                       self._default_settings)
         return self._settings
@@ -1481,9 +1545,17 @@ class Workflow(object):
 
         serializer_name = serializer or self.data_serializer
 
-        if serializer_name == 'json' and name == 'settings':
+        # In order for `stored_data()` to be able to load data stored with
+        # an arbitrary serializer, yet still have meaningful file extensions,
+        # the format (i.e. extension) is saved to an accompanying file
+        metadata_path = self.datafile('.{}.alfred-workflow'.format(name))
+        filename = '{}.{}'.format(name, serializer_name)
+        data_path = self.datafile(filename)
+
+        if data_path == self.settings_path:
             raise ValueError(
-                'Cannot save data to `settings` with format `json`. '
+                'Cannot save data to' +
+                '`{}` with format `{}`. '.format(name, serializer_name) +
                 "This would overwrite Alfred-Workflow's settings file.")
 
         serializer = manager.serializer(serializer_name)
@@ -1492,13 +1564,6 @@ class Workflow(object):
             raise ValueError(
                 'Invalid serializer `{}`. Register your serializer with '
                 '`manager.register()` first.'.format(serializer_name))
-
-        # In order for `stored_data()` to be able to load data stored with
-        # an arbitrary serializer, yet still have meaningful file extensions,
-        # the format (i.e. extension) is saved to an accompanying file
-        metadata_path = self.datafile('.{}.alfred-workflow'.format(name))
-        filename = '{}.{}'.format(name, serializer_name)
-        data_path = self.datafile(filename)
 
         if data is None:  # Delete cached data
             for path in (metadata_path, data_path):
@@ -1750,11 +1815,11 @@ class Workflow(object):
         results.sort(reverse=ascending)
         results = [t[1] for t in results]
 
-        if max_results and len(results) > max_results:
-            results = results[:max_results]
-
         if min_score:
             results = [r for r in results if r[1] > min_score]
+
+        if max_results and len(results) > max_results:
+            results = results[:max_results]
 
         # return list of ``(item, score, rule)``
         if include_score:
@@ -1876,7 +1941,9 @@ class Workflow(object):
         :param func: Callable to call with ``self`` (i.e. the :class:`Workflow`
             instance) as first argument.
 
-        ``func`` will be called with :class:`Workflow` instance as first argument.
+        ``func`` will be called with :class:`Workflow` instance as first
+        argument.
+
         ``func`` should be the main entry point to your workflow.
 
         Any exceptions raised will be logged and an error message will be
@@ -1886,10 +1953,32 @@ class Workflow(object):
 
         start = time.time()
 
+        # Call workflow's entry function/method within a try-except block
+        # to catch any errors and display an error message in Alfred
         try:
+            if self.version:
+                self.logger.debug('Workflow version : {}'.format(self.version))
+
+            # Run update check if configured for self-updates.
+            # This call has to go in the `run` try-except block, as it will
+            # initialise `self.settings`, which will raise an exception
+            # if `settings.json` isn't valid.
+
+            if self._update_settings:
+                self.check_update()
+
+            # Run workflow's entry function/method
             func(self)
+
+            # Set last version run to current version after a successful
+            # run
+            self.set_last_version()
+
         except Exception as err:
             self.logger.exception(err)
+            if self.help_url:
+                self.logger.info(
+                    'For assistance, see: {}'.format(self.help_url))
             if not sys.stdout.isatty():  # Show error in Alfred
                 self._items = []
                 if self._name:
@@ -1991,6 +2080,79 @@ class Workflow(object):
     ####################################################################
 
     @property
+    def first_run(self):
+        """Return ``True`` if it's the first time this version has run.
+
+        .. versionadded:: 1.9.10
+
+        Raises a :class:`ValueError` if :attr:`version` isn't set.
+
+        """
+
+        if not self.version:
+            raise ValueError('No workflow version set')
+
+        if not self.last_version_run:
+            return True
+
+        return self.version != self.last_version_run
+
+    @property
+    def last_version_run(self):
+        """Return version of last version to run (or ``None``)
+
+        .. versionadded:: 1.9.10
+
+        :returns: :class:`~workflow.update.Version` instance
+            or ``None``
+
+        """
+
+        if self._last_version_run is UNSET:
+
+            version = self.settings.get('__workflow_last_version')
+            if version:
+                from update import Version
+                version = Version(version)
+
+            self._last_version_run = version
+
+        self.logger.debug('Last run version : {}'.format(
+                          self._last_version_run))
+
+        return self._last_version_run
+
+    def set_last_version(self, version=None):
+        """Set :attr:`last_version_run` to current version
+
+        .. versionadded:: 1.9.10
+
+        :param version: version to store (default is current version)
+        :type version: :class:`~workflow.update.Version` instance
+            or ``unicode``
+        :returns: ``True`` if version is saved, else ``False``
+
+        """
+
+        if not version:
+            if not self.version:
+                self.logger.warning(
+                    "Can't save last version: workflow has no version")
+                return False
+
+            version = self.version
+
+        if isinstance(version, basestring):
+            from update import Version
+            version = Version(version)
+
+        self.settings['__workflow_last_version'] = str(version)
+
+        self.logger.debug('Set last run version : {}'.format(version))
+
+        return True
+
+    @property
     def update_available(self):
         """Is an update available?
 
@@ -2004,6 +2166,7 @@ class Workflow(object):
         """
 
         update_data = self.cached_data('__workflow_update_status', max_age=0)
+        self.logger.debug('update_data : {}'.format(update_data))
 
         if not update_data or not update_data.get('available'):
             return False
@@ -2029,12 +2192,17 @@ class Workflow(object):
         frequency = self._update_settings.get('frequency',
                                               DEFAULT_UPDATE_FREQUENCY)
 
+        if not force and not self.settings.get('__workflow_autoupdate', True):
+            self.logger.debug('Auto update turned off by user')
+            return
+
         # Check for new version if it's time
         if (force or not self.cached_data_fresh(
                 '__workflow_update_status', frequency * 86400)):
 
             github_slug = self._update_settings['github_slug']
-            version = self._update_settings['version']
+            # version = self._update_settings['version']
+            version = str(self.version)
 
             from background import run_in_background
 
@@ -2068,7 +2236,8 @@ class Workflow(object):
         import update
 
         github_slug = self._update_settings['github_slug']
-        version = self._update_settings['version']
+        # version = self._update_settings['version']
+        version = str(self.version)
 
         if not update.check_update(github_slug, version):
             return False
@@ -2179,13 +2348,129 @@ class Workflow(object):
     # Methods for workflow:* magic args
     ####################################################################
 
-    def clear_cache(self):
-        """Delete all files in workflow's :attr:`cachedir`."""
-        self._delete_directory_contents(self.cachedir)
+    def _register_default_magic(self):
+        """Register the built-in magic arguments"""
 
-    def clear_data(self):
-        """Delete all files in workflow's :attr:`datadir`."""
-        self._delete_directory_contents(self.datadir)
+        # Wrap callback and message with callable
+        def callback(func, msg):
+            def wrapper():
+                func()
+                return msg
+
+            return wrapper
+
+        self.magic_arguments['delcache'] = callback(self.clear_cache,
+                                                    'Deleted workflow cache')
+        self.magic_arguments['deldata'] = callback(self.clear_data,
+                                                   'Deleted workflow data')
+        self.magic_arguments['delsettings'] = callback(
+            self.clear_settings, 'Deleted workflow settings')
+        self.magic_arguments['reset'] = callback(self.reset,
+                                                 'Reset workflow')
+        self.magic_arguments['openlog'] = callback(self.open_log,
+                                                   'Opening workflow log file')
+        self.magic_arguments['opencache'] = callback(
+            self.open_cachedir, 'Opening workflow cache directory')
+        self.magic_arguments['opendata'] = callback(
+            self.open_datadir, 'Opening workflow data directory')
+        self.magic_arguments['openworkflow'] = callback(
+            self.open_workflowdir, 'Opening workflow directory')
+        self.magic_arguments['openterm'] = callback(
+            self.open_terminal, 'Opening workflow root directory in Terminal')
+
+        # Diacritic folding
+        def fold_on():
+            self.settings['__workflow_diacritic_folding'] = True
+            return 'Diacritics will always be folded'
+
+        def fold_off():
+            self.settings['__workflow_diacritic_folding'] = False
+            return 'Diacritics will never be folded'
+
+        def fold_default():
+            if '__workflow_diacritic_folding' in self.settings:
+                del self.settings['__workflow_diacritic_folding']
+            return 'Diacritics folding reset'
+
+        self.magic_arguments['foldingon'] = fold_on
+        self.magic_arguments['foldingoff'] = fold_off
+        self.magic_arguments['foldingdefault'] = fold_default
+
+        # Updates
+        def update_on():
+            self.settings['__workflow_autoupdate'] = True
+            return 'Auto update turned on'
+
+        def update_off():
+            self.settings['__workflow_autoupdate'] = False
+            return 'Auto update turned off'
+
+        def do_update():
+            if self.start_update():
+                return 'Downloading and installing update ...'
+            else:
+                return 'No update available'
+
+        self.magic_arguments['autoupdate'] = update_on
+        self.magic_arguments['noautoupdate'] = update_off
+        self.magic_arguments['update'] = do_update
+
+        # Help
+        def do_help():
+            if self.help_url:
+                self.open_help()
+                return 'Opening workflow help URL in browser'
+            else:
+                return 'Workflow has no help URL'
+
+        def show_version():
+            if self.version:
+                return 'Version: {}'.format(self.version)
+            else:
+                return 'This workflow has no version number'
+
+        def list_magic():
+            """Display all available magic args in Alfred"""
+            isatty = sys.stderr.isatty()
+            for name in sorted(self.magic_arguments.keys()):
+                if name == 'magic':
+                    continue
+                arg = '{}{}'.format(self.magic_prefix, name)
+                self.logger.debug(arg)
+
+                if not isatty:
+                    self.add_item(arg, icon=ICON_INFO)
+
+            if not isatty:
+                self.send_feedback()
+
+        self.magic_arguments['help'] = do_help
+        self.magic_arguments['magic'] = list_magic
+        self.magic_arguments['version'] = show_version
+
+    def clear_cache(self, filter_func=lambda f: True):
+        """Delete all files in workflow's :attr:`cachedir`.
+
+        :param filter_func: Callable to determine whether a file should be
+            deleted or not. ``filter_func`` is called with the filename
+            of each file in the data directory. If it returns ``True``,
+            the file will be deleted.
+            By default, *all* files will be deleted.
+        :type filter_func: ``callable``
+        """
+        self._delete_directory_contents(self.cachedir, filter_func)
+
+    def clear_data(self, filter_func=lambda f: True):
+        """Delete all files in workflow's :attr:`datadir`.
+
+        :param filter_func: Callable to determine whether a file should be
+            deleted or not. ``filter_func`` is called with the filename
+            of each file in the data directory. If it returns ``True``,
+            the file will be deleted.
+            By default, *all* files will be deleted.
+        :type filter_func: ``callable``
+        """
+        self._delete_directory_contents(self.datadir, filter_func)
 
     def clear_settings(self):
         """Delete workflow's :attr:`settings_path`."""
@@ -2220,13 +2505,20 @@ class Workflow(object):
         subprocess.call(['open', self.datadir])
 
     def open_workflowdir(self):
-        """Open the workflow's :attr:`directory <workflowdir` in Finder."""
+        """Open the workflow's :attr:`workflowdir` in Finder."""
         subprocess.call(['open', self.workflowdir])
 
     def open_terminal(self):
-        """Open a Terminal window at workflow's :attr:`directory <workflowdir`."""
+        """Open a Terminal window at workflow's :attr:`workflowdir`."""
+
         subprocess.call(['open', '-a', 'Terminal',
                         self.workflowdir])
+
+    def open_help(self):
+        """Open :attr:`help_url` in default browser"""
+        subprocess.call(['open', self.help_url])
+
+        return 'Opening workflow help URL in browser'
 
     ####################################################################
     # Helper methods
@@ -2286,16 +2578,41 @@ class Workflow(object):
         return unicode(unicodedata.normalize('NFKD',
                        text).encode('ascii', 'ignore'))
 
-    def _delete_directory_contents(self, dirpath):
+    def dumbify_punctuation(self, text):
+        """Convert non-ASCII punctuation to closest ASCII equivalent.
+
+        This method replaces "smart" quotes and n- or m-dashes with their
+        workaday ASCII equivalents. This method is currently not used
+        internally, but exists as a helper method for workflow authors.
+
+        .. versionadded: 1.9.7
+
+        :param text: text to convert
+        :type text: ``unicode``
+        :returns: text with only ASCII punctuation
+        :rtype: ``unicode``
+
+        """
+        if isascii(text):
+            return text
+
+        text = ''.join([DUMB_PUNCTUATION.get(c, c) for c in text])
+        return text
+
+    def _delete_directory_contents(self, dirpath, filter_func):
         """Delete all files in a directory
 
         :param dirpath: path to directory to clear
         :type dirpath: ``unicode`` or ``str``
-
+        :param filter_func function to determine whether a file shall be
+            deleted or not.
+        :type filter_func ``callable``
         """
 
         if os.path.exists(dirpath):
             for filename in os.listdir(dirpath):
+                if not filter_func(filename):
+                    continue
                 path = os.path.join(dirpath, filename)
                 if os.path.isdir(path):
                     shutil.rmtree(path)

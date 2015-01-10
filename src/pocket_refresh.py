@@ -8,7 +8,8 @@ import config
 
 LINK_LIMIT = 2000
 
-if __name__ == '__main__':
+
+def main():
     wf = Workflow()
     error = None
     try:
@@ -16,18 +17,14 @@ if __name__ == '__main__':
         pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
 
         links = wf.cached_data('pocket_list', max_age=0)
-        links = {}
-        
-        # only use delta syncing if dict is not empty
-        if links:
-            since = wf.cached_data('pocket_since', max_age=0)
-        else:
+        since = wf.cached_data('pocket_since', max_age=0)
+
+        # Only use delta syncing if dict is not empty
+        if links is None or since is None:
             since = 0
 
-        if not type(links) is dict:
-            links = {}
-
         state = 'all' if links else None
+        links = links or {}
 
         next_since = 0
         offset = 0
@@ -41,20 +38,14 @@ if __name__ == '__main__':
                 offset=offset
             )[0]
 
-            offset += LINK_LIMIT
-            next_since = get['since']
-
             data = get['list']
+            next_since = get['since']
 
             if get['status'] != 1 or data == []:
                 break
 
-            for item_id in data.keys():
-                if data[item_id]['status'] == u'0':
-                    links[item_id] = data[item_id]
-                else:
-                    # Remove item
-                    del links[item_id]
+            sync_data(links, data)
+            offset += LINK_LIMIT
 
         if next_since > since:
             wf.cache_data('pocket_since', next_since)
@@ -71,3 +62,16 @@ if __name__ == '__main__':
 
     if error:
         wf.logger.error(error)
+
+
+def sync_data(links, data):
+    for item_id in data.keys():
+        if data[item_id]['status'] == u'0':
+            # Add item
+            links[item_id] = data[item_id]
+        else:
+            # Remove item
+            del links[item_id]
+
+if __name__ == '__main__':
+    main()

@@ -1,11 +1,12 @@
 import datetime
-import sys
 import subprocess
 from time import sleep
+
 from pocket_api import Pocket, RateLimitException
 from workflow import Workflow, PasswordNotFound
 from workflow.background import run_in_background, is_running
 
+from pocket_errors import ERROR_MESSAGES
 import config
 
 
@@ -14,31 +15,9 @@ WF = Workflow(update_settings={
     'version': 'v3.1',
 })
 
-# register wf:deauth
-WF.magic_prefix = 'wf:'
-def delete_access_token():
-    WF.delete_password('pocket_access_token')
-    return 'Access token has been deleted successfully.'
-WF.magic_arguments['deauth'] = delete_access_token
-
-ERROR_MESSAGES = {
-    'AuthException': [
-        'There was a problem receiving your Pocket list...',
-        'The workflow has been deauthorized automatically. Please try again!'
-    ],
-    'URLError': [
-        'Could not connect to getpocket.com...',
-        'Please check your Internet connection and try again!'
-    ],
-    'PocketException': [
-        'Could not receive your Pocket list...',
-        'Please try again or file a bug report!'
-    ]
-}
-
-
 def main():
-    user_input = ''.join(WF.args)
+    register_magic_arguments()
+    user_input = WF.args[0]
 
     if WF.update_available:
         WF.add_item(
@@ -54,10 +33,14 @@ def main():
 
     try:
         WF.get_password('pocket_access_token')
-        lists = get_links()
+        links = get_links()
 
-        if lists:
-            add_items(lists, user_input)
+        if links:
+            if links not in ERROR_MESSAGES.keys():
+                add_items(links, user_input)
+            else:
+                msg = ERROR_MESSAGES[item_list]
+                WF.add_item(msg[0], msg[1], valid=False)
         else:
             WF.add_item('Your Pocket list is empty!', valid=False)
 
@@ -69,6 +52,14 @@ def main():
         subprocess.call(['open', get_auth_url()])
 
     WF.send_feedback()
+
+
+def register_magic_arguments():
+    WF.magic_prefix = 'wf:'
+    def delete_access_token():
+        WF.delete_password('pocket_access_token')
+        return 'Access token has been deleted successfully.'
+    WF.magic_arguments['deauth'] = delete_access_token
 
 
 def get_links():
@@ -118,6 +109,12 @@ def add_items(links, user_input):
                     arg=argument,
                     valid=True
                 )
+
+    if WF._items == []:
+        WF.add_item(
+            'No links found for "%s".' % user_input,
+            valid=False
+        )
 
 
 def get_subtitle(item_count, time_added, resolved_url, tags=None):

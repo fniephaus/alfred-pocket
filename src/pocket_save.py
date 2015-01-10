@@ -1,7 +1,7 @@
 import sys
 import os
 import urlparse
-from pocket import Pocket, InvalidQueryException
+from pocket_api import Pocket, InvalidQueryException
 from workflow import Workflow
 import config
 

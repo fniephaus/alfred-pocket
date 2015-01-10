@@ -44,7 +44,7 @@ def main():
             if get['status'] != 1 or data == []:
                 break
 
-            sync_data(links, data)
+            links = sync_data(links, data)
             offset += LINK_LIMIT
 
         if next_since > since:
@@ -72,6 +72,7 @@ def sync_data(links, data):
         else:
             # Remove item
             del links[item_id]
+    return links
 
 if __name__ == '__main__':
     main()

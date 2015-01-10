@@ -78,10 +78,10 @@ def get_links():
 
 
 def add_items(links, user_input):
-    links = sorted(links.values(), key=lambda x: int(x['item_id']), reverse=True)
+    links = sorted(links.values(), key=lambda x: int(x['time_updated']), reverse=True)
     for index, link in enumerate(links):
         required_keys = [
-            'item_id', 'given_title', 'resolved_url', 'time_added']
+            'item_id', 'given_title', 'resolved_url', 'time_updated']
         if all(x in link for x in required_keys):
             # prepare title
             if len(link.get('resolved_title', '')) > 0:
@@ -93,7 +93,7 @@ def add_items(links, user_input):
             tags = link['tags'] if 'tags' in link else None
             subtitle = get_subtitle(
                 link_count,
-                link['time_added'],
+                link['time_updated'],
                 link['resolved_url'],
                 tags
             )
@@ -117,9 +117,9 @@ def add_items(links, user_input):
         )
 
 
-def get_subtitle(item_count, time_added, resolved_url, tags=None):
+def get_subtitle(item_count, time_updated, resolved_url, tags=None):
     time_updated = datetime.datetime.fromtimestamp(
-        int(time_added)).strftime('%Y-%m-%d %H:%M')
+        int(time_updated)).strftime('%Y-%m-%d %H:%M')
     short_url = resolved_url.replace(
         'http://', '').replace('https://', '')
 

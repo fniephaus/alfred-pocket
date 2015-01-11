@@ -9,11 +9,13 @@ from workflow.background import run_in_background, is_running
 from pocket_errors import ERROR_MESSAGES
 import config
 
+# GitHub repo for self-updating
+GITHUB_UPDATE_CONF = {'github_slug': 'fniephaus/alfred-pocket'}
+# GitHub Issues
+HELP_URL = 'https://github.com/fniephaus/alfred-pocket/issues'
 
-WF = Workflow(update_settings={
-    'github_slug': 'fniephaus/alfred-pocket',
-    'version': 'v3.1',
-})
+WF = Workflow(update_settings=GITHUB_UPDATE_CONF, help_url=HELP_URL)
+
 
 def main():
     register_magic_arguments()
@@ -56,6 +58,7 @@ def main():
 
 def register_magic_arguments():
     WF.magic_prefix = 'wf:'
+
     def delete_access_token():
         WF.delete_password('pocket_access_token')
         return 'Access token has been deleted successfully.'
@@ -78,7 +81,8 @@ def get_links():
 
 
 def add_items(links, user_input):
-    links = sorted(links.values(), key=lambda x: int(x['time_updated']), reverse=True)
+    links = sorted(
+        links.values(), key=lambda x: int(x['time_updated']), reverse=True)
     for index, link in enumerate(links):
         required_keys = [
             'item_id', 'given_title', 'resolved_url', 'time_updated']

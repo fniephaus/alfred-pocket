@@ -99,7 +99,7 @@ def remove_from_cache(item_id):
 
 def open_alfred():
     os.system(
-        """ tell application "Alfred 2" to run trigger "open" in workflow "com.fniephaus.pocket" """)
+        """ osascript -e 'tell application "Alfred 2" to run trigger "open" in workflow "com.fniephaus.pocket"' """)
 
 
 if __name__ == '__main__':

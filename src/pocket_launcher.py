@@ -2,8 +2,8 @@ import argparse
 import os
 import sys
 import subprocess
-from pocket import Pocket, PocketException
-from pocket_alfred import refresh_list
+from pocket_api import Pocket, PocketException
+from pocket import refresh_list
 from workflow import Workflow
 from workflow.background import run_in_background
 
@@ -39,10 +39,8 @@ def execute():
         refresh_list()
         print delete_item(item_id)
         open_alfred()
-    elif args.deauthorize:
-        WF.delete_password('pocket_access_token')
-        print "Workflow deauthorized"
-        open_alfred()
+    elif args.website:
+        subprocess.call(['open', 'http://getpocket.com/a/read/%s' % item_id])
     else:
         subprocess.call(['open', url])
 
@@ -58,7 +56,7 @@ def parse_args(args):
     parser.add_argument(
         '--delete', dest='delete', action='store_true', default=None)
     parser.add_argument(
-        '--deauthorize', dest='deauthorize', action='store_true', default=None)
+        '--website', dest='website', action='store_true', default=None)
     parser.add_argument('query', nargs='?', default=None)
     return parser.parse_args(args)
 
@@ -74,6 +72,7 @@ def archive_item(item_id):
     pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         pocket_instance.archive(item_id, wait=False)
+        remove_from_cache(item_id)
         return 'Link archived'
     except PocketException:
         return 'Connection error'
@@ -84,22 +83,24 @@ def delete_item(item_id):
     pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         pocket_instance.delete(item_id, wait=False)
-
-        # remove entry in cache
-        item_list = WF.cached_data('pocket_list', max_age=0)
-        if type(item_list) is list and len(item_list) > 0:
-            item_list[:] = [
-                d for d in item_list if d.get('item_id') != item_id]
-            WF.cache_data('pocket_list', item_list)
-
+        remove_from_cache(item_id)
         return 'Link deleted'
     except PocketException:
         return 'Connection error'
 
 
+def remove_from_cache(item_id):
+    # remove entry in cache
+    links = WF.cached_data('pocket_list', max_age=0)
+    if type(links) is dict and links:
+        del links[item_id]
+        WF.cache_data('pocket_list', links)
+
+
 def open_alfred():
     os.system(
-        """ osascript -e 'tell application "Alfred 2" to search "pocket "' """)
+        """ osascript -e 'tell application "Alfred 2" to run trigger "open" in workflow "com.fniephaus.pocket"' """)
+
 
 if __name__ == '__main__':
     execute()

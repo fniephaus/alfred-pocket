@@ -1,32 +1,30 @@
 from time import time
 
 from urllib2 import URLError
-from pocket import Pocket, AuthException, PocketException
+from pocket_api import Pocket, AuthException, PocketException
 from workflow import Workflow, PasswordNotFound
 
 import config
 
 LINK_LIMIT = 2000
 
-if __name__ == '__main__':
+
+def main():
     wf = Workflow()
     error = None
     try:
         access_token = wf.get_password('pocket_access_token')
         pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
 
-        item_list = wf.cached_data('pocket_list', max_age=0)
-        
-        # only use delta syncing if list is not empty
-        if item_list and len(item_list) > 0:
-            since = wf.cached_data('pocket_since', max_age=0)
-        else:
+        links = wf.cached_data('pocket_list', max_age=0)
+        since = wf.cached_data('pocket_since', max_age=0)
+
+        # Only use delta syncing if dict is not empty
+        if links is None or since is None:
             since = 0
 
-        if not type(item_list) is list:
-            item_list = []
-
-        state = 'all' if len(item_list) > 0 else None
+        state = 'all' if links else None
+        links = links or {}
 
         next_since = 0
         offset = 0
@@ -40,24 +38,18 @@ if __name__ == '__main__':
                 offset=offset
             )[0]
 
-            offset += LINK_LIMIT
+            data = get['list']
             next_since = get['since']
 
-            if get['status'] != 1 or get['list'] == []:
+            if get['status'] != 1 or data == []:
                 break
 
-            # Unpack and sort items
-            for item in sorted(get['list'].values(), key=lambda x: int(x['item_id'])):
-                if item['status'] == u'0':
-                    item_list.append(item)
-                else:
-                    # Remove item
-                    item_list[:] = [
-                        d for d in item_list if d.get('item_id') != item['item_id']]
+            links = sync_data(links, data)
+            offset += LINK_LIMIT
 
         if next_since > since:
             wf.cache_data('pocket_since', next_since)
-            wf.cache_data('pocket_list', item_list)
+            wf.cache_data('pocket_list', links)
 
     except AuthException:
         error = 'AuthException'
@@ -70,3 +62,17 @@ if __name__ == '__main__':
 
     if error:
         wf.logger.error(error)
+
+
+def sync_data(links, data):
+    for item_id in data.keys():
+        if data[item_id]['status'] == u'0':
+            # Add item
+            links[item_id] = data[item_id]
+        else:
+            # Remove item
+            del links[item_id]
+    return links
+
+if __name__ == '__main__':
+    main()

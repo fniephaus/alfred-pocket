@@ -1,5 +1,6 @@
 Pocket for Alfred
 ==============
+[![Build Status](https://travis-ci.org/fniephaus/alfred-pocket.svg?branch=master)](https://travis-ci.org/fniephaus/alfred-pocket)
 
 This workflow lets you manage your Pocket list with Alfred.
 

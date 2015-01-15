@@ -24,7 +24,7 @@ def main():
             since = 0
 
         state = 'all' if links else None
-        links = links or {}
+        links = links if isinstance(links, dict) else {}
 
         next_since = 0
         offset = 0
@@ -41,7 +41,7 @@ def main():
             data = get['list']
             next_since = get['since']
 
-            if get['status'] != 1 or data == []:
+            if get['status'] != 1 or len(data) == 0:
                 break
 
             links = sync_data(links, data)
@@ -69,10 +69,10 @@ def sync_data(links, data):
         if data[item_id]['status'] == u'0':
             # Add item
             links[item_id] = data[item_id]
-        else:
+        elif item_id in links:
             # Remove item
             del links[item_id]
     return links
 
 if __name__ == '__main__':
-    main()
+    main() # pragma: no cover

@@ -1,7 +1,6 @@
 import unittest
 
 import test_data
-import pocket
 from pocket_api import AuthException, PocketException
 from workflow import PasswordNotFound
 import pocket_refresh
@@ -10,7 +9,7 @@ import pocket_refresh as pocket_refresh_backup
 CachedData = {}
 Passwords = {}
 
-class PocketTestCase(unittest.TestCase):
+class PocketRefreshTestCase(unittest.TestCase):
 
     def test_sync_data(self):
         links = {}
@@ -76,10 +75,10 @@ class PocketTestCase(unittest.TestCase):
                 count=None, offset=None):
             if offset == 0:
                 if CachedData == {}:
-                    return [test_data.get_initial()]
+                    return [test_data.get_refresh_initial()]
                 else:
-                    return [test_data.get_delta(since)]
-            return [test_data.get_end(since)]
+                    return [test_data.get_refresh_delta(since)]
+            return [test_data.get_refresh_end(since)]
 
         pocket_refresh.Pocket.get = get
 
@@ -95,8 +94,8 @@ class PocketTestCase(unittest.TestCase):
 
     def setUp(self):
         pocket_refresh = pocket_refresh_backup
-        CachedData = {}
-        Passwords = {}
+        CachedData.clear()
+        Passwords.clear()
 
         def cached_data(self, key, max_age=None):
             pass

@@ -30,7 +30,7 @@ def main():
 
     try:
         WF.get_password('pocket_access_token')
-    except PasswordNotFound:
+    except PasswordNotFound:  # pragma: no cover
         authorize()
 
     try:
@@ -41,7 +41,7 @@ def main():
             if links not in ERROR_MESSAGES.keys():
                 add_items(links, user_input)
             else:
-                msg = ERROR_MESSAGES[item_list]
+                msg = ERROR_MESSAGES[links]
                 WF.add_item(msg[0], msg[1], valid=False)
         else:
             WF.add_item('Your Pocket list is empty!', valid=False)
@@ -50,7 +50,7 @@ def main():
         if not WF.cached_data_fresh('pocket_list', max_age=10):
             refresh_list()
 
-    except PasswordNotFound:
+    except PasswordNotFound:  # pragma: no cover
         subprocess.call(['open', get_auth_url()])
 
     WF.send_feedback()
@@ -65,9 +65,8 @@ def register_magic_arguments():
     WF.magic_arguments['deauth'] = delete_access_token
 
 
-def get_links():
+def get_links(tries=10):
     links = WF.cached_data('pocket_list', max_age=120)
-    tries = 10
     # Wait for data
     while(links == None):
         refresh_list()
@@ -147,7 +146,7 @@ def get_auth_url():
     return auth_url
 
 
-def authorize():
+def authorize():  # pragma: no cover
     request_token = WF.cached_data('pocket_request_token')
     if request_token:
         try:
@@ -165,11 +164,11 @@ def authorize():
             WF.logger.error('RateLimitException')
 
 
-def refresh_list():
+def refresh_list():  # pragma: no cover
     if not is_running('pocket_refresh'):
         cmd = ['/usr/bin/python', WF.workflowfile('pocket_refresh.py')]
         run_in_background('pocket_refresh', cmd)
 
 
 if __name__ == '__main__':
-    main()
+    main()  # pragma: no cover

@@ -1,0 +1,4 @@
+language: python
+python:
+  - "2.7"
+script: nosetests --with-coverage --cover-package=pocket_refresh --cover-package=pocket

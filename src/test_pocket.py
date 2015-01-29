@@ -21,7 +21,7 @@ class PocketTestCase(unittest.TestCase):
         def send_feedback():
             pass
         pocket.WF.send_feedback = send_feedback
-        pocket.main()
+        pocket.main(None)
 
     def test_main_error(self):
         CachedData['__workflow_update_status'] = {
@@ -32,7 +32,7 @@ class PocketTestCase(unittest.TestCase):
         def send_feedback():
             pass
         pocket.WF.send_feedback = send_feedback
-        pocket.main()
+        pocket.main(None)
 
     def test_main_empty(self):
         CachedData['__workflow_update_status'] = {
@@ -42,7 +42,7 @@ class PocketTestCase(unittest.TestCase):
         def send_feedback():
             pass
         pocket.WF.send_feedback = send_feedback
-        pocket.main()
+        pocket.main(None)
 
 
     def test_register_magic_arguments(self):

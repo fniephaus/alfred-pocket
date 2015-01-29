@@ -17,7 +17,7 @@ HELP_URL = 'https://github.com/fniephaus/alfred-pocket/issues'
 WF = Workflow(update_settings=GITHUB_UPDATE_CONF, help_url=HELP_URL)
 
 
-def main():
+def main(_):
     register_magic_arguments()
     user_input = WF.args[0]
 
@@ -171,4 +171,4 @@ def refresh_list():  # pragma: no cover
 
 
 if __name__ == '__main__':
-    main()  # pragma: no cover
+    WF.run(main)  # pragma: no cover

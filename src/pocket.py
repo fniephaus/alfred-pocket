@@ -18,7 +18,12 @@ WF = Workflow(update_settings=GITHUB_UPDATE_CONF, help_url=HELP_URL)
 
 
 def main(_):
+    if WF.first_run:
+        WF.clear_cache()
+
     register_magic_arguments()
+
+    # get user input
     user_input = WF.args[0]
 
     if WF.update_available:

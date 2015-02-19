@@ -12,7 +12,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>61BAF2DE-E59C-44AD-BF83-22B2162B8331</string>
+				<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -68,17 +68,6 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>94B5A64D-BE8D-43B8-847A-F84CA4214C44</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-			</dict>
-		</array>
-		<key>61BAF2DE-E59C-44AD-BF83-22B2162B8331</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -384,7 +373,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python pocket_save.py {query}</string>
+				<string>python pocket_save.py</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -422,27 +411,6 @@
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>keyword</key>
-				<string>pocket add</string>
-				<key>subtext</key>
-				<string>Add Safari/Chrome page to Pocket with additional tags</string>
-				<key>text</key>
-				<string>Add To Pocket</string>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
-			<key>uid</key>
-			<string>61BAF2DE-E59C-44AD-BF83-22B2162B8331</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -477,11 +445,6 @@
 		<dict>
 			<key>ypos</key>
 			<real>230</real>
-		</dict>
-		<key>61BAF2DE-E59C-44AD-BF83-22B2162B8331</key>
-		<dict>
-			<key>ypos</key>
-			<real>680</real>
 		</dict>
 		<key>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</key>
 		<dict>

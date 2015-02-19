@@ -11,7 +11,7 @@ This workflow lets you manage your Pocket list with Alfred.
 
 - Actions to copy, visit and archive, archive and delete links from your Pocket list (```fn```, ```ctrl```, ```alt``` and ```cmd```)
 - Action to open link on getpocket.com (```shift```)
-- Hotkey to add new links from Chrome, Safari or your clipboard (```ctrl + L```)
+- Hotkey to add new links from Chrome, Safari or your clipboard with custom tags (```ctrl + L```)
 - Easy to set up
 - Magic argument to deauthorize the workflow (```wf:deauth```)
 - Background cache refresh

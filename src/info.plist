@@ -12,7 +12,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
+				<string>D377451B-43B5-45EF-9C57-7A18A8DDD55D</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -76,6 +76,17 @@
 		</array>
 		<key>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</key>
 		<array/>
+		<key>D377451B-43B5-45EF-9C57-7A18A8DDD55D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</key>
 		<array>
 			<dict>
@@ -256,6 +267,14 @@
 				<integer>102</integer>
 				<key>keyword</key>
 				<string>pocket</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
 				<key>runningsubtext</key>
 				<string>Contacting getpocket.com...</string>
 				<key>script</key>
@@ -370,10 +389,31 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>_pocket-add</string>
+				<key>subtext</key>
+				<string>Tags need to be separated by comma.</string>
+				<key>text</key>
+				<string>Add Custom Tags</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>D377451B-43B5-45EF-9C57-7A18A8DDD55D</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python pocket_save.py</string>
+				<string>python pocket_save.py {query}</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -455,6 +495,11 @@
 		<dict>
 			<key>ypos</key>
 			<real>250</real>
+		</dict>
+		<key>D377451B-43B5-45EF-9C57-7A18A8DDD55D</key>
+		<dict>
+			<key>ypos</key>
+			<real>670</real>
 		</dict>
 		<key>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</key>
 		<dict>

@@ -7,10 +7,13 @@ import config
 
 
 def main(wf):
+    user_input = wf.args[0]
+    tags = user_input.split(',')
+
     current_app = os.popen(
         """ osascript -e 'application (path to frontmost application as text)' """).readline().rstrip()
     if current_app in ['Google Chrome', 'Safari']:
-        if not add_item(get_browser_item(current_app)):
+        if not add_item(get_browser_item(current_app), tags):
             print "%s link invalid." % current_app
             return 0
         print "%s link added to Pocket." % current_app
@@ -19,7 +22,7 @@ def main(wf):
     else:
         item = get_clipboard_item()
         if item is not None:
-            add_item(item)
+            add_item(item, tags)
             print "Clipboard link added to Pocket."
             wf.clear_cache()
             return 0
@@ -63,13 +66,13 @@ def get_clipboard_item():
     }
 
 
-def add_item(item):
+def add_item(item, tags):
     if item is not None:
         access_token = wf.get_password('pocket_access_token')
         pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
         try:
             pocket_instance.add(
-                url=item['url'], title=item['title'], tags="alfred")
+                url=item['url'], title=item['title'], tags=",".join(tags + ["alfred"]))
             return True
         except InvalidQueryException:
             pass

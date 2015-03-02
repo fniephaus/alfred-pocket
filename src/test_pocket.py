@@ -102,6 +102,10 @@ class PocketTestCase(unittest.TestCase):
         CachedData.clear()
         Passwords.clear()
 
+        pocket.Workflow.alfred_env = {
+            'theme_background': 'rgba(40,40,40,0.1)',
+        }
+
         logging.disable(logging.CRITICAL)
 
         def cached_data(self, key, max_age=None):

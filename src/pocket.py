@@ -28,7 +28,7 @@ def main(_):
 
     if WF.update_available:
         WF.add_item(
-            "An update is available!",
+            'An update is available!',
             autocomplete='workflow:update',
             valid=False
         )
@@ -42,14 +42,20 @@ def main(_):
         WF.get_password('pocket_access_token')
         links = get_links()
 
+        error = WF.cached_data('pocket_error', max_age=3600)
+        if error and error in ERROR_MESSAGES:
+            msg = ERROR_MESSAGES[error]
+            WF.add_item(msg[0], msg[1], icon=get_icon('alert'), valid=False)
+
+        # add item if links is not empty
         if links:
-            if links not in ERROR_MESSAGES.keys():
-                add_items(links, user_input)
-            else:
-                msg = ERROR_MESSAGES[links]
-                WF.add_item(msg[0], msg[1], valid=False)
+            add_items(links, user_input)
         else:
-            WF.add_item('Your Pocket list is empty!', valid=False)
+            WF.add_item(
+                'Your Pocket list is empty!',
+                icon=get_icon('info'),
+                valid=False
+            )
 
         # Update Pocket list in background
         if not WF.cached_data_fresh('pocket_list', max_age=10):
@@ -73,14 +79,14 @@ def register_magic_arguments():
 def get_links(tries=10):
     links = WF.cached_data('pocket_list', max_age=120)
     # Wait for data
-    while(links == None):
+    while links is None:
         refresh_list()
         sleep(0.5)
         links = WF.cached_data('pocket_list', max_age=120)
         if tries > 0:
             tries -= 1
         else:
-            return None
+            return {}
     return links
 
 
@@ -173,6 +179,16 @@ def refresh_list():  # pragma: no cover
     if not is_running('pocket_refresh'):
         cmd = ['/usr/bin/python', WF.workflowfile('pocket_refresh.py')]
         run_in_background('pocket_refresh', cmd)
+
+
+def get_icon(name):
+    name = '%s-dark' % name if is_dark() else name
+    return 'icons/%s.png' % name
+
+
+def is_dark():
+    rgb = [int(x) for x in WF.alfred_env['theme_background'][5:-6].split(',')]
+    return (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2] ) / 255 < 0.5
 
 
 if __name__ == '__main__':

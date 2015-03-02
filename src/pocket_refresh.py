@@ -13,18 +13,20 @@ def main():
     wf = Workflow()
     error = None
     try:
+        # initialize client
         access_token = wf.get_password('pocket_access_token')
         pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
 
-        links = wf.cached_data('pocket_list', max_age=0)
-        since = wf.cached_data('pocket_since', max_age=0)
-
-        # Only use delta syncing if dict is not empty
-        if links is None or since is None:
-            since = 0
-
-        state = 'all' if links else None
-        links = links if isinstance(links, dict) else {}
+        state = None
+        since = wf.cached_data('pocket_since', max_age=0) or 0
+        links = {}
+        # fetch cached links if since is not 0
+        if since > 0:
+            links = wf.cached_data('pocket_list', max_age=0) or {}
+            
+            # Only use delta syncing if dict is not empty
+            if links:
+                state = 'all'
 
         next_since = 0
         offset = 0
@@ -47,21 +49,22 @@ def main():
             links = sync_data(links, data)
             offset += LINK_LIMIT
 
-        if next_since > since:
-            wf.cache_data('pocket_since', next_since)
-            wf.cache_data('pocket_list', links)
+        wf.cache_data('pocket_since', next_since)
+        wf.cache_data('pocket_list', links)
 
-    except AuthException:
-        error = 'AuthException'
-        wf.cache_data('pocket_list', error)
-        wf.delete_password('pocket_access_token')
-
-    except (URLError, PocketException, PasswordNotFound), e:
+    except (AuthException, URLError, PocketException, PasswordNotFound), e:
         error = type(e).__name__
-        wf.cache_data('pocket_list', error)
+        wf.cache_data('pocket_error', error)
+
+        # delete token if authentication failed
+        if error == 'AuthException':
+            wf.delete_password('pocket_access_token')
 
     if error:
         wf.logger.error(error)
+    else:
+        # delete error file if it exists
+        wf.cache_data('pocket_error', None)
 
 
 def sync_data(links, data):

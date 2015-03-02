@@ -27,7 +27,7 @@ class PocketTestCase(unittest.TestCase):
         CachedData['__workflow_update_status'] = {
             'available': True
         }
-        CachedData['pocket_list'] = 'AuthException'
+        CachedData['pocket_error'] = 'AuthException'
         sys.argv = ['pocket.py', '']
         def send_feedback():
             pass
@@ -63,7 +63,7 @@ class PocketTestCase(unittest.TestCase):
         self.assertEquals(pocket.get_links(), 12345)
 
         CachedData.clear()
-        self.assertEquals(pocket.get_links(tries=0), None)
+        self.assertEquals(pocket.get_links(tries=0), {})
 
     def test_add_items(self):
         self.assertEquals(len(pocket.WF._items), 0)

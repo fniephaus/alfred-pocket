@@ -38,10 +38,11 @@ def frontmost_app():
 def get_browser_item(browser):
     url = title = None
     if browser == 'Google Chrome':
+        #specific the chrome on the mac not the chrome on my parralled desktop by path
         url = os.popen(
-            """ osascript -e 'tell application "Google Chrome" to return URL of active tab of front window' """).readline()
+            """ osascript -e 'tell application "/Applications/Google Chrome.app" to return URL of active tab of front window' """).readline()
         title = os.popen(
-            """ osascript -e 'tell application "Google Chrome" to return title of active tab of front window' """).readline()
+            """ osascript -e 'tell application "/Applications/Google Chrome.app" to return title of active tab of front window' """).readline()
     elif browser == 'Safari':
         url = os.popen(
             """ osascript -e 'tell application "Safari" to return URL of front document' """).readline()

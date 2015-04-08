@@ -45,9 +45,9 @@ def get_browser_item(browser):
             """ osascript -e 'tell application "/Applications/Google Chrome.app" to return title of active tab of front window' """).readline()
     elif browser == 'Safari':
         url = os.popen(
-            """ osascript -e 'tell application "Safari" to return URL of front document' """).readline()
+            """ osascript -e 'tell application "/Applications/Safari.app" to return URL of front document' """).readline()
         title = os.popen(
-            """ osascript -e 'tell application "Safari" to return name of front document' """).readline()
+            """ osascript -e 'tell application "/Applications/Safari.app" to return name of front document' """).readline()
     if url is None:
         return None
     return {

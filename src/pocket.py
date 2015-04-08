@@ -23,8 +23,10 @@ def main(_):
 
     register_magic_arguments()
 
-    # get user input
-    user_input = WF.args[0]
+    # Get user input
+    user_input = ""
+    if len(WF.args):
+        user_input = WF.args[0]
 
     if WF.update_available:
         WF.add_item(

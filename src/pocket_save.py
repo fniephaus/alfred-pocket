@@ -7,8 +7,10 @@ import config
 
 
 def main(wf):
-    user_input = wf.args[0]
-    tags = user_input.split(',')
+    # Get tags
+    tags = ["alfred"]
+    if len(wf.args) and len(wf.args[0]):
+        tags += [str(s.strip()) for s in wf.args[0].split(',')]
 
     current_app = os.popen(
         """ osascript -e 'application (path to frontmost application as text)' """).readline().rstrip()
@@ -73,7 +75,7 @@ def add_item(item, tags):
         pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
         try:
             pocket_instance.add(
-                url=item['url'], title=item['title'], tags=",".join(tags + ["alfred"]))
+                url=item['url'], title=item['title'], tags=",".join(tags))
             return True
         except InvalidQueryException:
             pass

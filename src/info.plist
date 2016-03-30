@@ -74,8 +74,6 @@
 				<string></string>
 			</dict>
 		</array>
-		<key>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</key>
-		<array/>
 		<key>D377451B-43B5-45EF-9C57-7A18A8DDD55D</key>
 		<array>
 			<dict>
@@ -102,7 +100,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</string>
+				<string>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -185,19 +183,17 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>concurrently</key>
+				<key>plusspaces</key>
 				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>python pocket_launcher.py "{query}"</string>
-				<key>type</key>
-				<integer>0</integer>
+				<key>url</key>
+				<string>{query}</string>
+				<key>utf8</key>
+				<true/>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.action.script</string>
+			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
-			<string>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</string>
+			<string>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -500,15 +496,15 @@
 			<key>ypos</key>
 			<real>230</real>
 		</dict>
-		<key>739C48C5-6C99-4B62-AAB4-E23DCD2035B5</key>
-		<dict>
-			<key>ypos</key>
-			<real>10</real>
-		</dict>
 		<key>94B5A64D-BE8D-43B8-847A-F84CA4214C44</key>
 		<dict>
 			<key>ypos</key>
 			<real>250</real>
+		</dict>
+		<key>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
 		</dict>
 		<key>D377451B-43B5-45EF-9C57-7A18A8DDD55D</key>
 		<dict>

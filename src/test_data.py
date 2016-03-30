@@ -54,6 +54,7 @@ def get_normal():
         }
     }
 
+
 def get_refresh_initial():
     return {
         u'status': 1,
@@ -62,6 +63,7 @@ def get_refresh_initial():
         u'since': 1,
         u'list': get_normal()
     }
+
 
 def get_refresh_delta(since):
     return {
@@ -106,6 +108,7 @@ def get_refresh_delta(since):
             }
         }
     }
+
 
 def get_refresh_end(since):
     return {

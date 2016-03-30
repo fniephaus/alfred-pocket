@@ -24,10 +24,11 @@ import string
 import unicodedata
 import urllib
 import urllib2
+import urlparse
 import zlib
 
 
-USER_AGENT = u'Alfred-Workflow/1.11 (http://www.deanishe.net)'
+USER_AGENT = u'Alfred-Workflow/1.17 (+http://www.deanishe.net/alfred-workflow)'
 
 # Valid characters for multipart form data boundaries
 BOUNDARY_CHARS = string.digits + string.ascii_letters
@@ -188,14 +189,17 @@ class Response(object):
 
     """
 
-    def __init__(self, request):
+    def __init__(self, request, stream=False):
         """Call `request` with :mod:`urllib2` and process results.
 
         :param request: :class:`urllib2.Request` instance
+        :param stream: Whether to stream response or retrieve it all at once
+        :type stream: ``bool``
 
         """
 
         self.request = request
+        self._stream = stream
         self.url = None
         self.raw = None
         self._encoding = None
@@ -204,6 +208,7 @@ class Response(object):
         self.reason = None
         self.headers = CaseInsensitiveDictionary()
         self._content = None
+        self._content_loaded = False
         self._gzipped = False
 
         # Execute query
@@ -240,6 +245,18 @@ class Response(object):
             if ('gzip' in headers.get('content-encoding', '') or
                     'gzip' in headers.get('transfer-encoding', '')):
                 self._gzipped = True
+
+    @property
+    def stream(self):
+        return self._stream
+
+    @stream.setter
+    def stream(self, value):
+        if self._content_loaded:
+            raise RuntimeError("`content` has already been read from "
+                               "this Response.")
+
+        self._stream = value
 
     def json(self):
         """Decode response contents as JSON.
@@ -283,6 +300,8 @@ class Response(object):
             else:
                 self._content = self.raw.read()
 
+            self._content_loaded = True
+
         return self._content
 
     @property
@@ -315,6 +334,15 @@ class Response(object):
 
         """
 
+        if not self.stream:
+            raise RuntimeError("You cannot call `iter_content` on a "
+                               "Response unless you passed `stream=True`"
+                               " to `get()`/`post()`/`request()`.")
+
+        if self._content_loaded:
+            raise RuntimeError(
+                "`content` has already been read from this Response.")
+
         def decode_stream(iterator, r):
 
             decoder = codecs.getincrementaldecoder(r.encoding)(errors='replace')
@@ -325,8 +353,8 @@ class Response(object):
                     yield data
 
             data = decoder.decode(b'', final=True)
-            if data:
-                yield data  # pragma: nocover
+            if data:  # pragma: no cover
+                yield data
 
         def generate():
 
@@ -364,6 +392,8 @@ class Response(object):
         if not os.path.exists(dirname):
             os.makedirs(dirname)
 
+        self.stream = True
+
         with open(filepath, 'wb') as fileobj:
             for data in self.iter_content():
                 fileobj.write(data)
@@ -398,20 +428,22 @@ class Response(object):
                 encoding = param[8:]
                 break
 
-        # Encoding declared in document should override HTTP headers
-        if self.mimetype == 'text/html':  # sniff HTML headers
-            m = re.search("""<meta.+charset=["']{0,1}(.+?)["'].*>""",
-                          self.content)
-            if m:
-                encoding = m.group(1)
+        if not self.stream:  # Try sniffing response content
+            # Encoding declared in document should override HTTP headers
+            if self.mimetype == 'text/html':  # sniff HTML headers
+                m = re.search("""<meta.+charset=["']{0,1}(.+?)["'].*>""",
+                              self.content)
+                if m:
+                    encoding = m.group(1)
+                    print('sniffed HTML encoding=%r' % encoding)
 
-        elif ((self.mimetype.startswith('application/') or
-               self.mimetype.startswith('text/')) and
-              'xml' in self.mimetype):
-            m = re.search("""<?xml.+encoding=["'](.+?)["'][^>]*\?>""",
-                          self.content)
-            if m:
-                encoding = m.group(1)
+            elif ((self.mimetype.startswith('application/') or
+                   self.mimetype.startswith('text/')) and
+                  'xml' in self.mimetype):
+                m = re.search("""<?xml.+encoding=["'](.+?)["'][^>]*\?>""",
+                              self.content)
+                if m:
+                    encoding = m.group(1)
 
         # Format defaults
         if self.mimetype == 'application/json' and not encoding:
@@ -429,7 +461,8 @@ class Response(object):
 
 
 def request(method, url, params=None, data=None, headers=None, cookies=None,
-            files=None, auth=None, timeout=60, allow_redirects=False):
+            files=None, auth=None, timeout=60, allow_redirects=False,
+            stream=False):
     """Initiate an HTTP(S) request. Returns :class:`Response` object.
 
     :param method: 'GET' or 'POST'
@@ -453,6 +486,8 @@ def request(method, url, params=None, data=None, headers=None, cookies=None,
     :type timeout: ``int``
     :param allow_redirects: follow redirections
     :type allow_redirects: ``Boolean``
+    :param stream: Stream content instead of fetching it all at once.
+    :type stream: ``bool``
     :returns: :class:`Response` object
 
 
@@ -471,7 +506,6 @@ def request(method, url, params=None, data=None, headers=None, cookies=None,
     """
 
     # TODO: cookies
-    # TODO: any way to force GET or POST?
     socket.setdefaulttimeout(timeout)
 
     # Default handlers
@@ -507,6 +541,10 @@ def request(method, url, params=None, data=None, headers=None, cookies=None,
 
     headers['accept-encoding'] = ', '.join(encodings)
 
+    # Force POST by providing an empty data string
+    if method == 'POST' and not data:
+        data = ''
+
     if files:
         if not data:
             data = {}
@@ -522,14 +560,24 @@ def request(method, url, params=None, data=None, headers=None, cookies=None,
         url = url.encode('utf-8')
 
     if params:  # GET args (POST args are handled in encode_multipart_formdata)
-        url = url + '?' + urllib.urlencode(str_dict(params))
+
+        scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
+
+        if query:  # Combine query string and `params`
+            url_params = urlparse.parse_qs(query)
+            # `params` take precedence over URL query string
+            url_params.update(params)
+            params = url_params
+
+        query = urllib.urlencode(str_dict(params), doseq=True)
+        url = urlparse.urlunsplit((scheme, netloc, path, query, fragment))
 
     req = urllib2.Request(url, data, headers)
-    return Response(req)
+    return Response(req, stream)
 
 
 def get(url, params=None, headers=None, cookies=None, auth=None,
-        timeout=60, allow_redirects=True):
+        timeout=60, allow_redirects=True, stream=False):
     """Initiate a GET request. Arguments as for :func:`request`.
 
     :returns: :class:`Response` instance
@@ -537,18 +585,19 @@ def get(url, params=None, headers=None, cookies=None, auth=None,
     """
 
     return request('GET', url, params, headers=headers, cookies=cookies,
-                   auth=auth, timeout=timeout, allow_redirects=allow_redirects)
+                   auth=auth, timeout=timeout, allow_redirects=allow_redirects,
+                   stream=stream)
 
 
 def post(url, params=None, data=None, headers=None, cookies=None, files=None,
-         auth=None, timeout=60, allow_redirects=False):
+         auth=None, timeout=60, allow_redirects=False, stream=False):
     """Initiate a POST request. Arguments as for :func:`request`.
 
     :returns: :class:`Response` instance
 
     """
     return request('POST', url, params, data, headers, cookies, files, auth,
-                   timeout, allow_redirects)
+                   timeout, allow_redirects, stream)
 
 
 def encode_multipart_formdata(fields, files):

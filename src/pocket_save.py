@@ -12,8 +12,8 @@ def main(wf):
     if len(wf.args) and len(wf.args[0]):
         tags += [str(s.strip()) for s in wf.args[0].split(',')]
 
-    current_app = os.popen(
-        """ osascript -e 'application (path to frontmost application as text)' """).readline().rstrip()
+    current_app = os.popen("osascript -e 'application (path to frontmost "
+                           "application as text)'").readline().rstrip()
     if current_app in ['Google Chrome', 'Safari']:
         if not add_item(get_browser_item(current_app), tags):
             print "%s link invalid." % current_app
@@ -34,22 +34,26 @@ def main(wf):
 
 
 def frontmost_app():
-    return os.popen(""" osascript -e 'application (path to frontmost application as text)' """).readline().rstrip()
+    return os.popen("osascript -e 'application (path to frontmost application"
+                    "as text)'").readline().rstrip()
 
 
 def get_browser_item(browser):
     url = title = None
     if browser == 'Google Chrome':
-        #specific the chrome on the mac not the chrome on my parralled desktop by path
-        url = os.popen(
-            """ osascript -e 'tell application "/Applications/Google Chrome.app" to return URL of active tab of front window' """).readline()
-        title = os.popen(
-            """ osascript -e 'tell application "/Applications/Google Chrome.app" to return title of active tab of front window' """).readline()
+        url = os.popen("osascript -e 'tell application "
+                       "\"/Applications/Google Chrome.app\" to return URL of "
+                       "active tab of front window'").readline()
+        title = os.popen("osascript -e 'tell application "
+                         "\"/Applications/Google Chrome.app\" to return title "
+                         "of active tab of front window'").readline()
     elif browser == 'Safari':
-        url = os.popen(
-            """ osascript -e 'tell application "/Applications/Safari.app" to return URL of front document' """).readline()
-        title = os.popen(
-            """ osascript -e 'tell application "/Applications/Safari.app" to return name of front document' """).readline()
+        url = os.popen("osascript -e 'tell application "
+                       "\"/Applications/Safari.app\" to return URL of front "
+                       "document'").readline()
+        title = os.popen("osascript -e 'tell application "
+                         "\"/Applications/Safari.app\" to return name of "
+                         "front document'").readline()
     if url is None:
         return None
     return {

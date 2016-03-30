@@ -9,6 +9,7 @@ import pocket_refresh as pocket_refresh_backup
 CachedData = {}
 Passwords = {}
 
+
 class PocketRefreshTestCase(unittest.TestCase):
 
     def test_sync_data(self):
@@ -36,15 +37,15 @@ class PocketRefreshTestCase(unittest.TestCase):
 
     def test_exception_handling(self):
         def get(self, state=None, favorite=None, tag=None, contentType=None,
-                sort=None, detailType=None, search=None, domain=None, since=None,
-                count=None, offset=None):
+                sort=None, detailType=None, search=None, domain=None,
+                since=None, count=None, offset=None):
             raise AuthException
         pocket_refresh.Pocket.get = get
         pocket_refresh.main()
 
         def get(self, state=None, favorite=None, tag=None, contentType=None,
-                sort=None, detailType=None, search=None, domain=None, since=None,
-                count=None, offset=None):
+                sort=None, detailType=None, search=None, domain=None,
+                since=None, count=None, offset=None):
             raise PocketException
         pocket_refresh.Pocket.get = get
         pocket_refresh.main()
@@ -61,7 +62,7 @@ class PocketRefreshTestCase(unittest.TestCase):
         self.assertTrue('2222' in CachedData['pocket_list'])
         self.assertTrue('3333' in CachedData['pocket_list'])
         self.assertEquals(len(CachedData['pocket_list']), 3)
-        
+
         pocket_refresh.main()
         self.assertTrue('1111' not in CachedData['pocket_list'])
         self.assertTrue('2222' in CachedData['pocket_list'])
@@ -71,8 +72,8 @@ class PocketRefreshTestCase(unittest.TestCase):
     def monkeypatch_refresh(self):
         def get(
                 self, state=None, favorite=None, tag=None, contentType=None,
-                sort=None, detailType=None, search=None, domain=None, since=None,
-                count=None, offset=None):
+                sort=None, detailType=None, search=None, domain=None,
+                since=None, count=None, offset=None):
             if offset == 0:
                 if CachedData == {}:
                     return [test_data.get_refresh_initial()]
@@ -99,6 +100,7 @@ class PocketRefreshTestCase(unittest.TestCase):
 
         def cached_data(self, key, max_age=None):
             pass
+
         def cache_data(self, key, data):
             pass
         pocket_refresh.Workflow.cached_data = cached_data
@@ -107,6 +109,7 @@ class PocketRefreshTestCase(unittest.TestCase):
         def get_password(self, key):
             return Passwords.get(key)
         pocket_refresh.Workflow.get_password = get_password
+
         def delete_password(self, key):
             if key in Passwords:
                 del Passwords[key]

@@ -10,6 +10,7 @@ import test_data
 CachedData = {}
 Passwords = {}
 
+
 class PocketTestCase(unittest.TestCase):
 
     def test_main(self):
@@ -18,6 +19,7 @@ class PocketTestCase(unittest.TestCase):
         }
         CachedData['pocket_list'] = test_data.get_normal()
         sys.argv = ['pocket.py', '']
+
         def send_feedback():
             pass
         pocket.WF.send_feedback = send_feedback
@@ -29,6 +31,7 @@ class PocketTestCase(unittest.TestCase):
         }
         CachedData['pocket_error'] = 'AuthException'
         sys.argv = ['pocket.py', '']
+
         def send_feedback():
             pass
         pocket.WF.send_feedback = send_feedback
@@ -39,11 +42,11 @@ class PocketTestCase(unittest.TestCase):
             'available': True
         }
         sys.argv = ['pocket.py', '']
+
         def send_feedback():
             pass
         pocket.WF.send_feedback = send_feedback
         pocket.main(None)
-
 
     def test_register_magic_arguments(self):
         pocket.WF = pocket.Workflow()
@@ -88,14 +91,15 @@ class PocketTestCase(unittest.TestCase):
             'resolved_title': 'test',
             'resolved_url': 'url',
             'time_updated': '10',
-            'tags': {'alfred': {'item_id': '4444',
-                'tag': 'alfred'}}
+            'tags': {'alfred': {'item_id': '4444', 'tag': 'alfred'}}
         }}, user_input='notfound')
         self.assertEquals(len(pocket.WF._items), 1)
-        self.assertEquals(pocket.WF._items[0].title, 'No links found for "notfound".')
+        self.assertEquals(pocket.WF._items[0].title, "No links found for "
+                                                     "\"notfound\".")
 
     def test_get_auth_url(self):
-        self.assertTrue(pocket.get_auth_url().startswith('https://getpocket.com/auth/authorize?'))
+        expected_start = 'https://getpocket.com/auth/authorize?'
+        self.assertTrue(pocket.get_auth_url().startswith(expected_start))
 
     def setUp(self):
         pocket = pocket_backup

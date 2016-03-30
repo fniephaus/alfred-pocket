@@ -1,5 +1,3 @@
-from time import time
-
 from urllib2 import URLError
 from pocket_api import Pocket, AuthException, PocketException
 from workflow import Workflow, PasswordNotFound
@@ -23,10 +21,12 @@ def main():
         # fetch cached links if since is not 0
         if since > 0:
             links = wf.cached_data('pocket_list', max_age=0) or {}
-            
+
             # Only use delta syncing if dict is not empty
             if links:
                 state = 'all'
+
+        print links
 
         next_since = 0
         offset = 0
@@ -68,14 +68,17 @@ def main():
 
 
 def sync_data(links, data):
-    for item_id in data.keys():
-        if data[item_id]['status'] == u'0':
+    for item in data.values():
+        print item
+        key = item['given_url']
+        if item['status'] == u'0':
             # Add item
-            links[item_id] = data[item_id]
-        elif item_id in links:
+            links[key] = item
+        elif key in links:
             # Remove item
-            del links[item_id]
+            del links[key]
     return links
 
+
 if __name__ == '__main__':
-    main() # pragma: no cover
+    main()  # pragma: no cover

@@ -1,105 +1,112 @@
 import argparse
 import os
-import sys
 import subprocess
 from pocket_api import Pocket, PocketException
 from pocket import refresh_list
 from workflow import Workflow
-from workflow.background import run_in_background
 
 import config
 
 WF = Workflow()
+POCKET_URL = 'http://getpocket.com/a/read/%s'
 
 
 def execute():
     args = parse_args(WF.args)
 
     if args.query is None:
+        print "No argument provided"
         return 0
 
-    query = args.query.split()
-    if len(query) != 2:
-        return 0
-
-    url = query[0]
-    item_id = query[1]
+    url = args.query
 
     if args.copy:
         print set_clipboard(url)
     elif args.visit_archive:
         subprocess.call(['open', url])
         refresh_list()
-        print archive_item(item_id)
+        print archive_item(url)
     elif args.archive:
         refresh_list()
-        print archive_item(item_id)
+        print archive_item(url)
         open_alfred()
     elif args.delete:
         refresh_list()
-        print delete_item(item_id)
+        print delete_item(url)
         open_alfred()
     elif args.website:
-        subprocess.call(['open', 'http://getpocket.com/a/read/%s' % item_id])
+        subprocess.call(['open', POCKET_URL % get_id(url)])
     else:
-        subprocess.call(['open', url])
+        print "An error occured"
+
+
+def get_id(url):
+    links = WF.cached_data('pocket_list', max_age=0)
+    if url not in links:
+        return None
+    return links[url]['item_id']
 
 
 def parse_args(args):
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--copy', dest='copy', action='store_true', default=None)
-    parser.add_argument(
-        '--visit-and-archive', dest='visit_archive', action='store_true', default=None)
-    parser.add_argument(
-        '--archive', dest='archive', action='store_true', default=None)
-    parser.add_argument(
-        '--delete', dest='delete', action='store_true', default=None)
-    parser.add_argument(
-        '--website', dest='website', action='store_true', default=None)
+    parser.add_argument('--copy', dest='copy', action='store_true',
+                        default=None)
+    parser.add_argument('--visit-and-archive', dest='visit_archive',
+                        action='store_true', default=None)
+    parser.add_argument('--archive', dest='archive', action='store_true',
+                        default=None)
+    parser.add_argument('--delete', dest='delete', action='store_true',
+                        default=None)
+    parser.add_argument('--website', dest='website', action='store_true',
+                        default=None)
     parser.add_argument('query', nargs='?', default=None)
     return parser.parse_args(args)
 
 
 def set_clipboard(url):
-    clipboard = os.popen(
-        """ osascript -e 'set the clipboard to "%s"' """ % url).readline()
+    os.popen("osascript -e 'set the clipboard to \"%s\"'" % url).readline()
     return 'Link copied to clipboard'
 
 
-def archive_item(item_id):
+def archive_item(url):
+    item_id = get_id(url)
+    if not item_id:
+        return '"item_id" not found'
     access_token = WF.get_password('pocket_access_token')
     pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         pocket_instance.archive(item_id, wait=False)
-        remove_from_cache(item_id)
+        remove_from_cache(url)
         return 'Link archived'
     except PocketException:
         return 'Connection error'
 
 
-def delete_item(item_id):
+def delete_item(url):
+    item_id = get_id(url)
+    if not item_id:
+        return '"item_id" not found'
     access_token = WF.get_password('pocket_access_token')
     pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         pocket_instance.delete(item_id, wait=False)
-        remove_from_cache(item_id)
+        remove_from_cache(url)
         return 'Link deleted'
     except PocketException:
         return 'Connection error'
 
 
-def remove_from_cache(item_id):
+def remove_from_cache(url):
     # remove entry in cache
     links = WF.cached_data('pocket_list', max_age=0)
     if type(links) is dict and links:
-        del links[item_id]
+        del links[url]
         WF.cache_data('pocket_list', links)
 
 
 def open_alfred():
-    os.system(
-        """ osascript -e 'tell application "Alfred 2" to run trigger "open" in workflow "com.fniephaus.pocket"' """)
+    os.system("osascript -e 'tell application \"Alfred 2\" to run trigger "
+              "\"open\" in workflow \"com.fniephaus.pocket\"'")
 
 
 if __name__ == '__main__':

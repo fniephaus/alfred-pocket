@@ -69,7 +69,6 @@ def main():
 
 def sync_data(links, data):
     for item in data.values():
-        print item
         key = item['given_url']
         if item['status'] == u'0':
             # Add item

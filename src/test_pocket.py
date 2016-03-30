@@ -78,7 +78,7 @@ class PocketTestCase(unittest.TestCase):
         pocket.add_items(links={'1': {
             'item_id': '1',
             'given_title': 'test',
-            'resolved_url': 'url',
+            'given_url': 'url',
             'time_updated': '10',
         }}, user_input='')
         self.assertEquals(len(pocket.WF._items), 1)
@@ -89,7 +89,7 @@ class PocketTestCase(unittest.TestCase):
             'item_id': '1',
             'given_title': 'test',
             'resolved_title': 'test',
-            'resolved_url': 'url',
+            'given_url': 'url',
             'time_updated': '10',
             'tags': {'alfred': {'item_id': '4444', 'tag': 'alfred'}}
         }}, user_input='notfound')

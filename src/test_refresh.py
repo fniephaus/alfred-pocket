@@ -20,20 +20,20 @@ class PocketRefreshTestCase(unittest.TestCase):
         self.assertEquals(links, {})
 
         data = {
-            '1234': {'status': '0'},
-            '5678': {'status': '0'},
+            '1234': {'status': '0', 'given_url': 'http://google.com'},
+            '5678': {'status': '0', 'given_url': 'http://fniephaus.com'},
         }
         links = pocket_refresh.sync_data(links, data)
-        self.assertTrue('1234' in links)
-        self.assertTrue('5678' in links)
+        self.assertTrue('http://google.com' in links)
+        self.assertTrue('http://fniephaus.com' in links)
         self.assertEquals(len(links.keys()), 2)
 
         data = {
-            '5678': {'status': '1'},
+            '5678': {'status': '1', 'given_url': 'http://fniephaus.com'},
         }
         links = pocket_refresh.sync_data(links, data)
-        self.assertTrue('1234' in links)
-        self.assertFalse('5678' in links)
+        self.assertTrue('http://google.com' in links)
+        self.assertFalse('http://fniephaus.com' in links)
 
     def test_exception_handling(self):
         def get(self, state=None, favorite=None, tag=None, contentType=None,
@@ -58,16 +58,17 @@ class PocketRefreshTestCase(unittest.TestCase):
     def test_refresh(self):
         self.monkeypatch_refresh()
         pocket_refresh.main()
-        self.assertTrue('1111' in CachedData['pocket_list'])
-        self.assertTrue('2222' in CachedData['pocket_list'])
-        self.assertTrue('3333' in CachedData['pocket_list'])
+        self.assertTrue('http://google.com' in CachedData['pocket_list'])
+        self.assertTrue('http://fniephaus.com' in CachedData['pocket_list'])
+        self.assertTrue('http://github.com' in CachedData['pocket_list'])
         self.assertEquals(len(CachedData['pocket_list']), 3)
 
         pocket_refresh.main()
-        self.assertTrue('1111' not in CachedData['pocket_list'])
-        self.assertTrue('2222' in CachedData['pocket_list'])
-        self.assertTrue('3333' in CachedData['pocket_list'])
-        self.assertTrue('4444' in CachedData['pocket_list'])
+        self.assertTrue('http://google.com' in CachedData['pocket_list'])
+        self.assertTrue('http://fniephaus.com' in CachedData['pocket_list'])
+        # self.assertTrue('http://github.com' not in CachedData['pocket_list'])
+        self.assertTrue('http://nasa.gov' in CachedData['pocket_list'])
+        self.assertEquals(len(CachedData['pocket_list']), 3)
 
     def monkeypatch_refresh(self):
         def get(

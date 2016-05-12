@@ -12,8 +12,7 @@ def main(wf):
     if len(wf.args) and len(wf.args[0]):
         tags += [str(s.strip()) for s in wf.args[0].split(',')]
 
-    current_app = os.popen("osascript -e 'application (path to frontmost "
-                           "application as text)'").readline().rstrip()
+    current_app = frontmost_app()
     if current_app in ['Google Chrome', 'Safari']:
         if not add_item(get_browser_item(current_app), tags):
             print "%s link invalid." % current_app
@@ -34,7 +33,7 @@ def main(wf):
 
 
 def frontmost_app():
-    return os.popen("osascript -e 'application (path to frontmost application"
+    return os.popen("osascript -e 'application (path to frontmost application "
                     "as text)'").readline().rstrip()
 
 
@@ -57,7 +56,7 @@ def get_browser_item(browser):
     if url is None:
         return None
     return {
-        'url': url,
+        'url': url.strip('\n'),
         'title': title
     }
 

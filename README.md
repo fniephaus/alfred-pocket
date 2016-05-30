@@ -1,6 +1,5 @@
-Pocket for Alfred
+Pocket for Alfred [![Build Status](https://travis-ci.org/fniephaus/alfred-pocket.svg?branch=master)](https://travis-ci.org/fniephaus/alfred-pocket) [![Coverage Status](https://coveralls.io/repos/github/fniephaus/alfred-pocket/badge.svg?branch=master)](https://coveralls.io/github/fniephaus/alfred-pocket?branch=master)
 ==============
-[![Build Status](https://travis-ci.org/fniephaus/alfred-pocket.svg?branch=master)](https://travis-ci.org/fniephaus/alfred-pocket)
 
 This workflow lets you manage your Pocket list with Alfred.
 

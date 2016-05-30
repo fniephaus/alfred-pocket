@@ -42,9 +42,10 @@ def execute():
 
 def get_id(url):
     links = WF.cached_data('pocket_list', max_age=0)
-    if url not in links:
-        return None
-    return links[url]['item_id']
+    for link in links.values():
+        if url == link['given_url']:
+            return link['item_id']
+    return None
 
 
 def parse_args(args):
@@ -76,7 +77,7 @@ def archive_item(url):
     pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         pocket_instance.archive(item_id, wait=False)
-        remove_from_cache(url)
+        remove_from_cache(item_id)
         return 'Link archived'
     except PocketException:
         return 'Connection error'
@@ -90,22 +91,22 @@ def delete_item(url):
     pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
     try:
         pocket_instance.delete(item_id, wait=False)
-        remove_from_cache(url)
+        remove_from_cache(item_id)
         return 'Link deleted'
     except PocketException:
         return 'Connection error'
 
 
-def remove_from_cache(url):
+def remove_from_cache(item_id):
     # remove entry in cache
     links = WF.cached_data('pocket_list', max_age=0)
-    if type(links) is dict and links:
-        del links[url]
+    if type(links) is dict and item_id in links:
+        del links[item_id]
         WF.cache_data('pocket_list', links)
 
 
 def open_alfred():
-    os.system("osascript -e 'tell application \"Alfred 2\" to run trigger "
+    os.system("osascript -e 'tell application \"Alfred 3\" to run trigger "
               "\"open\" in workflow \"com.fniephaus.pocket\"'")
 
 

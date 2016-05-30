@@ -1,12 +1,12 @@
 def get_normal():
     return {
-        u'http://google.com': {
+        u'1': {
             u'excerpt': u'abc123',
             u'favorite': u'0',
             u'given_title': u'',
             u'given_url': u'http://google.com',
-            u'has_image': u'1',
-            u'is_article': u'0',
+            u'has_image': u'0',
+            u'is_article': u'1',
             u'is_index': u'1',
             u'item_id': u'1111',
             u'resolved_id': u'1111',
@@ -17,13 +17,13 @@ def get_normal():
             u'time_favorited': u'0',
             u'time_updated': u'54321',
         },
-        u'http://fniephaus.com': {
+        u'2': {
             u'excerpt': u'abc',
-            u'favorite': u'0',
+            u'favorite': u'1',
             u'given_title': u'',
             u'given_url': u'http://fniephaus.com',
             u'has_image': u'0',
-            u'is_article': u'1',
+            u'is_article': u'0',
             u'is_index': u'0',
             u'item_id': u'2222',
             u'resolved_id': u'2222',
@@ -34,7 +34,7 @@ def get_normal():
             u'time_favorited': u'0',
             u'time_updated': u'1396054841',
         },
-        u'http://github.com': {
+        u'300': {
             u'excerpt': u'text2',
             u'favorite': u'0',
             u'given_title': u'title321',
@@ -47,6 +47,24 @@ def get_normal():
             u'resolved_title': u'resolvedtitle',
             u'resolved_url': u'',
             u'status': u'0',
+            u'time_added': u'1411528927',
+            u'time_favorited': u'0',
+            u'time_updated': u'1411528927',
+            u'videos': {},
+        },
+        u'4': {
+            u'excerpt': u'text2',
+            u'favorite': u'0',
+            u'given_title': u'title321',
+            u'given_url': u'http://archive.com',
+            u'has_image': u'0',
+            u'is_article': u'0',
+            u'is_index': u'0',
+            u'item_id': u'3333',
+            u'resolved_id': u'722186783',
+            u'resolved_title': u'resolvedtitle',
+            u'resolved_url': u'',
+            u'status': u'1',
             u'time_added': u'1411528927',
             u'time_favorited': u'0',
             u'time_updated': u'1411528927',
@@ -72,7 +90,7 @@ def get_refresh_delta(since):
         u'complete': 0,
         u'since': since + 10,
         u'list': {
-            u'http://nasa.gov': {
+            u'1337': {
                 u'status': u'0',
                 u'is_index': u'0',
                 u'time_updated': u'1420711247',
@@ -89,8 +107,8 @@ def get_refresh_delta(since):
                 u'given_url': u'http://nasa.gov',
                 u'resolved_title': u''
             },
-            u'http://github.com': {
-                u'status': u'1',
+            u'42': {
+                u'status': u'2',
                 u'is_index': u'0',
                 u'time_updated': u'1420892898',
                 u'time_favorited': u'0',

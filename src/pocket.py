@@ -9,6 +9,12 @@ from workflow.background import run_in_background, is_running
 from pocket_errors import ERROR_MESSAGES
 import config
 
+
+CATEGORIES = ['My List', 'Favorites', 'Archive', 'Articles', 'Videos',
+              'Images']
+ACTIONS = [x.replace(' ', '').lower() for x in CATEGORIES]
+REQUIRED_KEYS = ['item_id', 'given_title', 'given_url', 'time_added']
+
 # GitHub repo for self-updating
 GITHUB_UPDATE_CONF = {'github_slug': 'fniephaus/alfred-pocket'}
 # GitHub Issues
@@ -24,9 +30,9 @@ def main(_):
     register_magic_arguments()
 
     # Get user input
-    user_input = ""
+    user_input = ''
     if len(WF.args):
-        user_input = WF.args[0]
+        user_input = WF.args[0].split(' ')
 
     if WF.update_available:
         WF.add_item(
@@ -42,22 +48,33 @@ def main(_):
 
     try:
         WF.get_password('pocket_access_token')
-        links = get_links()
 
         error = WF.cached_data('pocket_error', max_age=3600)
         if error and error in ERROR_MESSAGES:
             msg = ERROR_MESSAGES[error]
-            WF.add_item(msg[0], msg[1], icon=get_icon('alert'), valid=False)
+            WF.add_item(msg[0], msg[1], icon=get_icon('alert'),
+                        valid=False)
 
-        # add item if links is not empty
-        if links:
-            add_items(links, user_input)
+        if (not user_input[0] or
+                (len(user_input) == 1 and user_input[0].startswith('in:'))):
+            for category, action in zip(CATEGORIES, ACTIONS):
+                WF.add_item(category,
+                            autocomplete='in:%s ' % action,
+                            valid=False)
         else:
-            WF.add_item(
-                'Your Pocket list is empty!',
-                icon=get_icon('info'),
-                valid=False
-            )
+            links = get_links()
+
+            if not links:
+                WF.add_item(
+                    'Your Pocket list is empty!',
+                    icon=get_icon('info'),
+                    valid=False
+                )
+            category = user_input[0].replace('in:', '')
+            if category in ACTIONS:
+                add_items(links, category, ' '.join(user_input[1:]))
+            else:
+                add_items(links, None, ' '.join(user_input))
 
         # Update Pocket list in background
         if not WF.cached_data_fresh('pocket_list', max_age=10):
@@ -80,6 +97,7 @@ def register_magic_arguments():
 
 def get_links(tries=10):
     links = WF.cached_data('pocket_list', max_age=120)
+
     # Wait for data
     while links is None:
         refresh_list()
@@ -92,24 +110,40 @@ def get_links(tries=10):
     return links
 
 
-def add_items(links, user_input):
-    links = sorted(
-        links.values(), key=lambda x: int(x['time_updated']), reverse=True)
+def check_item(category, item):
+    if not category:
+        return True
+    if category == 'mylist':
+        return item['status'] == '0'
+    if category == 'favorites':
+        return item['favorite'] == '1'
+    if category == 'archive':
+        return item['status'] == '1'
+    if category == 'articles':
+        return 'is_article' in item and item['is_article'] == '1'
+    if category == 'images':
+        return 'has_image' in item and item['has_image'] == '1'
+    if category == 'videos':
+        return 'has_video' in item and item['has_video'] == '1'
+    return False
+
+
+def add_items(links, category, user_input):
+    links = [link for link in links.values() if check_item(category, link)]
+    links = sorted(links, key=lambda x: int(x['time_added']), reverse=True)
+    links_count = len(links)
     for index, link in enumerate(links):
-        required_keys = [
-            'item_id', 'given_title', 'given_url', 'time_updated']
-        if all(x in link for x in required_keys):
+        if all(x in link for x in REQUIRED_KEYS):
             # prepare title
             if len(link.get('resolved_title', '')) > 0:
                 title = link['resolved_title']
             else:
                 title = link['given_title']
             # prepare subtitle
-            link_count = len(links) - index
             tags = link['tags'] if 'tags' in link else None
             subtitle = get_subtitle(
-                link_count,
-                link['time_updated'],
+                links_count - index,
+                link['time_added'],
                 link['given_url'],
                 tags
             )
@@ -122,7 +156,6 @@ def add_items(links, user_input):
                     arg=link['given_url'],
                     valid=True
                 )
-
     if WF._items == []:
         WF.add_item(
             'No links found for "%s".' % user_input,

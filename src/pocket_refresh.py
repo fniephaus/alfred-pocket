@@ -15,27 +15,16 @@ def main():
         access_token = wf.get_password('pocket_access_token')
         pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
 
-        state = None
         since = wf.cached_data('pocket_since', max_age=0) or 0
-        links = {}
-        # fetch cached links if since is not 0
-        if since > 0:
-            links = wf.cached_data('pocket_list', max_age=0) or {}
-
-            # Only use delta syncing if dict is not empty
-            if links:
-                state = 'all'
-
-        print links
+        links = wf.cached_data('pocket_list', max_age=0) or {}
 
         next_since = 0
         offset = 0
         while True:
             get = pocket_instance.get(
-                sort='newest',
                 detailType='complete',
                 since=since,
-                state=state,
+                state='all',
                 count=LINK_LIMIT,
                 offset=offset
             )[0]
@@ -46,8 +35,13 @@ def main():
             if get['status'] != 1 or len(data) == 0:
                 break
 
-            links = sync_data(links, data)
+            links.update(data)
             offset += LINK_LIMIT
+
+        # Delete obsolete entries
+        for item_id in links.keys():
+            if links[item_id]['status'] == '2':
+                del links[item_id]
 
         wf.cache_data('pocket_since', next_since)
         wf.cache_data('pocket_list', links)
@@ -65,18 +59,6 @@ def main():
     else:
         # delete error file if it exists
         wf.cache_data('pocket_error', None)
-
-
-def sync_data(links, data):
-    for item in data.values():
-        key = item['given_url']
-        if item['status'] == u'0':
-            # Add item
-            links[key] = item
-        elif key in links:
-            # Remove item
-            del links[key]
-    return links
 
 
 if __name__ == '__main__':

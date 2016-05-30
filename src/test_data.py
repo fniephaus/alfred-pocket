@@ -59,6 +59,7 @@ def get_normal():
             u'given_url': u'http://archive.com',
             u'has_image': u'0',
             u'is_article': u'0',
+            u'has_video': u'1',
             u'is_index': u'0',
             u'item_id': u'3333',
             u'resolved_id': u'722186783',

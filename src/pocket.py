@@ -111,8 +111,6 @@ def get_links(tries=10):
 
 
 def check_item(category, item):
-    if not category:
-        return True
     if category == 'mylist':
         return item['status'] == '0'
     if category == 'favorites':
@@ -121,11 +119,11 @@ def check_item(category, item):
         return item['status'] == '1'
     if category == 'articles':
         return 'is_article' in item and item['is_article'] == '1'
-    if category == 'images':
-        return 'has_image' in item and item['has_image'] == '1'
     if category == 'videos':
         return 'has_video' in item and item['has_video'] == '1'
-    return False
+    if category == 'images':
+        return 'has_image' in item and item['has_image'] == '1'
+    return True
 
 
 def add_items(links, category, user_input):

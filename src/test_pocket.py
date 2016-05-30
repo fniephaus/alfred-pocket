@@ -14,6 +14,7 @@ Passwords = {}
 class PocketTestCase(unittest.TestCase):
 
     def test_main_initial(self):
+        pocket.WF._version.major = 'x'  # make sure that WF.first_run is True
         CachedData['__workflow_update_status'] = {
             'available': True
         }
@@ -25,6 +26,20 @@ class PocketTestCase(unittest.TestCase):
         pocket.WF._items = []
         pocket.main(None)
         self.assertEquals(len(pocket.WF._items), 1 + len(pocket.CATEGORIES))
+
+    def test_main_search_all(self):
+        CachedData['__workflow_update_status'] = {
+            'available': False
+        }
+        CachedData['pocket_list'] = test_data.get_normal()
+        sys.argv = ['pocket.py', 'e.com']
+
+        def send_feedback():
+            pass
+        pocket.WF.send_feedback = send_feedback
+        pocket.WF._items = []
+        pocket.main(None)
+        self.assertEquals(len(pocket.WF._items), 2)
 
     def test_main_mylist(self):
         CachedData['__workflow_update_status'] = {
@@ -69,6 +84,36 @@ class PocketTestCase(unittest.TestCase):
         pocket.main(None)
         self.assertTrue(len(pocket.WF._items), 1)
         self.assertTrue('fniephaus.com' in pocket.WF._items[0].subtitle)
+
+    def test_main_articles(self):
+        CachedData['__workflow_update_status'] = {
+            'available': False
+        }
+        CachedData['pocket_list'] = test_data.get_normal()
+        sys.argv = ['pocket.py', 'in:articles ']
+
+        def send_feedback():
+            pass
+        pocket.WF.send_feedback = send_feedback
+        pocket.WF._items = []
+        pocket.main(None)
+        self.assertTrue(len(pocket.WF._items), 1)
+        self.assertTrue('google.com' in pocket.WF._items[0].subtitle)
+
+    def test_main_videos(self):
+        CachedData['__workflow_update_status'] = {
+            'available': False
+        }
+        CachedData['pocket_list'] = test_data.get_normal()
+        sys.argv = ['pocket.py', 'in:videos ']
+
+        def send_feedback():
+            pass
+        pocket.WF.send_feedback = send_feedback
+        pocket.WF._items = []
+        pocket.main(None)
+        self.assertTrue(len(pocket.WF._items), 1)
+        self.assertTrue('archive.com' in pocket.WF._items[0].subtitle)
 
     def test_main_images(self):
         CachedData['__workflow_update_status'] = {

@@ -1,4 +1,5 @@
 import datetime
+import os
 import subprocess
 from time import sleep
 
@@ -9,8 +10,11 @@ from workflow.background import run_in_background, is_running
 from pocket_errors import ERROR_MESSAGES
 import config
 
-# GitHub repo for self-updating
-GITHUB_UPDATE_CONF = {'github_slug': 'fniephaus/alfred-pocket'}
+alfred_version = os.getenv('alfred_version')
+GITHUB_UPDATE_CONF = {}
+if not alfred_version or not alfred_version.startswith('2.'):
+    # GitHub repo for self-updating
+    GITHUB_UPDATE_CONF['github_slug'] = 'fniephaus/alfred-pocket'
 # GitHub Issues
 HELP_URL = 'https://github.com/fniephaus/alfred-pocket/issues'
 

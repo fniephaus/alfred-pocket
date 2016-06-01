@@ -132,18 +132,12 @@ def add_items(links, category, user_input):
     links_count = len(links)
     for index, link in enumerate(links):
         if all(x in link for x in REQUIRED_KEYS):
-            # prepare title
-            if len(link.get('resolved_title', '')) > 0:
-                title = link['resolved_title']
-            else:
-                title = link['given_title']
-            # prepare subtitle
-            tags = link['tags'] if 'tags' in link else None
+            title = get_title(link)
             subtitle = get_subtitle(
                 links_count - index,
                 link['time_added'],
                 link['given_url'],
-                tags
+                link['tags'] if 'tags' in link else None
             )
 
             if (user_input.lower() in title.lower() or
@@ -159,6 +153,13 @@ def add_items(links, category, user_input):
             'No links found for "%s".' % user_input,
             valid=False
         )
+
+
+def get_title(link):
+    for field in ['resolved_title', 'given_title', 'given_url']:
+        title = link.get(field)
+        if title:
+            return title
 
 
 def get_subtitle(item_count, time_updated, given_url, tags=None):

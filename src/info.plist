@@ -8,6 +8,19 @@
 	<string>Tools</string>
 	<key>connections</key>
 	<dict>
+		<key>1C08C5BC-4CE6-445E-A3D3-A2C7130939F5</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>3938B0F8-42C1-492D-AA4E-5A79E9C04EDE</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>2543D2DD-E0F7-479A-8CA8-525B97003DB7</key>
 		<array>
 			<dict>
@@ -17,6 +30,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>2A555E39-C9A2-44C6-86BB-62F2203985E9</key>
@@ -28,6 +43,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>2E5BB5E1-D7FC-495C-A76E-BB711EB8A469</key>
@@ -39,9 +56,11 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
-		<key>34256840-2B17-4A55-83F2-86C4EF9B800A</key>
+		<key>3938B0F8-42C1-492D-AA4E-5A79E9C04EDE</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -50,6 +69,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>4C8946D6-A7DF-4232-9688-EA291BF89AF0</key>
@@ -61,6 +82,21 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>56419563-8603-4FF1-AF09-679ED8513E7E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>5E2199C2-314D-447F-BA91-52B1AC449F40</key>
@@ -72,8 +108,25 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
+		<key>A5C855EE-2F4E-4437-AAE2-9DD1A26383A9</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>350E1EFF-A858-44E7-9957-CA00B739E799</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</key>
+		<array/>
 		<key>D377451B-43B5-45EF-9C57-7A18A8DDD55D</key>
 		<array>
 			<dict>
@@ -83,6 +136,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</key>
@@ -94,6 +149,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</key>
@@ -105,14 +162,18 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
-				<string>34256840-2B17-4A55-83F2-86C4EF9B800A</string>
+				<string>A5C855EE-2F4E-4437-AAE2-9DD1A26383A9</string>
 				<key>modifiers</key>
 				<integer>8388608</integer>
 				<key>modifiersubtext</key>
 				<string>Copy to clipboard</string>
+				<key>vitoclose</key>
+				<true/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -121,6 +182,8 @@
 				<integer>262144</integer>
 				<key>modifiersubtext</key>
 				<string>Open and archive link</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -129,6 +192,8 @@
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
 				<string>Archive link</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -137,6 +202,8 @@
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
 				<string>Delete link</string>
+				<key>vitoclose</key>
+				<true/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -145,6 +212,21 @@
 				<integer>131072</integer>
 				<key>modifiersubtext</key>
 				<string>Open on getpocket.com</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>EF5AC573-40A1-4E9F-A329-B47B95337A5C</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>1C08C5BC-4CE6-445E-A3D3-A2C7130939F5</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>EFEB9D23-17CE-4FAF-8A7D-F9A1D8134606</key>
@@ -156,6 +238,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>FA9D7CD0-C30A-4E9C-A595-869F6868675F</key>
@@ -167,6 +251,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 	</dict>
@@ -183,8 +269,131 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>plusspaces</key>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>37</integer>
+				<key>hotmod</key>
+				<integer>262144</integer>
+				<key>hotstring</key>
+				<string>L</string>
+				<key>leftcursor</key>
 				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>56419563-8603-4FF1-AF09-679ED8513E7E</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_save.py "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_save.py --add-and-archive "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>3938B0F8-42C1-492D-AA4E-5A79E9C04EDE</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>keyword</key>
+				<string>_pocket-add</string>
+				<key>subtext</key>
+				<string>Tags need to be separated by comma.</string>
+				<key>text</key>
+				<string>Add Custom Tags</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>D377451B-43B5-45EF-9C57-7A18A8DDD55D</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>37</integer>
+				<key>hotmod</key>
+				<integer>786432</integer>
+				<key>hotstring</key>
+				<string>L</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>2543D2DD-E0F7-479A-8CA8-525B97003DB7</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string></string>
 				<key>url</key>
 				<string>{query}</string>
 				<key>utf8</key>
@@ -195,26 +404,93 @@
 			<key>uid</key>
 			<string>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>concurrently</key>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>keyword</key>
+				<string>_pocket-add-and-archive</string>
+				<key>subtext</key>
+				<string>Tags need to be separated by comma.</string>
+				<key>text</key>
+				<string>Add Custom Tags</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>1C08C5BC-4CE6-445E-A3D3-A2C7130939F5</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>hotkey</key>
+				<integer>37</integer>
+				<key>hotmod</key>
+				<integer>1310720</integer>
+				<key>hotstring</key>
+				<string>L</string>
+				<key>leftcursor</key>
 				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>python pocket_launcher.py --copy "{query}"</string>
-				<key>type</key>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
 				<integer>0</integer>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.action.script</string>
+			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
-			<string>34256840-2B17-4A55-83F2-86C4EF9B800A</string>
+			<string>EF5AC573-40A1-4E9F-A329-B47B95337A5C</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>Link copied to clipboard</string>
+				<key>title</key>
+				<string>Pocket for Alfred</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>350E1EFF-A858-44E7-9957-CA00B739E799</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>A5C855EE-2F4E-4437-AAE2-9DD1A26383A9</string>
+			<key>version</key>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -225,6 +501,10 @@
 				<integer>102</integer>
 				<key>script</key>
 				<string>python pocket_launcher.py --visit-and-archive "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -233,69 +513,7 @@
 			<key>uid</key>
 			<string>5E2199C2-314D-447F-BA91-52B1AC449F40</string>
 			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<true/>
-				<key>output</key>
-				<integer>0</integer>
-				<key>removeextension</key>
-				<false/>
-				<key>sticky</key>
-				<false/>
-				<key>text</key>
-				<string>{query}</string>
-				<key>title</key>
-				<string>Pocket for Alfred</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>94B5A64D-BE8D-43B8-847A-F84CA4214C44</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>keyword</key>
-				<string>pocket</string>
-				<key>queuedelaycustom</key>
-				<integer>1</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<false/>
-				<key>queuedelaymode</key>
-				<integer>0</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string>Contacting getpocket.com...</string>
-				<key>script</key>
-				<string>python pocket.py "{query}"</string>
-				<key>subtext</key>
-				<string>Manage Your Pocket List With Alfred</string>
-				<key>title</key>
-				<string>Pocket</string>
-				<key>type</key>
-				<integer>0</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</string>
-			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -322,7 +540,50 @@
 			<key>uid</key>
 			<string>EFEB9D23-17CE-4FAF-8A7D-F9A1D8134606</string>
 			<key>version</key>
-			<integer>1</integer>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>pocket</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Contacting getpocket.com...</string>
+				<key>script</key>
+				<string>python pocket.py "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Manage Your Pocket List With Alfred</string>
+				<key>title</key>
+				<string>Pocket</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</string>
+			<key>version</key>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -333,6 +594,10 @@
 				<integer>102</integer>
 				<key>script</key>
 				<string>python pocket_launcher.py --archive "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -341,7 +606,28 @@
 			<key>uid</key>
 			<string>2E5BB5E1-D7FC-495C-A76E-BB711EB8A469</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Pocket for Alfred</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>94B5A64D-BE8D-43B8-847A-F84CA4214C44</string>
+			<key>version</key>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -354,7 +640,7 @@
 			<key>uid</key>
 			<string>4C8946D6-A7DF-4232-9688-EA291BF89AF0</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -365,6 +651,10 @@
 				<integer>102</integer>
 				<key>script</key>
 				<string>python pocket_launcher.py --delete "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -373,7 +663,7 @@
 			<key>uid</key>
 			<string>2A555E39-C9A2-44C6-86BB-62F2203985E9</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -384,6 +674,10 @@
 				<integer>102</integer>
 				<key>script</key>
 				<string>python pocket_launcher.py --website "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -392,144 +686,156 @@
 			<key>uid</key>
 			<string>FA9D7CD0-C30A-4E9C-A595-869F6868675F</string>
 			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>keyword</key>
-				<string>_pocket-add</string>
-				<key>subtext</key>
-				<string>Tags need to be separated by comma.</string>
-				<key>text</key>
-				<string>Add Custom Tags</string>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
-			<key>uid</key>
-			<string>D377451B-43B5-45EF-9C57-7A18A8DDD55D</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>python pocket_save.py "{query}"</string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>action</key>
-				<integer>0</integer>
-				<key>argument</key>
-				<integer>0</integer>
-				<key>hotkey</key>
-				<integer>37</integer>
-				<key>hotmod</key>
-				<integer>262144</integer>
-				<key>hotstring</key>
-				<string>L</string>
-				<key>leftcursor</key>
-				<false/>
-				<key>modsmode</key>
-				<integer>0</integer>
-				<key>relatedAppsMode</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.trigger.hotkey</string>
-			<key>uid</key>
-			<string>2543D2DD-E0F7-479A-8CA8-525B97003DB7</string>
-			<key>version</key>
-			<integer>1</integer>
+			<integer>2</integer>
 		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
 	<key>uidata</key>
 	<dict>
+		<key>1C08C5BC-4CE6-445E-A3D3-A2C7130939F5</key>
+		<dict>
+			<key>xpos</key>
+			<integer>310</integer>
+			<key>ypos</key>
+			<integer>320</integer>
+		</dict>
 		<key>2543D2DD-E0F7-479A-8CA8-525B97003DB7</key>
 		<dict>
+			<key>note</key>
+			<string>Hotkey for adding a link with custom tags</string>
+			<key>xpos</key>
+			<integer>100</integer>
 			<key>ypos</key>
-			<real>670</real>
+			<integer>170</integer>
 		</dict>
 		<key>2A555E39-C9A2-44C6-86BB-62F2203985E9</key>
 		<dict>
+			<key>note</key>
+			<string>Delete link</string>
+			<key>xpos</key>
+			<integer>640</integer>
 			<key>ypos</key>
-			<real>450</real>
+			<integer>790</integer>
 		</dict>
 		<key>2E5BB5E1-D7FC-495C-A76E-BB711EB8A469</key>
 		<dict>
+			<key>note</key>
+			<string>Archive link</string>
+			<key>xpos</key>
+			<integer>640</integer>
 			<key>ypos</key>
-			<real>340</real>
+			<integer>650</integer>
 		</dict>
-		<key>34256840-2B17-4A55-83F2-86C4EF9B800A</key>
+		<key>350E1EFF-A858-44E7-9957-CA00B739E799</key>
 		<dict>
+			<key>xpos</key>
+			<integer>900</integer>
 			<key>ypos</key>
-			<real>120</real>
+			<integer>390</integer>
+		</dict>
+		<key>3938B0F8-42C1-492D-AA4E-5A79E9C04EDE</key>
+		<dict>
+			<key>xpos</key>
+			<integer>640</integer>
+			<key>ypos</key>
+			<integer>150</integer>
 		</dict>
 		<key>4C8946D6-A7DF-4232-9688-EA291BF89AF0</key>
 		<dict>
+			<key>xpos</key>
+			<integer>100</integer>
 			<key>ypos</key>
-			<real>360</real>
+			<integer>670</integer>
+		</dict>
+		<key>56419563-8603-4FF1-AF09-679ED8513E7E</key>
+		<dict>
+			<key>note</key>
+			<string>Hotkey for adding a link</string>
+			<key>xpos</key>
+			<integer>100</integer>
+			<key>ypos</key>
+			<integer>30</integer>
 		</dict>
 		<key>5E2199C2-314D-447F-BA91-52B1AC449F40</key>
 		<dict>
+			<key>note</key>
+			<string>Visit and archive link</string>
+			<key>xpos</key>
+			<integer>640</integer>
 			<key>ypos</key>
-			<real>230</real>
+			<integer>510</integer>
 		</dict>
 		<key>94B5A64D-BE8D-43B8-847A-F84CA4214C44</key>
 		<dict>
+			<key>xpos</key>
+			<integer>900</integer>
 			<key>ypos</key>
-			<real>250</real>
+			<integer>650</integer>
+		</dict>
+		<key>A5C855EE-2F4E-4437-AAE2-9DD1A26383A9</key>
+		<dict>
+			<key>xpos</key>
+			<integer>640</integer>
+			<key>ypos</key>
+			<integer>390</integer>
 		</dict>
 		<key>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</key>
 		<dict>
+			<key>xpos</key>
+			<integer>640</integer>
 			<key>ypos</key>
-			<real>10</real>
+			<integer>270</integer>
 		</dict>
 		<key>D377451B-43B5-45EF-9C57-7A18A8DDD55D</key>
 		<dict>
+			<key>xpos</key>
+			<integer>310</integer>
 			<key>ypos</key>
-			<real>670</real>
+			<integer>170</integer>
 		</dict>
 		<key>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</key>
 		<dict>
+			<key>xpos</key>
+			<integer>640</integer>
 			<key>ypos</key>
-			<real>670</real>
+			<integer>30</integer>
 		</dict>
 		<key>E037422F-BB78-4C52-9EC9-D23FCF6CA31A</key>
 		<dict>
+			<key>note</key>
+			<string>Main script filter</string>
+			<key>xpos</key>
+			<integer>310</integer>
 			<key>ypos</key>
-			<real>250</real>
+			<integer>520</integer>
+		</dict>
+		<key>EF5AC573-40A1-4E9F-A329-B47B95337A5C</key>
+		<dict>
+			<key>note</key>
+			<string>Hotkey for adding and archiving a link with custom tags</string>
+			<key>xpos</key>
+			<integer>100</integer>
+			<key>ypos</key>
+			<integer>320</integer>
 		</dict>
 		<key>EFEB9D23-17CE-4FAF-8A7D-F9A1D8134606</key>
 		<dict>
+			<key>note</key>
+			<string>Hotkey to open Pocket workflow</string>
+			<key>xpos</key>
+			<integer>100</integer>
 			<key>ypos</key>
-			<real>250</real>
+			<integer>520</integer>
 		</dict>
 		<key>FA9D7CD0-C30A-4E9C-A595-869F6868675F</key>
 		<dict>
+			<key>note</key>
+			<string>Open link on getpocket.com</string>
+			<key>xpos</key>
+			<integer>640</integer>
 			<key>ypos</key>
-			<real>560</real>
+			<integer>930</integer>
 		</dict>
 	</dict>
 	<key>webaddress</key>

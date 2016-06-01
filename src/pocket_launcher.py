@@ -20,9 +20,7 @@ def execute():
 
     url = args.query
 
-    if args.copy:
-        print set_clipboard(url)
-    elif args.visit_archive:
+    if args.visit_archive:
         subprocess.call(['open', url])
         refresh_list()
         print archive_item(url)
@@ -50,8 +48,6 @@ def get_id(url):
 
 def parse_args(args):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--copy', dest='copy', action='store_true',
-                        default=None)
     parser.add_argument('--visit-and-archive', dest='visit_archive',
                         action='store_true', default=None)
     parser.add_argument('--archive', dest='archive', action='store_true',
@@ -62,11 +58,6 @@ def parse_args(args):
                         default=None)
     parser.add_argument('query', nargs='?', default=None)
     return parser.parse_args(args)
-
-
-def set_clipboard(url):
-    os.popen("osascript -e 'set the clipboard to \"%s\"'" % url).readline()
-    return 'Link copied to clipboard'
 
 
 def archive_item(url):

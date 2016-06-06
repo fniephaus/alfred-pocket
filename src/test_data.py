@@ -16,6 +16,7 @@ def get_normal():
             u'time_added': u'54321',
             u'time_favorited': u'0',
             u'time_updated': u'54321',
+            u'tags': {u'mytag': {}},
         },
         u'2': {
             u'excerpt': u'abc',
@@ -33,6 +34,7 @@ def get_normal():
             u'time_added': u'1396054841',
             u'time_favorited': u'0',
             u'time_updated': u'1396054841',
+            u'tags': {u'foo': {}},
         },
         u'300': {
             u'excerpt': u'text2',
@@ -51,6 +53,7 @@ def get_normal():
             u'time_favorited': u'0',
             u'time_updated': u'1411528927',
             u'videos': {},
+            u'tags': {},
         },
         u'4': {
             u'excerpt': u'text2',
@@ -70,6 +73,7 @@ def get_normal():
             u'time_favorited': u'0',
             u'time_updated': u'1411528927',
             u'videos': {},
+            u'tags': {},
         }
     }
 

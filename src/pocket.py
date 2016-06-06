@@ -61,20 +61,22 @@ def main(_):
                 WF.add_item(category,
                             autocomplete='in:%s ' % action,
                             valid=False)
+            tags = WF.cached_data('pocket_tags', max_age=120)
+            if tags:
+                for tag in tags:
+                    WF.add_item('#%s' % tag,
+                                autocomplete='in:%s ' % tag,
+                                valid=False)
         else:
             links = get_links()
-
             if not links:
                 WF.add_item(
                     'Your Pocket list is empty!',
                     icon=get_icon('info'),
                     valid=False
                 )
-            category = user_input[0].replace('in:', '')
-            if category in ACTIONS:
-                add_items(links, category, ' '.join(user_input[1:]))
             else:
-                add_items(links, None, ' '.join(user_input))
+                add_items(links, user_input)
 
         # Update Pocket list in background
         if not WF.cached_data_fresh('pocket_list', max_age=10):
@@ -123,11 +125,22 @@ def check_item(category, item):
         return 'has_video' in item and item['has_video'] == '1'
     if category == 'images':
         return 'has_image' in item and item['has_image'] == '1'
-    return True
 
 
-def add_items(links, category, user_input):
-    links = [link for link in links.values() if check_item(category, link)]
+def add_items(links, user_input):
+    if user_input[0].startswith('in:'):
+        category = user_input[0][3:]
+        user_input = ' '.join(user_input[1:])
+        if category in ACTIONS:
+            links = [l for l in links.values() if check_item(category, l)]
+        else:
+            WF.logger.debug(category)
+            links = [l for l in links.values()
+                     if 'tags' in l and category in l['tags']]
+    else:
+        user_input = ' '.join(user_input)
+        links = links.values()
+
     links = sorted(links, key=lambda x: int(x['time_added']), reverse=True)
     links_count = len(links)
     for index, link in enumerate(links):

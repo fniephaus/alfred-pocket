@@ -45,6 +45,9 @@ def main():
 
         wf.cache_data('pocket_since', next_since)
         wf.cache_data('pocket_list', links)
+        tags = list(set([t for l in links.values() if 'tags' in l
+                        for t in l['tags'].keys()]))
+        wf.cache_data('pocket_tags', tags)
 
     except (AuthException, URLError, PocketException, PasswordNotFound), e:
         error = type(e).__name__

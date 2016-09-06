@@ -148,6 +148,22 @@ class PocketTestCase(unittest.TestCase):
         self.assertEquals(len(pocket.WF._items), 4)
         self.assertTrue('tag1' in pocket.WF._items[0].title)
 
+    def test_main_mytags_search(self):
+        CachedData['__workflow_update_status'] = {
+            'available': False
+        }
+        CachedData['pocket_list'] = test_data.get_normal()
+        CachedData['pocket_tags'] = ['interesting', 'tag2', 'tag3', 'tag4']
+        sys.argv = ['pocket.py', 'in:mytags interes']
+
+        def send_feedback():
+            pass
+        pocket.WF.send_feedback = send_feedback
+        pocket.WF._items = []
+        pocket.main(None)
+        self.assertEquals(len(pocket.WF._items), 1)
+        self.assertTrue('interesting' in pocket.WF._items[0].title)
+
     def test_main_single_tag(self):
         CachedData['__workflow_update_status'] = {
             'available': False

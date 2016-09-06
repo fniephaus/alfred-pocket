@@ -26,8 +26,8 @@ class PocketTestCase(unittest.TestCase):
         pocket.WF.send_feedback = send_feedback
         pocket.WF._items = []
         pocket.main(None)
-        # Update available item + categories + tag1
-        self.assertEquals(len(pocket.WF._items), 2 + len(pocket.CATEGORIES))
+        # Update available item + categories
+        self.assertEquals(len(pocket.WF._items), 1 + len(pocket.CATEGORIES))
 
     def test_main_search_all(self):
         CachedData['__workflow_update_status'] = {
@@ -137,7 +137,8 @@ class PocketTestCase(unittest.TestCase):
             'available': False
         }
         CachedData['pocket_list'] = test_data.get_normal()
-        sys.argv = ['pocket.py', 'in:mytag ']
+        CachedData['pocket_tags'] = 'mytag'
+        sys.argv = ['pocket.py', 'in:mytags #mytag']
 
         def send_feedback():
             pass
@@ -195,29 +196,29 @@ class PocketTestCase(unittest.TestCase):
 
     def test_add_items(self):
         self.assertEquals(len(pocket.WF._items), 0)
-        pocket.add_items(links={}, user_input=[''])
+        pocket.add_items(links={}, user_input='')
         self.assertEquals(len(pocket.WF._items), 1)
         self.assertEquals(pocket.WF._items[0].title, 'No links found for "".')
 
         pocket.WF._items = []
-        pocket.add_items(links={'1': {
+        pocket.add_items(links=[{
             'item_id': '1',
             'given_title': 'test',
             'given_url': 'url',
             'time_added': '10',
-        }}, user_input=[''])
+        }], user_input='')
         self.assertEquals(len(pocket.WF._items), 1)
         self.assertEquals(pocket.WF._items[0].title, 'test')
 
         pocket.WF._items = []
-        pocket.add_items(links={'1': {
+        pocket.add_items(links=[{
             'item_id': '1',
             'given_title': 'test',
             'resolved_title': 'test',
             'given_url': 'url',
             'time_added': '10',
             'tags': {'alfred': {'item_id': '4444', 'tag': 'alfred'}}
-        }}, user_input=['notfound'])
+        }], user_input='notfound')
         self.assertEquals(len(pocket.WF._items), 1)
         self.assertEquals(pocket.WF._items[0].title, "No links found for "
                                                      "\"notfound\".")

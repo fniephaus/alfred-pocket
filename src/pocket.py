@@ -10,8 +10,8 @@ from pocket_errors import ERROR_MESSAGES
 import config
 
 
-CATEGORIES = ['My List', 'Favorites', 'Archive', 'Articles', 'Videos',
-              'Images']
+CATEGORIES = ['My List', 'Favorites', 'My Tags', 'Archive', 'Articles',
+              'Videos', 'Images']
 ACTIONS = [x.replace(' ', '').lower() for x in CATEGORIES]
 REQUIRED_KEYS = ['item_id', 'given_title', 'given_url', 'time_added']
 
@@ -61,12 +61,6 @@ def main(_):
                 WF.add_item(category,
                             autocomplete='in:%s ' % action,
                             valid=False)
-            tags = WF.cached_data('pocket_tags', max_age=120)
-            if tags:
-                for tag in tags:
-                    WF.add_item('#%s' % tag,
-                                autocomplete='in:%s ' % tag,
-                                valid=False)
         else:
             links = get_links()
             if not links:
@@ -75,7 +69,31 @@ def main(_):
                     icon=get_icon('info'),
                     valid=False
                 )
+            elif user_input[0] == 'in:mytags':
+                tags = WF.cached_data('pocket_tags', max_age=120)
+                if tags:
+                    user_tag = user_input[1].strip('#')
+                    if user_tag in tags:
+                        links = [l for l in links.values()
+                                 if 'tags' in l and user_tag in l['tags']]
+                        add_items(links, ' '.join(user_input[2:]))
+                    else:
+                        for tag in tags:
+                            if user_tag not in tag:
+                                continue
+                            WF.add_item('#%s' % tag,
+                                        autocomplete='in:mytags #%s' % tag,
+                                        valid=False)
             else:
+                if user_input[0].startswith('in:'):
+                    category = user_input[0][3:]
+                    user_input = ' '.join(user_input[1:])
+                    if category in ACTIONS:
+                        links = [l for l in links.values()
+                                 if item_matches(category, l)]
+                else:
+                    user_input = ' '.join(user_input)
+                    links = links.values()
                 add_items(links, user_input)
 
         # Update Pocket list in background
@@ -112,7 +130,7 @@ def get_links(tries=10):
     return links
 
 
-def check_item(category, item):
+def item_matches(category, item):
     if category == 'mylist':
         return item['status'] == '0'
     if category == 'favorites':
@@ -128,19 +146,6 @@ def check_item(category, item):
 
 
 def add_items(links, user_input):
-    if user_input[0].startswith('in:'):
-        category = user_input[0][3:]
-        user_input = ' '.join(user_input[1:])
-        if category in ACTIONS:
-            links = [l for l in links.values() if check_item(category, l)]
-        else:
-            WF.logger.debug(category)
-            links = [l for l in links.values()
-                     if 'tags' in l and category in l['tags']]
-    else:
-        user_input = ' '.join(user_input)
-        links = links.values()
-
     links = sorted(links, key=lambda x: int(x['time_added']), reverse=True)
     links_count = len(links)
     for index, link in enumerate(links):

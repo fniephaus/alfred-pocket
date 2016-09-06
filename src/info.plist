@@ -8,24 +8,11 @@
 	<string>Tools</string>
 	<key>connections</key>
 	<dict>
-		<key>1C08C5BC-4CE6-445E-A3D3-A2C7130939F5</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>3938B0F8-42C1-492D-AA4E-5A79E9C04EDE</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
 		<key>2543D2DD-E0F7-479A-8CA8-525B97003DB7</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>D377451B-43B5-45EF-9C57-7A18A8DDD55D</string>
+				<string>DD756B33-7215-4C87-8D5F-4F8D289A38EE</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -125,9 +112,22 @@
 				<false/>
 			</dict>
 		</array>
+		<key>CA7362C1-BAE2-40A8-B0EB-FA2D95D674D1</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>3938B0F8-42C1-492D-AA4E-5A79E9C04EDE</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</key>
 		<array/>
-		<key>D377451B-43B5-45EF-9C57-7A18A8DDD55D</key>
+		<key>DD756B33-7215-4C87-8D5F-4F8D289A38EE</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -220,7 +220,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>1C08C5BC-4CE6-445E-A3D3-A2C7130939F5</string>
+				<string>CA7362C1-BAE2-40A8-B0EB-FA2D95D674D1</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -342,23 +342,45 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
 				<key>keyword</key>
 				<string>_pocket-add</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>script</key>
+				<string>python pocket_tags.py --add "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>subtext</key>
 				<string>Tags need to be separated by comma.</string>
-				<key>text</key>
+				<key>title</key>
 				<string>Add Custom Tags</string>
+				<key>type</key>
+				<integer>0</integer>
 				<key>withspace</key>
-				<true/>
+				<false/>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
+			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>D377451B-43B5-45EF-9C57-7A18A8DDD55D</string>
+			<string>DD756B33-7215-4C87-8D5F-4F8D289A38EE</string>
 			<key>version</key>
-			<integer>1</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -436,23 +458,45 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
 				<key>keyword</key>
 				<string>_pocket-add-and-archive</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>script</key>
+				<string>python pocket_tags.py --add-and-archive "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>subtext</key>
 				<string>Tags need to be separated by comma.</string>
-				<key>text</key>
+				<key>title</key>
 				<string>Add Custom Tags</string>
+				<key>type</key>
+				<integer>0</integer>
 				<key>withspace</key>
-				<true/>
+				<false/>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
+			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>1C08C5BC-4CE6-445E-A3D3-A2C7130939F5</string>
+			<string>CA7362C1-BAE2-40A8-B0EB-FA2D95D674D1</string>
 			<key>version</key>
-			<integer>1</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -716,13 +760,6 @@
 	<string></string>
 	<key>uidata</key>
 	<dict>
-		<key>1C08C5BC-4CE6-445E-A3D3-A2C7130939F5</key>
-		<dict>
-			<key>xpos</key>
-			<integer>310</integer>
-			<key>ypos</key>
-			<integer>320</integer>
-		</dict>
 		<key>2543D2DD-E0F7-479A-8CA8-525B97003DB7</key>
 		<dict>
 			<key>note</key>
@@ -812,6 +849,13 @@
 			<key>ypos</key>
 			<integer>390</integer>
 		</dict>
+		<key>CA7362C1-BAE2-40A8-B0EB-FA2D95D674D1</key>
+		<dict>
+			<key>xpos</key>
+			<integer>310</integer>
+			<key>ypos</key>
+			<integer>320</integer>
+		</dict>
 		<key>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</key>
 		<dict>
 			<key>xpos</key>
@@ -819,7 +863,7 @@
 			<key>ypos</key>
 			<integer>270</integer>
 		</dict>
-		<key>D377451B-43B5-45EF-9C57-7A18A8DDD55D</key>
+		<key>DD756B33-7215-4C87-8D5F-4F8D289A38EE</key>
 		<dict>
 			<key>xpos</key>
 			<integer>310</integer>

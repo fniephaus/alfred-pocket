@@ -20,7 +20,7 @@ def main(_):
     # Get tags
     tags = ["alfred"]
     if args.tags:
-        tags += [str(s.strip()) for s in args.tags.split(',')]
+        tags += [str(s.strip().strip('#')) for s in args.tags.split(',')]
 
     current_app = frontmost_app()
     if current_app in ['Google Chrome', 'Safari']:

@@ -28,6 +28,10 @@ def execute():
         refresh_list()
         print archive_item(url)
         open_alfred()
+    elif args.favorite:
+        refresh_list()
+        print favorite_item(url)
+        open_alfred()
     elif args.delete:
         refresh_list()
         print delete_item(url)
@@ -70,6 +74,19 @@ def archive_item(url):
         pocket_instance.archive(item_id, wait=False)
         remove_from_cache(item_id)
         return 'Link archived'
+    except PocketException:
+        return 'Connection error'
+
+
+def favorite_item(url):
+    item_id = get_id(url)
+    if not item_id:
+        return '"item_id" not found'
+    access_token = WF.get_password('pocket_access_token')
+    pocket_instance = Pocket(config.CONSUMER_KEY, access_token)
+    try:
+        pocket_instance.favorite(item_id, wait=False)
+        return 'Link favorited'
     except PocketException:
         return 'Connection error'
 

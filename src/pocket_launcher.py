@@ -44,6 +44,8 @@ def execute():
 
 def get_id(url):
     links = WF.cached_data('pocket_list', max_age=0)
+    if links is None:
+        return None
     for link in links.values():
         if url == link['given_url']:
             return link['item_id']
@@ -55,6 +57,8 @@ def parse_args(args):
     parser.add_argument('--visit-and-archive', dest='visit_archive',
                         action='store_true', default=None)
     parser.add_argument('--archive', dest='archive', action='store_true',
+                        default=None)
+    parser.add_argument('--favorite', dest='favorite', action='store_true',
                         default=None)
     parser.add_argument('--delete', dest='delete', action='store_true',
                         default=None)

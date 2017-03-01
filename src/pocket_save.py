@@ -59,10 +59,10 @@ def get_browser_link(browser):
     url = title = None
     if browser == 'Google Chrome':
         url = os.popen("osascript -e 'tell application "
-                       "\"/Applications/Google Chrome.app\" to return URL of "
+                       "\"Google Chrome\" to return URL of "
                        "active tab of front window'").readline()
         title = os.popen("osascript -e 'tell application "
-                         "\"/Applications/Google Chrome.app\" to return title "
+                         "\"Google Chrome\" to return title "
                          "of active tab of front window'").readline()
     elif browser == 'Safari':
         url = os.popen("osascript -e 'tell application "

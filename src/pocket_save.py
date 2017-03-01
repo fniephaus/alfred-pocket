@@ -1,5 +1,6 @@
 import argparse
 import os
+import subprocess
 import urlparse
 from pocket_api import Pocket, InvalidQueryException
 from workflow import Workflow
@@ -7,6 +8,24 @@ import config
 
 WF = Workflow()
 POCKET = Pocket(config.CONSUMER_KEY, WF.get_password('pocket_access_token'))
+
+FRONTMOST_APP = """\
+osascript -e 'application (path to frontmost application as text)'\
+"""
+CHROME_URL = """\
+osascript -e 'tell application "Google Chrome" to return URL of active tab of \
+front window'\
+"""
+CHROME_TITLE = """\
+osascript -e 'tell application "Google Chrome" to return title of active tab \
+of front window'\
+"""
+SAFARI_URL = """\
+osascript -e 'tell application "Safari.app" to return URL of front document'\
+"""
+SAFARI_TITLE = """\
+osascript -e 'tell application "Safari.app" to return name of front document'\
+"""
 
 
 def main(_):
@@ -18,7 +37,7 @@ def main(_):
         add_method = add_link
 
     # Get tags
-    tags = ["alfred"]
+    tags = ['alfred']
     if args.tags:
         tags += [str(s.strip().strip('#')) for s in args.tags.split(',')]
 
@@ -35,11 +54,11 @@ def main(_):
         link = get_link_from_clipboard()
         if link is not None:
             add_method(link, tags)
-            print "Clipboard link added to Pocket."
+            print 'Clipboard link added to Pocket.'
             WF.clear_cache()
             return
 
-    print "No link found!"
+    print 'No link found!'
 
 
 def parse_args(args):
@@ -51,36 +70,33 @@ def parse_args(args):
 
 
 def frontmost_app():
-    return os.popen("osascript -e 'application (path to frontmost application "
-                    "as text)'").readline().rstrip()
+    return os.popen(FRONTMOST_APP).readline().rstrip()
 
 
 def get_browser_link(browser):
-    url = title = None
+    url = title = url_script = title_script = None
     if browser == 'Google Chrome':
-        url = os.popen("osascript -e 'tell application "
-                       "\"Google Chrome\" to return URL of "
-                       "active tab of front window'").readline()
-        title = os.popen("osascript -e 'tell application "
-                         "\"Google Chrome\" to return title "
-                         "of active tab of front window'").readline()
+        url_script = CHROME_URL
+        title_script = CHROME_TITLE
     elif browser == 'Safari':
-        url = os.popen("osascript -e 'tell application "
-                       "\"/Applications/Safari.app\" to return URL of front "
-                       "document'").readline()
-        title = os.popen("osascript -e 'tell application "
-                         "\"/Applications/Safari.app\" to return name of "
-                         "front document'").readline()
-    if url is None:
+        url_script = SAFARI_URL
+        title_script = SAFARI_TITLE
+    url = os.popen(url_script).readline()
+    title = os.popen(title_script).readline()
+    if url is None or title is None:
         return None
     return {
         'url': url.strip('\n'),
-        'title': title
+        'title': title.strip('\n')
     }
 
 
 def get_link_from_clipboard():
-    clipboard = os.popen(""" osascript -e "get the clipboard" """).readline()
+    p = subprocess.Popen(['pbpaste', 'r'],
+                         stdout=subprocess.PIPE, close_fds=True)
+    clipboard, stderr = p.communicate()
+    if stderr:
+        return None
     parts = urlparse.urlsplit(clipboard)
     if not parts.scheme or not parts.netloc:
         return None
@@ -94,7 +110,7 @@ def add_link(item, tags):
     if item:
         try:
             return POCKET.add(url=item['url'], title=item['title'],
-                              tags=",".join(tags))[0]
+                              tags=','.join(tags))[0]
         except InvalidQueryException:
             pass
     return None

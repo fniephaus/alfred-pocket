@@ -82,7 +82,7 @@ def main(_):
                             if user_tag not in tag:
                                 continue
                             WF.add_item('#%s' % tag,
-                                        autocomplete='in:mytags #%s' % tag,
+                                        autocomplete='in:mytags #%s ' % tag,
                                         valid=False)
             else:
                 if user_input[0].startswith('in:'):

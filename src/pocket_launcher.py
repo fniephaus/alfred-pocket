@@ -1,3 +1,4 @@
+from __future__ import print_function
 import argparse
 import os
 import subprocess
@@ -14,8 +15,8 @@ POCKET_URL = 'http://getpocket.com/a/read/%s'
 def execute():
     args = parse_args(WF.args)
 
-    if args.query is None:
-        print "No argument provided"
+    if args.query is None and not args.refresh:
+        print("No argument provided")
         return 0
 
     url = args.query
@@ -23,23 +24,24 @@ def execute():
     if args.visit_archive:
         subprocess.call(['open', url])
         refresh_list()
-        print archive_item(url)
+        print(archive_item(url))
     elif args.archive:
         refresh_list()
-        print archive_item(url)
-        open_alfred()
+        print(archive_item(url))
     elif args.favorite:
         refresh_list()
-        print favorite_item(url)
-        open_alfred()
+        print(favorite_item(url))
     elif args.delete:
         refresh_list()
-        print delete_item(url)
-        open_alfred()
+        print(delete_item(url))
     elif args.website:
         subprocess.call(['open', POCKET_URL % get_id(url)])
+    elif args.refresh:
+        refresh_list(verbose=True)
+    elif args.open:
+        subprocess.call(['open', url])
     else:
-        print "An error occured"
+        print("An error occured")
 
 
 def get_id(url):
@@ -63,6 +65,10 @@ def parse_args(args):
     parser.add_argument('--delete', dest='delete', action='store_true',
                         default=None)
     parser.add_argument('--website', dest='website', action='store_true',
+                        default=None)
+    parser.add_argument('--refresh', dest='refresh', action='store_true',
+                        default=None)
+    parser.add_argument('--open', dest='open', action='store_true',
                         default=None)
     parser.add_argument('query', nargs='?', default=None)
     return parser.parse_args(args)

@@ -99,6 +99,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>66657675-959F-4E58-B297-137D0FDEF7A7</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>94B5A64D-BE8D-43B8-847A-F84CA4214C44</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>A5C855EE-2F4E-4437-AAE2-9DD1A26383A9</key>
 		<array>
 			<dict>
@@ -125,8 +138,6 @@
 				<false/>
 			</dict>
 		</array>
-		<key>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</key>
-		<array/>
 		<key>DD756B33-7215-4C87-8D5F-4F8D289A38EE</key>
 		<array>
 			<dict>
@@ -157,7 +168,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</string>
+				<string>E9833C06-709B-413C-AB72-9BA5063ABCEF</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -207,15 +218,17 @@
 			</dict>
 			<dict>
 				<key>destinationuid</key>
-				<string>FA9D7CD0-C30A-4E9C-A595-869F6868675F</string>
+				<string>66657675-959F-4E58-B297-137D0FDEF7A7</string>
 				<key>modifiers</key>
 				<integer>131072</integer>
 				<key>modifiersubtext</key>
-				<string>Open on getpocket.com</string>
+				<string>Favorite link</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
 		</array>
+		<key>E9833C06-709B-413C-AB72-9BA5063ABCEF</key>
+		<array/>
 		<key>EF5AC573-40A1-4E9F-A329-B47B95337A5C</key>
 		<array>
 			<dict>
@@ -269,6 +282,35 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>hotkey</key>
+				<integer>0</integer>
+				<key>hotmod</key>
+				<integer>0</integer>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>56419563-8603-4FF1-AF09-679ED8513E7E</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
@@ -286,33 +328,6 @@
 			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
 			<string>DF3A17F0-109C-498C-953A-1EA26ABBE2E2</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>action</key>
-				<integer>0</integer>
-				<key>argument</key>
-				<integer>0</integer>
-				<key>hotkey</key>
-				<integer>37</integer>
-				<key>hotmod</key>
-				<integer>262144</integer>
-				<key>hotstring</key>
-				<string>L</string>
-				<key>leftcursor</key>
-				<false/>
-				<key>modsmode</key>
-				<integer>0</integer>
-				<key>relatedAppsMode</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.trigger.hotkey</string>
-			<key>uid</key>
-			<string>56419563-8603-4FF1-AF09-679ED8513E7E</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -344,6 +359,10 @@
 			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -389,12 +408,14 @@
 				<integer>0</integer>
 				<key>argument</key>
 				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
 				<key>hotkey</key>
-				<integer>37</integer>
+				<integer>0</integer>
 				<key>hotmod</key>
-				<integer>786432</integer>
-				<key>hotstring</key>
-				<string>L</string>
+				<integer>0</integer>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -412,46 +433,30 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>{query}</string>
-				<key>utf8</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>action</key>
-				<integer>0</integer>
-				<key>argument</key>
-				<integer>0</integer>
-				<key>hotkey</key>
-				<integer>37</integer>
-				<key>hotmod</key>
-				<integer>1310720</integer>
-				<key>hotstring</key>
-				<string>L</string>
-				<key>leftcursor</key>
+				<key>concurrently</key>
 				<false/>
-				<key>modsmode</key>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>query="{query}"
+
+if [ $query = '#pocket:refresh#' ]
+then
+	python pocket_launcher.py --refresh
+else
+	python pocket_launcher.py --open $query
+fi</string>
+				<key>scriptargtype</key>
 				<integer>0</integer>
-				<key>relatedAppsMode</key>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
 				<integer>0</integer>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.trigger.hotkey</string>
+			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
-			<string>EF5AC573-40A1-4E9F-A329-B47B95337A5C</string>
+			<string>E9833C06-709B-413C-AB72-9BA5063ABCEF</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -460,6 +465,10 @@
 			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -495,6 +504,35 @@
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
 			<string>CA7362C1-BAE2-40A8-B0EB-FA2D95D674D1</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>hotkey</key>
+				<integer>0</integer>
+				<key>hotmod</key>
+				<integer>0</integer>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>EF5AC573-40A1-4E9F-A329-B47B95337A5C</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -562,14 +600,49 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>action</key>
+				<integer>0</integer>
+				<key>argument</key>
+				<integer>0</integer>
+				<key>focusedappvariable</key>
+				<false/>
+				<key>focusedappvariablename</key>
+				<string></string>
+				<key>hotkey</key>
+				<integer>37</integer>
+				<key>hotmod</key>
+				<integer>1703936</integer>
+				<key>hotstring</key>
+				<string>L</string>
+				<key>leftcursor</key>
+				<false/>
+				<key>modsmode</key>
+				<integer>0</integer>
+				<key>relatedAppsMode</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.hotkey</string>
+			<key>uid</key>
+			<string>EFEB9D23-17CE-4FAF-8A7D-F9A1D8134606</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>pocket</string>
+				<string>_pocket</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -605,27 +678,23 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>action</key>
-				<integer>0</integer>
-				<key>argument</key>
-				<integer>0</integer>
-				<key>hotkey</key>
-				<integer>35</integer>
-				<key>hotmod</key>
-				<integer>262144</integer>
-				<key>hotstring</key>
-				<string>P</string>
-				<key>leftcursor</key>
+				<key>concurrently</key>
 				<false/>
-				<key>modsmode</key>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_launcher.py --archive "{query}"</string>
+				<key>scriptargtype</key>
 				<integer>0</integer>
-				<key>relatedAppsMode</key>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
 				<integer>0</integer>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.trigger.hotkey</string>
+			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
-			<string>EFEB9D23-17CE-4FAF-8A7D-F9A1D8134606</string>
+			<string>2E5BB5E1-D7FC-495C-A76E-BB711EB8A469</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -649,29 +718,6 @@
 			<string>94B5A64D-BE8D-43B8-847A-F84CA4214C44</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>python pocket_launcher.py --archive "{query}"</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>2E5BB5E1-D7FC-495C-A76E-BB711EB8A469</string>
-			<key>version</key>
-			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -717,29 +763,6 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python pocket_launcher.py --website "{query}"</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>FA9D7CD0-C30A-4E9C-A595-869F6868675F</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
 				<string>python pocket_launcher.py --favorite "{query}"</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
@@ -752,6 +775,29 @@
 			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
 			<string>66657675-959F-4E58-B297-137D0FDEF7A7</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python pocket_launcher.py --website "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>FA9D7CD0-C30A-4E9C-A595-869F6868675F</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -792,7 +838,7 @@
 			<key>xpos</key>
 			<integer>900</integer>
 			<key>ypos</key>
-			<integer>390</integer>
+			<integer>480</integer>
 		</dict>
 		<key>3938B0F8-42C1-492D-AA4E-5A79E9C04EDE</key>
 		<dict>
@@ -806,7 +852,7 @@
 			<key>xpos</key>
 			<integer>100</integer>
 			<key>ypos</key>
-			<integer>670</integer>
+			<integer>720</integer>
 		</dict>
 		<key>56419563-8603-4FF1-AF09-679ED8513E7E</key>
 		<dict>
@@ -833,7 +879,7 @@
 			<key>xpos</key>
 			<integer>640</integer>
 			<key>ypos</key>
-			<integer>1090</integer>
+			<integer>930</integer>
 		</dict>
 		<key>94B5A64D-BE8D-43B8-847A-F84CA4214C44</key>
 		<dict>
@@ -855,13 +901,6 @@
 			<integer>310</integer>
 			<key>ypos</key>
 			<integer>320</integer>
-		</dict>
-		<key>CF8C3438-7AD9-4AE3-9462-3F17FC50809B</key>
-		<dict>
-			<key>xpos</key>
-			<integer>640</integer>
-			<key>ypos</key>
-			<integer>270</integer>
 		</dict>
 		<key>DD756B33-7215-4C87-8D5F-4F8D289A38EE</key>
 		<dict>
@@ -885,6 +924,13 @@
 			<integer>310</integer>
 			<key>ypos</key>
 			<integer>520</integer>
+		</dict>
+		<key>E9833C06-709B-413C-AB72-9BA5063ABCEF</key>
+		<dict>
+			<key>xpos</key>
+			<integer>640</integer>
+			<key>ypos</key>
+			<integer>270</integer>
 		</dict>
 		<key>EF5AC573-40A1-4E9F-A329-B47B95337A5C</key>
 		<dict>
@@ -911,9 +957,11 @@
 			<key>xpos</key>
 			<integer>640</integer>
 			<key>ypos</key>
-			<integer>930</integer>
+			<integer>1070</integer>
 		</dict>
 	</dict>
+	<key>version</key>
+	<string></string>
 	<key>webaddress</key>
 	<string>https://github.com/fniephaus/alfred-pocket/</string>
 </dict>

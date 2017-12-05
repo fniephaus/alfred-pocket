@@ -1,6 +1,7 @@
 from urllib2 import URLError
 from pocket_api import Pocket, AuthException, PocketException
 from workflow import Workflow, PasswordNotFound
+from workflow.notify import notify
 
 import config
 
@@ -10,6 +11,9 @@ LINK_LIMIT = 2000
 def main():
     wf = Workflow()
     error = None
+    verbose = '--verbose' in wf.args
+    if verbose:
+        notify('Pocket Refreshing...', 'Please wait a moment.')
     try:
         # initialize client
         access_token = wf.get_password('pocket_access_token')
@@ -43,13 +47,13 @@ def main():
             if links[item_id]['status'] == '2':
                 del links[item_id]
 
-        wf.cache_data('pocket_since', next_since)
         wf.cache_data('pocket_list', links)
+        wf.cache_data('pocket_since', next_since)
         tags = list(set([t for l in links.values() if 'tags' in l
                         for t in l['tags'].keys()]))
         wf.cache_data('pocket_tags', tags)
 
-    except (AuthException, URLError, PocketException, PasswordNotFound), e:
+    except (AuthException, URLError, PocketException, PasswordNotFound) as e:
         error = type(e).__name__
         wf.cache_data('pocket_error', error)
 
@@ -62,6 +66,9 @@ def main():
     else:
         # delete error file if it exists
         wf.cache_data('pocket_error', None)
+
+    if verbose:
+        notify('Refresh Success!', 'You are ready to explore.')
 
 
 if __name__ == '__main__':

@@ -70,8 +70,9 @@ def main(_):
                     valid=False
                 )
             elif user_input[0] == 'in:mytags':
-                tags = WF.cached_data('pocket_tags', max_age=120)
+                tags = WF.cached_data('pocket_tags', max_age=0)
                 if tags:
+                    # Just use the first user input as tag content.
                     user_tag = user_input[1].strip('#')
                     if user_tag in tags:
                         links = [l for l in links.values()
@@ -97,8 +98,14 @@ def main(_):
                 add_items(links, user_input)
 
         # Update Pocket list in background
-        if not WF.cached_data_fresh('pocket_list', max_age=10):
+        if not WF.cached_data_fresh('pocket_list', max_age=600):
             refresh_list()
+            WF.add_item('Refreshing...', valid=False,
+                        icon=get_icon('refreshing'))
+        else:
+            # For Refresh Action
+            WF.add_item('Force Refresh', valid=True,
+                        arg='#pocket:refresh#', icon=get_icon('refresh'))
 
     except PasswordNotFound:  # pragma: no cover
         subprocess.call(['open', get_auth_url()])
@@ -116,13 +123,13 @@ def register_magic_arguments():
 
 
 def get_links(tries=10):
-    links = WF.cached_data('pocket_list', max_age=120)
+    links = WF.cached_data('pocket_list', max_age=0)
 
     # Wait for data
     while links is None:
         refresh_list()
         sleep(0.5)
-        links = WF.cached_data('pocket_list', max_age=120)
+        links = WF.cached_data('pocket_list', max_age=0)
         if tries > 0:
             tries -= 1
         else:
@@ -160,11 +167,12 @@ def add_items(links, user_input):
 
             if (user_input.lower() in title.lower() or
                     user_input.lower() in subtitle.lower()):
+                # use uel as uid to help alfred sort the links.
                 WF.add_item(
                     title,
                     subtitle,
-                    arg=link['given_url'],
                     uid=link['given_url'],
+                    arg=link['given_url'],
                     valid=True
                 )
     if WF._items == []:
@@ -225,9 +233,11 @@ def authorize():  # pragma: no cover
             WF.logger.error('RateLimitException')
 
 
-def refresh_list():  # pragma: no cover
+def refresh_list(verbose=None):  # pragma: no cover
     if not is_running('pocket_refresh'):
         cmd = ['/usr/bin/python', WF.workflowfile('pocket_refresh.py')]
+        if verbose:
+            cmd.append('--verbose')
         run_in_background('pocket_refresh', cmd)
 
 

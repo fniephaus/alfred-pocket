@@ -31,10 +31,13 @@ FIREFOX_URL = """\
 osascript -e 'tell application "Firefox" to activate\n \
   set old_clipboard to the clipboard\n \
   tell application "System Events"\n \
+      repeat until (exists window 1 of process "Firefox") \n \
+        delay 0.1 \n \
+      end repeat\n \
       keystroke "l" using command down\n \
       keystroke "c" using command down\n \
   end tell\n \
-  delay 0.5\n \
+  delay .5\n \
   set new_clipboard to the clipboard\n \
   set the clipboard to old_clipboard\n \
   return new_clipboard' \
@@ -99,10 +102,12 @@ def get_browser_link(browser):
         url_script = SAFARI_URL
         title_script = SAFARI_TITLE
     elif browser == 'Firefox':
-        url_script = SAFARI_URL
-        title_script = SAFARI_TITLE
+        url_script = FIREFOX_URL
+        title_script = FIREFOX_TITLE
+
     url = os.popen(url_script).readline()
     title = os.popen(title_script).readline()
+
     if url is None or title is None:
         return None
     return {

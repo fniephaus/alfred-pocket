@@ -27,6 +27,23 @@ SAFARI_TITLE = """\
 osascript -e 'tell application "Safari.app" to return name of front document'\
 """
 
+FIREFOX_URL = """\
+osascript -e 'tell application "Firefox" to activate\n \
+  set old_clipboard to the clipboard\n \
+  tell application "System Events"\n \
+      keystroke "l" using command down\n \
+      keystroke "c" using command down\n \
+  end tell\n \
+  delay 0.5\n \
+  set new_clipboard to the clipboard\n \
+  set the clipboard to old_clipboard\n \
+  return new_clipboard' \
+"""
+
+FIREFOX_TITLE = """\
+osascript -e 'tell application "Firefox" to return name of front window'\
+"""
+
 
 def main(_):
     args = parse_args(WF.args)
@@ -42,7 +59,7 @@ def main(_):
         tags += [str(s.strip().strip('#')) for s in args.tags.split(',')]
 
     current_app = frontmost_app()
-    if current_app in ['Google Chrome', 'Safari']:
+    if current_app in ['Google Chrome', 'Safari', 'Firefox']:
         link = get_browser_link(current_app)
         if not add_method(link, tags):
             print "%s link invalid." % current_app
@@ -79,6 +96,9 @@ def get_browser_link(browser):
         url_script = CHROME_URL
         title_script = CHROME_TITLE
     elif browser == 'Safari':
+        url_script = SAFARI_URL
+        title_script = SAFARI_TITLE
+    elif browser == 'Firefox':
         url_script = SAFARI_URL
         title_script = SAFARI_TITLE
     url = os.popen(url_script).readline()
@@ -125,6 +145,7 @@ def add_and_archive_link(link, tags):
 
     POCKET.archive(result['item']['item_id'], wait=False)
     return True
+
 
 if __name__ == '__main__':
     WF.run(main)

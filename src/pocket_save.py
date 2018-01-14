@@ -13,6 +13,24 @@ FRONTMOST_APP = """\
 osascript -e 'application (path to frontmost application as text)'\
 """
 BROWSER_SCRIPTS = {
+    'Firefox': {
+        'url': """\
+osascript -e 'tell application "Firefox" to activate\n \
+  set old_clipboard to the clipboard\n \
+  tell application "System Events"\n \
+      repeat until (exists window 1 of process "Firefox") \n \
+        delay 0.1 \n \
+      end repeat\n \
+      keystroke "l" using command down\n \
+      keystroke "c" using command down\n \
+  end tell\n \
+  delay .5\n \
+  set new_clipboard to the clipboard\n \
+  set the clipboard to old_clipboard\n \
+  return new_clipboard' \
+""",
+        'title': """osascript -e 'tell application "Firefox" to return name of front window'"""
+    },
     'Google Chrome': {
         'url': """osascript -e 'tell application "Google Chrome" to return URL of active tab of front window'""",
         'title': """osascript -e 'tell application "Google Chrome" to return title of active tab of front window'""",

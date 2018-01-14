@@ -12,20 +12,36 @@ POCKET = Pocket(config.CONSUMER_KEY, WF.get_password('pocket_access_token'))
 FRONTMOST_APP = """\
 osascript -e 'application (path to frontmost application as text)'\
 """
-CHROME_URL = """\
-osascript -e 'tell application "Google Chrome" to return URL of active tab of \
-front window'\
-"""
-CHROME_TITLE = """\
-osascript -e 'tell application "Google Chrome" to return title of active tab \
-of front window'\
-"""
-SAFARI_URL = """\
-osascript -e 'tell application "Safari.app" to return URL of front document'\
-"""
-SAFARI_TITLE = """\
-osascript -e 'tell application "Safari.app" to return name of front document'\
-"""
+BROWSER_SCRIPTS = {
+    'Google Chrome': {
+        'url': """osascript -e 'tell application "Google Chrome" to return URL of active tab of front window'""",
+        'title': """osascript -e 'tell application "Google Chrome" to return title of active tab of front window'""",
+    },
+    'Google Chrome Canary': {
+        'url': """osascript -e 'tell application "Google Chrome Canary" to return URL of active tab of front window'""",
+        'title': """osascript -e 'tell application "Google Chrome Canary" to return title of active tab of front window'""",
+    },
+    'Chromium': {
+        'url': """osascript -e 'tell application "Chromium" to return URL of active tab of front window'""",
+        'title': """osascript -e 'tell application "Chromium" to return title of active tab of front window'""",
+    },
+    'Vivaldi': {
+        'url': """osascript -e 'tell application "Vivaldi" to return URL of active tab of front window'""",
+        'title': """osascript -e 'tell application "Vivaldi" to return title of active tab of front window'""",
+    },
+    'Safari': {
+        'url': """osascript -e 'tell application "Safari" to return URL of front document'""",
+        'title': """osascript -e 'tell application "Safari" to return name of front document'""",
+    },
+    'Safari Technology Preview': {
+        'url': """osascript -e 'tell application "Safari Technology Preview" to return URL of front document'""",
+        'title': """osascript -e 'tell application "Safari Technology Preview" to return name of front document'""",
+    },
+    'Webkit': {
+        'url': """osascript -e 'tell application "Webkit" to return URL of front document'""",
+        'title': """osascript -e 'tell application "Webkit" to return name of front document'""",
+    },
+}
 
 
 def main(_):
@@ -42,21 +58,21 @@ def main(_):
         tags += [str(s.strip().strip('#')) for s in args.tags.split(',')]
 
     current_app = frontmost_app()
-    if current_app in ['Google Chrome', 'Safari']:
-        link = get_browser_link(current_app)
+    link = get_browser_link(current_app)
+    if link is not None:
         if not add_method(link, tags):
             print "%s link invalid." % current_app
             return
         print "%s link added to Pocket." % current_app
         WF.clear_cache()
         return
-    else:
-        link = get_link_from_clipboard()
-        if link is not None:
-            add_method(link, tags)
-            print 'Clipboard link added to Pocket.'
-            WF.clear_cache()
-            return
+
+    link = get_link_from_clipboard()
+    if link is not None:
+        add_method(link, tags)
+        print 'Clipboard link added to Pocket.'
+        WF.clear_cache()
+        return
 
     print 'No link found!'
 
@@ -74,15 +90,11 @@ def frontmost_app():
 
 
 def get_browser_link(browser):
-    url = title = url_script = title_script = None
-    if browser == 'Google Chrome':
-        url_script = CHROME_URL
-        title_script = CHROME_TITLE
-    elif browser == 'Safari':
-        url_script = SAFARI_URL
-        title_script = SAFARI_TITLE
-    url = os.popen(url_script).readline()
-    title = os.popen(title_script).readline()
+    scripts = BROWSER_SCRIPTS.get(browser)
+    if scripts is None:
+        return None
+    url = os.popen(scripts['url']).readline()
+    title = os.popen(scripts['title']).readline()
     if url is None or title is None:
         return None
     return {
@@ -125,6 +137,7 @@ def add_and_archive_link(link, tags):
 
     POCKET.archive(result['item']['item_id'], wait=False)
     return True
+
 
 if __name__ == '__main__':
     WF.run(main)

@@ -177,7 +177,6 @@ class PocketTestCase(unittest.TestCase):
         pocket.WF._items = []
         pocket.main(None)
         self.assertEquals(len(pocket.WF._items), 3)
-        self.assertTrue('0' in pocket.WF._items[0].status)
 
     def test_main_single_tag(self):
         CachedData['__workflow_update_status'] = {

@@ -87,10 +87,8 @@ def main(_):
                                         valid=False)
             elif user_input[0] == 'in:random':
                 unread_items = [l for l in links.values() if item_matches('mylist', l)]
-                if len(links) < 10:
-                    links = random.sample(unread_items, len(links))
-                else:
-                    links = random.sample(unread_items, 10)
+                nb_article_wanted = 10 if len(links) >= 10 else len(links)
+                links = random.sample(unread_items, nb_article_wanted)
                 add_items(links, ' '.join(user_input[2:]))
             else:
                 if user_input[0].startswith('in:'):

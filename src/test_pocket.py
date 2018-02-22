@@ -164,6 +164,21 @@ class PocketTestCase(unittest.TestCase):
         self.assertEquals(len(pocket.WF._items), 1)
         self.assertTrue('interesting' in pocket.WF._items[0].title)
 
+    def test_main_random(self):
+        CachedData['__workflow_update_status'] = {
+            'available': False
+        }
+        CachedData['pocket_list'] = test_data.get_normal()
+        sys.argv = ['pocket.py', 'in:random']
+
+        def send_feedback():
+            pass
+        pocket.WF.send_feedback = send_feedback
+        pocket.WF._items = []
+        pocket.main(None)
+        self.assertEquals(len(pocket.WF._items), 3)
+        self.assertTrue('0' in pocket.WF._items[0].status)
+
     def test_main_single_tag(self):
         CachedData['__workflow_update_status'] = {
             'available': False

@@ -169,7 +169,7 @@ class PocketTestCase(unittest.TestCase):
             'available': False
         }
         CachedData['pocket_list'] = test_data.get_normal()
-        sys.argv = ['pocket.py', 'in:random']
+        sys.argv = ['pocket.py', 'in:random ']
 
         def send_feedback():
             pass

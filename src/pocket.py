@@ -1,6 +1,7 @@
 import datetime
 import subprocess
 from time import sleep
+import random
 
 from pocket_api import Pocket, RateLimitException
 from workflow import Workflow, PasswordNotFound
@@ -11,7 +12,7 @@ import config
 
 
 CATEGORIES = ['My List', 'Favorites', 'My Tags', 'Archive', 'Articles',
-              'Videos', 'Images']
+              'Videos', 'Images', 'Random']
 ACTIONS = [x.replace(' ', '').lower() for x in CATEGORIES]
 REQUIRED_KEYS = ['item_id', 'given_title', 'given_url', 'time_added']
 
@@ -84,6 +85,11 @@ def main(_):
                             WF.add_item('#%s' % tag,
                                         autocomplete='in:mytags #%s ' % tag,
                                         valid=False)
+            elif user_input[0] == 'in:random':
+                unread_items = [l for l in links.values() if item_matches('mylist', l)]
+                nb_article_wanted = 10 if len(unread_items) >= 10 else len(unread_items)
+                links = random.sample(unread_items, nb_article_wanted)
+                add_items(links, ' '.join(user_input[2:]))
             else:
                 if user_input[0].startswith('in:'):
                     category = user_input[0][3:]

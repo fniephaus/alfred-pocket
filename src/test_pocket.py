@@ -240,14 +240,14 @@ class PocketTestCase(unittest.TestCase):
         CachedData.clear()
         self.assertEquals(pocket.get_links(tries=0), {})
 
-    def test_add_items(self):
+    def test_filter_and_add_items(self):
         self.assertEquals(len(pocket.WF._items), 0)
-        pocket.add_items(links={}, user_input='')
+        pocket.filter_and_add_items(links={}, user_input='')
         self.assertEquals(len(pocket.WF._items), 1)
         self.assertEquals(pocket.WF._items[0].title, 'No links found for "".')
 
         pocket.WF._items = []
-        pocket.add_items(links=[{
+        pocket.filter_and_add_items(links=[{
             'item_id': '1',
             'given_title': 'test',
             'given_url': 'url',
@@ -257,7 +257,7 @@ class PocketTestCase(unittest.TestCase):
         self.assertEquals(pocket.WF._items[0].title, 'test')
 
         pocket.WF._items = []
-        pocket.add_items(links=[{
+        pocket.filter_and_add_items(links=[{
             'item_id': '1',
             'given_title': 'test',
             'resolved_title': 'test',

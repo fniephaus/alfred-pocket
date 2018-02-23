@@ -77,7 +77,7 @@ def main(_):
                     if user_tag in tags:
                         links = [l for l in links.values()
                                  if 'tags' in l and user_tag in l['tags']]
-                        add_items(links, ' '.join(user_input[2:]))
+                        filter_and_add_items(links, ' '.join(user_input[2:]))
                     else:
                         for tag in tags:
                             if user_tag not in tag:
@@ -86,21 +86,24 @@ def main(_):
                                         autocomplete='in:mytags #%s ' % tag,
                                         valid=False)
             elif user_input[0] == 'in:random':
-                unread_items = [l for l in links.values() if item_matches('mylist', l)]
-                nb_article_wanted = 10 if len(unread_items) >= 10 else len(unread_items)
-                links = random.sample(unread_items, nb_article_wanted)
-                add_items(links, ' '.join(user_input[2:]))
+                search_query = ' '.join(user_input[1:])
+                unread_items = [
+                    l for l in links.values()
+                    if item_matches_category('mylist', l) and
+                    link_matches_filter(search_query, l)]
+                links = random.sample(unread_items, min(10, len(unread_items)))
+                filter_and_add_items(links, '')  # disable filter here
             else:
                 if user_input[0].startswith('in:'):
                     category = user_input[0][3:]
                     user_input = ' '.join(user_input[1:])
                     if category in ACTIONS:
                         links = [l for l in links.values()
-                                 if item_matches(category, l)]
+                                 if item_matches_category(category, l)]
                 else:
                     user_input = ' '.join(user_input)
                     links = links.values()
-                add_items(links, user_input)
+                filter_and_add_items(links, user_input)
 
         # Update Pocket list in background
         if not WF.cached_data_fresh('pocket_list', max_age=10):
@@ -136,7 +139,7 @@ def get_links(tries=10):
     return links
 
 
-def item_matches(category, item):
+def item_matches_category(category, item):
     if category == 'mylist':
         return item['status'] == '0'
     if category == 'favorites':
@@ -151,7 +154,19 @@ def item_matches(category, item):
         return 'has_image' in item and item['has_image'] == '1'
 
 
-def add_items(links, user_input):
+def link_matches_filter(user_input, link):
+    title = get_title(link)
+    subtitle = get_subtitle(
+        0,
+        link['time_added'],
+        link['given_url'],
+        link['tags'] if 'tags' in link else None
+    )
+    return (user_input.lower() in title.lower() or
+            user_input.lower() in subtitle.lower())
+
+
+def filter_and_add_items(links, user_input):
     links = sorted(links, key=lambda x: int(x['time_added']), reverse=True)
     links_count = len(links)
     for index, link in enumerate(links):

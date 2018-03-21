@@ -10,6 +10,7 @@ from workflow.background import run_in_background, is_running
 from pocket_errors import ERROR_MESSAGES
 import config
 
+from full_text_local import FullText
 
 CATEGORIES = ['My List', 'Favorites', 'My Tags', 'Archive', 'Articles',
               'Videos', 'Images', 'Random']
@@ -90,7 +91,7 @@ def main(_):
                 unread_items = [
                     l for l in links.values()
                     if item_matches_category('mylist', l) and
-                    link_matches_filter(search_query, l)]
+                       link_matches_filter(search_query, l)]
                 links = random.sample(unread_items, min(10, len(unread_items)))
                 filter_and_add_items(links, '')  # disable filter here
             else:
@@ -121,6 +122,7 @@ def register_magic_arguments():
     def delete_access_token():
         WF.delete_password('pocket_access_token')
         return 'Access token has been deleted successfully.'
+
     WF.magic_arguments['deauth'] = delete_access_token
 
 
@@ -167,8 +169,14 @@ def link_matches_filter(user_input, link):
 
 
 def filter_and_add_items(links, user_input):
+    #TODO remove
+    refresh_list()
     links = sorted(links, key=lambda x: int(x['time_added']), reverse=True)
     links_count = len(links)
+    results = FullText.get_instance().search(unicode(user_input, "utf-8") if not isinstance(user_input, unicode)
+                                             else user_input)
+    full_text_search_urls = {str(result['url']) for result in results}
+
     for index, link in enumerate(links):
         if all(x in link for x in REQUIRED_KEYS):
             title = get_title(link)
@@ -180,7 +188,8 @@ def filter_and_add_items(links, user_input):
             )
 
             if (user_input.lower() in title.lower() or
-                    user_input.lower() in subtitle.lower()):
+                user_input.lower() in subtitle.lower()) or \
+                    link['given_url'] in full_text_search_urls:
                 WF.add_item(
                     title,
                     subtitle,
@@ -188,7 +197,7 @@ def filter_and_add_items(links, user_input):
                     uid=link['given_url'],
                     valid=True
                 )
-    if WF._items == []:
+    if not WF._items:
         WF.add_item(
             'No links found for "%s".' % user_input,
             valid=False

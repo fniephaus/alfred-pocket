@@ -169,8 +169,6 @@ def link_matches_filter(user_input, link):
 
 
 def filter_and_add_items(links, user_input):
-    #TODO remove
-    refresh_list()
     links = sorted(links, key=lambda x: int(x['time_added']), reverse=True)
     links_count = len(links)
     results = FullText.get_instance().search(unicode(user_input, "utf-8") if not isinstance(user_input, unicode)

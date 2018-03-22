@@ -4,6 +4,7 @@ import subprocess
 from pocket_api import Pocket, PocketException
 from pocket import refresh_list
 from workflow import Workflow
+from full_text_local import FullText
 
 import config
 
@@ -104,6 +105,7 @@ def delete_item(url):
     try:
         pocket_instance.delete(item_id, wait=False)
         remove_from_cache(item_id)
+        FullText.get_instance().del_page(url)
         return 'Link deleted'
     except PocketException:
         return 'Connection error'

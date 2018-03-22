@@ -6,12 +6,9 @@ from whoosh.analysis import RegexAnalyzer
 import os
 import urllib2
 from urlparse import urlparse
-import logging
 import time
 import re
 import threading
-
-logging.basicConfig(filename='fulltext.log', level=logging.INFO)
 
 
 class FullText(object):
@@ -90,7 +87,6 @@ class FullText(object):
         return FullText.get_instance().search(url, key='url')
 
     def add_page(self, url, title=None):
-        logging.info(str(url))
         url = FullText.convert_to_unicode(url)
         if FullText.get_instance().search(url, key='url'):
             return
@@ -98,16 +94,12 @@ class FullText(object):
         try:
             html = FullText.get_html(url)
             page = FullText.get_text_from_html(html, url)
-            if 'err' in page:
-                logging.info(str(page['err']))
-            self.add_document(title or page['title'], url, page['body'])
-
-            return True
+            if page['title'] and page['body']:
+                self.add_document(title or page['title'], url, page['body'])
+                return True
         except urllib2.HTTPError, e:
             print e.fp.read()
-            logging.info(e.fp.read())
         except Exception as e:
-            logging.info(e)
             print(e)
         return False
 
@@ -129,9 +121,7 @@ class FullText(object):
             html = urllib2.urlopen(request).read()
         except urllib2.HTTPError, e:
             print e.fp.read()
-            logging.info(e.fp.read())
         except Exception as e:
-            logging.info(e)
             print(e)
         else:
             return html

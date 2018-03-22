@@ -171,8 +171,7 @@ def link_matches_filter(user_input, link):
 def filter_and_add_items(links, user_input):
     links = sorted(links, key=lambda x: int(x['time_added']), reverse=True)
     links_count = len(links)
-    results = FullText.get_instance().search(unicode(user_input, "utf-8") if not isinstance(user_input, unicode)
-                                             else user_input)
+    results = FullText.get_instance().search(user_input)
     full_text_search_urls = {str(result['url']) for result in results}
 
     for index, link in enumerate(links):

@@ -21,7 +21,6 @@ class FullText(object):
     if not os.path.exists(indexdir):
         os.mkdir(indexdir)
     instance = None
-    extract_text = re.compile(r'<.*?>(.*?)</.*?>', re.MULTILINE)
     extract_title = re.compile(r'<title[^>]*.*?>(.*?)</title>', re.I)
     remove_p_tag = re.compile(r'<(/*)(p|strong|b)>', re.I)
     remove_a_tag = re.compile(r'<a.*?>.*?</a>', re.I)
@@ -61,6 +60,7 @@ class FullText(object):
             writer.commit()
 
     def search(self, q, key='content'):
+        q = FullText.convert_to_unicode(q)
         assert key in {'content', 'url', 'title'}
         if key == 'url':
             key = 'path'
@@ -68,11 +68,10 @@ class FullText(object):
         with self.ix.searcher() as searcher:
             q = q.lower()
             results = searcher.find(key, q)
-            if not results:
-                words = q.split()
-                if len(words) > 1:
-                    q = ' '.join(q.split()[:-1])
-                    results = searcher.find(key, q)
+            if not results and (not q.endswith(' ') and not q.endswith('*')):
+                q += '*'
+                results = searcher.find(key, q)
+
             for line in results:
                 item = {
                     'title': line['title'],
@@ -84,7 +83,7 @@ class FullText(object):
 
     @staticmethod
     def has_link(url):
-        url = unicode(url, "utf-8") if not isinstance(url, unicode) else url
+        url = FullText.convert_to_unicode(url)
         return FullText.get_instance().search(url, key='url')
 
     def add_page(self, url, title=None):
@@ -166,11 +165,11 @@ class FullText(object):
 
 
 if __name__ == '__main__':
-    test_url = u'https://www.drinkingcaffeine.com/writing-a-website-in-pure-javascript-is-a-terrible-idea/'
+    test_url = u'https://askubuntu.com/questions/798516/what-tool-adds-unlimited-clipboard-and-searchable-retrieval'
     FullText.get_instance().del_page(test_url)
 
     FullText.get_instance().add_page(test_url)
     start = time.time()
-    for article in FullText.get_instance().search(u'from scratch in pure JavaScript '):
-        print(article['content'])
+    for article in FullText.get_instance().search(u'clipboard manag'):
+        print(article['url'])
     print(time.time() - start)

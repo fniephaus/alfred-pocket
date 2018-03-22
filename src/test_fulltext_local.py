@@ -13,11 +13,26 @@ class PocketFullTextLocalTestCase(unittest.TestCase):
     def test_refresh(self):
         cases = {
             u'https://askubuntu.com/questions/798516/what-tool-adds-unlimited-clipboard-and-searchable-retrieval':
-                [u'ALFRED Powerpack', u'clipboard manager'],
+                [
+                    u'ALFRED Powerpack',
+                    u'ALFRED Power',
+                    u'clipboard manager',
+                    u'clipboard manag',
+                    u'clipboard man',
+                ],
             u'https://www.zhihu.com/question/20186320':
-                [u'Pocket', u'有自己的图片服务器'],
+                [
+                    u'Pocket',
+                    u'有自己的图片服务器',
+                    u'有自己的图片服务',
+                ],
             u'https://www.quora.com/What-does-Andrew-Ng-think-about-Deep-Learning':
-                [u'algorithms that can take advantage', u'AI made tremendous'],
+                [
+                    u'algorithms that can take advantage',
+                    u'algorithms that can take advant',
+                    u'AI made tremendous',
+                    u'AI made tremend',
+                ],
 
         }
         for url, keywords in cases.items():

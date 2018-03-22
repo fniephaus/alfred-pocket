@@ -142,6 +142,7 @@ class FullText(object):
             title = re.findall(FullText.extract_title, html)
             html = re.sub(FullText.remove_a_tag, '', html)
             # print(html)
+
             # TODO removing scripts from some dynamic websites like quora.com will remove all useful text
             # TODO using headless browser requires too much resource and too many dependencies
             if not FullText.skip_script(url):

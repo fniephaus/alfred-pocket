@@ -166,9 +166,8 @@ class FullText(object):
 
 
 if __name__ == '__main__':
-    test_url = u'https://www.zhhu.com/question/20186320'
+    test_url = u'https://www.drinkingcaffeine.com/writing-a-website-in-pure-javascript-is-a-terrible-idea/'
     FullText.get_instance().del_page(test_url)
-    # test_url = u'https://www.drinkincaffeine.com/writing-a-website-in-pure-javascript-is-a-terrible-idea/'
 
     FullText.get_instance().add_page(test_url)
     start = time.time()

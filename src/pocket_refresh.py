@@ -51,6 +51,7 @@ def main():
                          for t in l['tags'].keys()]))
         wf.cache_data('pocket_tags', tags)
 
+        # update fulltext search index
         for item_id in links.keys():
             url = links[item_id]['given_url']
             if not FullText.has_link(url):

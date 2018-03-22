@@ -3,6 +3,8 @@ from pocket_api import Pocket, AuthException, PocketException
 from workflow import Workflow, PasswordNotFound
 
 import config
+import time
+from full_text_local import FullText
 
 LINK_LIMIT = 2000
 
@@ -46,8 +48,15 @@ def main():
         wf.cache_data('pocket_since', next_since)
         wf.cache_data('pocket_list', links)
         tags = list(set([t for l in links.values() if 'tags' in l
-                        for t in l['tags'].keys()]))
+                         for t in l['tags'].keys()]))
         wf.cache_data('pocket_tags', tags)
+
+        # update fulltext search index
+        for item_id in links.keys():
+            url = links[item_id]['given_url']
+            if not FullText.has_link(url):
+                FullText.get_instance().add_page(url)
+            time.sleep(.1)
 
     except (AuthException, URLError, PocketException, PasswordNotFound), e:
         error = type(e).__name__

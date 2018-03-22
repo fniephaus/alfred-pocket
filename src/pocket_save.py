@@ -5,6 +5,7 @@ import urlparse
 from pocket_api import Pocket, InvalidQueryException
 from workflow import Workflow
 import config
+from full_text_local import FullText
 
 WF = Workflow()
 POCKET = Pocket(config.CONSUMER_KEY, WF.get_password('pocket_access_token'))
@@ -82,6 +83,7 @@ def main(_):
             print "%s link invalid." % current_app
             return
         print "%s link added to Pocket." % current_app
+        FullText.get_instance().add_page(link['url'])
         WF.clear_cache()
         return
 
@@ -89,6 +91,7 @@ def main(_):
     if link is not None:
         add_method(link, tags)
         print 'Clipboard link added to Pocket.'
+        FullText.get_instance().add_page(link['url'])
         WF.clear_cache()
         return
 

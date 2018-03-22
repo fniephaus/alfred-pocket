@@ -13,7 +13,7 @@ class PocketFullTextLocalTestCase(unittest.TestCase):
     def test_refresh(self):
         cases = {
             u'https://askubuntu.com/questions/798516/what-tool-adds-unlimited-clipboard-and-searchable-retrieval':
-                [u'Alfred Powerpack', u'clipboard manager'],
+                [u'ALFRED Powerpack', u'clipboard manager'],
             u'https://www.zhihu.com/question/20186320':
                 [u'Pocket', u'有自己的图片服务器'],
             u'https://www.quora.com/What-does-Andrew-Ng-think-about-Deep-Learning':

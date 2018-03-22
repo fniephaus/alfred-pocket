@@ -59,7 +59,7 @@ class FullText(object):
             return
         with self.lock:
             writer = self.ix.writer()
-            writer.add_document(title=title, path=url, content="%s, %s" % (title, content))
+            writer.add_document(title=title, path=url, content="%s, %s" % (title.lower(), content.lower()))
             writer.commit()
 
     def search(self, q, key='content'):
@@ -68,6 +68,7 @@ class FullText(object):
             key = 'path'
         results_list = []
         with self.ix.searcher() as searcher:
+            q = q.lower()
             results = searcher.find(key, q)
             if not results:
                 words = q.split()

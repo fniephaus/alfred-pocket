@@ -35,6 +35,7 @@ class FullText(object):
 
     def __init__(self):
 
+        # support Chinese and English
         analyzer = RegexAnalyzer(ur"([\u4e00-\u9fa5])|(\w+(\.?\w+)*)")
         schema = Schema(title=TEXT(stored=True, analyzer=analyzer), path=ID(stored=True),
                         content=TEXT(stored=True, analyzer=analyzer))

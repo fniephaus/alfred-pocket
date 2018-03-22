@@ -5,6 +5,7 @@ from whoosh.fields import *
 from whoosh.analysis import RegexAnalyzer
 import os
 import urllib2
+from urlparse import urlparse
 import logging
 import time
 import re
@@ -14,6 +15,10 @@ logging.basicConfig(filename='fulltext.log', level=logging.INFO)
 
 
 class FullText(object):
+    js_websites = {
+        'www.quora.com',
+    }
+
     indexdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'indexdir/')
     index_name = 'alfred-pocket'
     if not os.path.exists(indexdir):
@@ -28,6 +33,8 @@ class FullText(object):
     remove_all_tags = re.compile(r'<[^>]*>', re.I)
     remove_linebreak = re.compile(r'(\n)|(\r\n)', re.I)
     lock = threading.Lock()
+
+    js_websites = js_websites | {'.'.join(x.split('.')[1:]) for x in js_websites}
 
     def __init__(self):
 
@@ -62,6 +69,11 @@ class FullText(object):
         results_list = []
         with self.ix.searcher() as searcher:
             results = searcher.find(key, q)
+            if not results:
+                words = q.split()
+                if len(words) > 1:
+                    q = ' '.join(q.split()[:-1])
+                    results = searcher.find(key, q)
             for line in results:
                 item = {
                     'title': line['title'],
@@ -84,7 +96,7 @@ class FullText(object):
         title = FullText.convert_to_unicode(title)
         try:
             html = FullText.get_html(url)
-            page = FullText.get_text_from_html(html)
+            page = FullText.get_text_from_html(html, url)
             if 'err' in page:
                 logging.info(str(page['err']))
             self.add_document(title or page['title'], url, page['body'])
@@ -124,14 +136,17 @@ class FullText(object):
             return html
 
     @staticmethod
-    def get_text_from_html(html):
+    def get_text_from_html(html, url):
         try:
             html = FullText.remove_linebreak.sub('', html)
             title = re.findall(FullText.extract_title, html)
             html = re.sub(FullText.remove_a_tag, '', html)
+            # print(html)
             # TODO removing scripts from some dynamic websites like quora.com will remove all useful text
-            # TODO using headless browser requires too much resources
-            # html = re.sub(FullText.remove_script_tag, '', html)
+            # TODO using headless browser requires too much resource and too many dependencies
+            if not FullText.skip_script(url):
+                html = re.sub(FullText.remove_script_tag, '', html)
+
             html = re.sub(FullText.remove_comments, '', html)
 
             html = FullText.remove_all_tags.sub('', html)
@@ -151,12 +166,16 @@ class FullText(object):
     def convert_to_unicode(text):
         return unicode(text, "utf-8") if not isinstance(text, unicode) and text is not None else text
 
+    @staticmethod
+    def skip_script(url):
+        return urlparse(url).netloc in FullText.js_websites
+
 
 if __name__ == '__main__':
-    url = u'https://www.zhihu.com/question/20186320'
+    url = u'https://www.drinkingcaffeine.com/writing-a-website-in-pure-javascript-is-a-terrible-idea/'
     FullText.get_instance().del_page(url)
     FullText.get_instance().add_page(url)
     start = time.time()
-    for article in FullText.get_instance().search(u'有自己的图片服务器'):
+    for article in FullText.get_instance().search(u'more time consuming'):
         print(article['content'])
     print(time.time() - start)

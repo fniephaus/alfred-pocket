@@ -94,10 +94,11 @@ class FullText(object):
         title = FullText.convert_to_unicode(title)
         try:
             html = FullText.get_html(url)
-            page = FullText.get_text_from_html(html, url)
-            if page['title'] and page['body']:
-                self.add_document(title or page['title'], url, page['body'])
-                return True
+            if html:
+                page = FullText.get_text_from_html(html, url)
+                if page['title'] and page['body']:
+                    self.add_document(title or page['title'], url, page['body'])
+                    return True
         except urllib2.HTTPError, e:
             print e.fp.read()
         except Exception as e:
@@ -119,7 +120,7 @@ class FullText(object):
         }
         try:
             request = urllib2.Request(url, headers=ua_headers)
-            html = urllib2.urlopen(request).read()
+            html = urllib2.urlopen(request, timeout=15).read()
         except urllib2.HTTPError, e:
             print e.fp.read()
         except Exception as e:
@@ -165,10 +166,12 @@ class FullText(object):
 
 
 if __name__ == '__main__':
-    url = u'https://www.drinkingcaffeine.com/writing-a-website-in-pure-javascript-is-a-terrible-idea/'
-    FullText.get_instance().del_page(url)
-    FullText.get_instance().add_page(url)
+    test_url = u'https://www.zhhu.com/question/20186320'
+    FullText.get_instance().del_page(test_url)
+    # test_url = u'https://www.drinkincaffeine.com/writing-a-website-in-pure-javascript-is-a-terrible-idea/'
+
+    FullText.get_instance().add_page(test_url)
     start = time.time()
-    for article in FullText.get_instance().search(u'more time consuming'):
+    for article in FullText.get_instance().search(u'from scratch in pure JavaScript '):
         print(article['content'])
     print(time.time() - start)

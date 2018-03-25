@@ -76,7 +76,8 @@ class FullText(object):
                 item = {
                     'title': line['title'],
                     'url': line['path'],
-                    'content': line['content']
+                    'content': line['content'],
+                    'rank': line.rank
                 }
                 results_list.append(item)
             return results_list
@@ -171,5 +172,5 @@ if __name__ == '__main__':
     FullText.get_instance().add_page(test_url)
     start = time.time()
     for article in FullText.get_instance().search(u'clipboard manag'):
-        print(article['url'])
+        print(article.keys())
     print(time.time() - start)

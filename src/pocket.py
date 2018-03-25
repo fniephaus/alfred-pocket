@@ -172,7 +172,7 @@ def filter_and_add_items(links, user_input):
     links = sorted(links, key=lambda x: int(x['time_added']), reverse=True)
     links_count = len(links)
     results = FullText.get_instance().search(user_input)
-    full_text_search_urls = {str(result['url']) for result in results}
+    full_text_search_urls = {str(result['url']): result for result in results}
 
     for index, link in enumerate(links):
         if all(x in link for x in REQUIRED_KEYS):
@@ -194,6 +194,7 @@ def filter_and_add_items(links, user_input):
                     uid=link['given_url'],
                     valid=True
                 )
+    WF._items.sort(key=lambda x: full_text_search_urls.get(x.uid, {}).get('rank', -1))
     if not WF._items:
         WF.add_item(
             'No links found for "%s".' % user_input,

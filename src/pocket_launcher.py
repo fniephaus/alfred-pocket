@@ -8,7 +8,7 @@ from workflow import Workflow
 import config
 
 WF = Workflow()
-POCKET_URL = 'http://getpocket.com/a/read/%s'
+POCKET_URL = 'https://app.getpocket.com/read/%s'
 
 
 def execute():

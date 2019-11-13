@@ -27,7 +27,7 @@ class PocketTestCase(unittest.TestCase):
         pocket.WF._items = []
         pocket.main(None)
         # Update available item + categories
-        self.assertEquals(len(pocket.WF._items), 1 + len(pocket.CATEGORIES))
+        self.assertEquals(len(pocket.WF._items), len(pocket.CATEGORIES))
 
     def test_main_search_all(self):
         CachedData['__workflow_update_status'] = {

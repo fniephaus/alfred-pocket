@@ -73,7 +73,7 @@ def main(_):
     # Get tags
     tags = ['alfred']
     if args.tags:
-        tags += [str(s.strip().strip('#')) for s in args.tags.split(',')]
+        tags += [str(s.strip().strip('#').encode('utf-8')) for s in args.tags.split(',')]
 
     current_app = frontmost_app()
     link = get_browser_link(current_app)

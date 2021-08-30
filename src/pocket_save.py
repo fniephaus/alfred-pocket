@@ -43,6 +43,10 @@ osascript -e 'tell application "Firefox" to activate\n \
         'url': """osascript -e 'tell application "Chromium" to return URL of active tab of front window'""",
         'title': """osascript -e 'tell application "Chromium" to return title of active tab of front window'""",
     },
+    'Brave Browser': {
+        'url': """osascript -e 'tell application "Brave Browser" to return URL of active tab of front window'""",
+        'title': """osascript -e 'tell application "Brave Browser" to return title of active tab of front window'""",
+    },
     'Vivaldi': {
         'url': """osascript -e 'tell application "Vivaldi" to return URL of active tab of front window'""",
         'title': """osascript -e 'tell application "Vivaldi" to return title of active tab of front window'""",

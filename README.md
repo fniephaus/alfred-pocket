@@ -16,9 +16,9 @@ This workflow lets you manage your Pocket list with Alfred.
 - Background cache refresh
 - Supports notifications
 - Uses OAuth 2.0 to authorize the workflow
-- Saves your access_token securely in OS X's keychain
+- Saves your access_token securely in macOS keychain
 
 
 ## Credits
 
-This workflow uses [pocket](https://github.com/tapanpandita/pocket) and [alfred-workflow](https://github.com/deanishe/alfred-workflow).
+This workflow uses [pocket](https://github.com/tapanpandita/pocket) and [Alpynist](https://github.com/xilopaint/alpynist).

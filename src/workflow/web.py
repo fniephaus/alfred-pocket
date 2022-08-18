@@ -210,6 +210,7 @@ class Response:
             self.raw = urllib.request.urlopen(request)
         except urllib.error.HTTPError as err:
             self.error = err
+
             try:
                 self.url = err.geturl()
             # sometimes (e.g. when authentication fails)
@@ -218,6 +219,7 @@ class Response:
             # so no test cover (it isn't important).
             except AttributeError:  # pragma: no cover
                 pass
+
             self.status_code = err.code
         else:
             self.status_code = self.raw.getcode()
@@ -229,6 +231,7 @@ class Response:
             headers = self.raw.info()
             self.transfer_encoding = headers.get_content_charset()
             self.mimetype = headers.get("content-type")
+
             for key in list(headers.keys()):
                 self.headers[key.lower()] = headers.get(key)
 
@@ -289,12 +292,10 @@ class Response:
 
         """
         if not self._content:
-
             # Decompress gzipped content
             if self._gzipped:
                 decoder = zlib.decompressobj(16 + zlib.MAX_WBITS)
                 self._content = decoder.decompress(self.raw.read())
-
             else:
                 self._content = self.raw.read()
 
@@ -315,6 +316,7 @@ class Response:
         """
         if self.encoding:
             return unicodedata.normalize("NFC", str(self.content, self.encoding))
+
         return self.content
 
     def iter_content(self, chunk_size=4096, decode_unicode=False):
@@ -340,10 +342,12 @@ class Response:
 
             for chunk in iterator:
                 data = dec.decode(chunk)
+
                 if data:
                     yield data
 
             data = dec.decode(b"", final=True)
+
             if data:  # pragma: no cover
                 yield data
 
@@ -353,6 +357,7 @@ class Response:
 
             while True:
                 chunk = self.raw.read(chunk_size)
+
                 if not chunk:
                     break
 
@@ -376,6 +381,7 @@ class Response:
         """
         filepath = os.path.abspath(filepath)
         dirname = os.path.dirname(filepath)
+
         if not os.path.exists(dirname):
             os.makedirs(dirname)
 
@@ -412,6 +418,7 @@ class Response:
                 match = re.search(
                     r"""<meta.+charset=["']{0,1}(.+?)["'].*>""", self.content
                 )
+
                 if match:
                     encoding = match.group(1)
 
@@ -422,6 +429,7 @@ class Response:
                 match = re.search(
                     r"""<?xml.+encoding=["'](.+?)["'][^>]*\?>""", self.content
                 )
+
                 if match:
                     encoding = match.group(1)
 
@@ -535,6 +543,7 @@ def request(
     if files:
         if not data:
             data = {}
+
         new_headers, data = _encode_multipart_formdata(data, files)
         headers.update(new_headers)
     elif data and isinstance(data, dict):
@@ -718,8 +727,10 @@ def _encode_multipart_formdata(fields, files):
     for (k, v) in list(fields.items()):
         if isinstance(k, str):
             k = k.encode("utf-8")
+
         if isinstance(v, str):
             v = v.encode("utf-8")
+
         output.append("--" + boundary)
         output.append(f'Content-Disposition: form-data; name="{k}"')
         output.append("")
@@ -729,16 +740,21 @@ def _encode_multipart_formdata(fields, files):
     for k, v in list(files.items()):
         filename = v["filename"]
         content = v["content"]
+
         if "mimetype" in v:
             mimetype = v["mimetype"]
         else:
             mimetype = get_content_type(filename)
+
         if isinstance(k, str):
             k = k.encode("utf-8")
+
         if isinstance(filename, str):
             filename = filename.encode("utf-8")
+
         if isinstance(mimetype, str):
             mimetype = mimetype.encode("utf-8")
+
         output.append("--" + boundary)
         output.append(
             f'Content-Disposition: form-data; name="{k}"; filename="{filename}"'  # noqa

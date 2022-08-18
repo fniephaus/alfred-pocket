@@ -21,32 +21,13 @@ wf = Workflow()
 logger = wf.logger
 
 
-#: Available system sounds from System Preferences > Sound > Sound Effects
-SOUNDS = (
-    "Basso",
-    "Blow",
-    "Bottle",
-    "Frog",
-    "Funk",
-    "Glass",
-    "Hero",
-    "Morse",
-    "Ping",
-    "Pop",
-    "Purr",
-    "Sosumi",
-    "Submarine",
-    "Tink",
-)
-
-
 def notify(title="", text="", sound=""):
-    """Post notification via Notify.app helper.
+    """Post notification via Notificator helper.
 
     Args:
         title (str, optional): Notification title.
         text (str, optional): Notification body text.
-        sound (str, optional): Name of sound to play.
+        sound (str, optional): Name of sound to play (from ``/System/Library/Sounds``).
 
     Raises:
         ValueError: Raised if both ``title`` and ``text`` are empty.

@@ -18,6 +18,7 @@ import subprocess
 import tempfile
 from collections import defaultdict
 from functools import total_ordering
+from itertools import zip_longest
 
 from . import Workflow, web
 
@@ -72,9 +73,11 @@ class Download:
         """
         releases = json.loads(json_resp)
         downloads = []
+
         for release in releases:
             tag = release["tag_name"]
             dupes = defaultdict(int)
+
             try:
                 version = Version(tag)
             except ValueError as err:
@@ -82,10 +85,12 @@ class Download:
                 continue
 
             dls = []
+
             for asset in release.get("assets", []):
                 url = asset.get("browser_download_url")
                 filename = os.path.basename(url)
                 is_match = match_workflow(filename)
+
                 if not is_match:
                     wf.logger.debug("unwanted file: %s", filename)
                     continue
@@ -134,8 +139,10 @@ class Download:
     def alfred_version(self):
         """Minimum Alfred version based on filename extension."""
         is_match = match_workflow(self.filename)
+
         if not is_match or not is_match.group(1):
             return Version("0")
+
         return Version(is_match.group(1))
 
     @property
@@ -172,6 +179,7 @@ class Download:
             or self.prerelease != other.prerelease
         ):
             return False
+
         return True
 
     def __ne__(self, other):
@@ -182,6 +190,7 @@ class Download:
         """Compare Downloads based on version numbers."""
         if self.version != other.version:
             return self.version < other.version
+
         return self.alfred_version < other.alfred_version
 
 
@@ -230,32 +239,40 @@ class Version:
 
     def _parse(self, vstr):
         vstr = str(vstr)
+
         if vstr.startswith("v"):
             is_match = self.match_version(vstr[1:])
         else:
             is_match = self.match_version(vstr)
+
         if not is_match:
             raise ValueError("invalid version number: " + vstr)
 
         version, suffix = is_match.groups()
         parts = self._parse_dotted_string(version)
         self.major = parts.pop(0)
+
         if parts:
             self.minor = parts.pop(0)
+
         if parts:
             self.patch = parts.pop(0)
+
         if parts:
             raise ValueError("version number too long: " + vstr)
 
         if suffix:
             # Build info
             idx = suffix.find("+")
+
             if idx > -1:
                 self.build = suffix[idx + 1 :]
                 suffix = suffix[:idx]
+
             if suffix:
                 if not suffix.startswith("-"):
                     raise ValueError("suffix must start with - : " + suffix)
+
                 self.suffix = suffix[1:]
 
     @staticmethod
@@ -263,10 +280,13 @@ class Version:
         """Parse string ``s`` into list of ints and strings."""
         parsed = []
         parts = string.split(".")
+
         for part in parts:
             if part.isdigit():
                 part = int(part)
+
             parsed.append(part)
+
         return parsed
 
     @property
@@ -278,16 +298,30 @@ class Version:
         """Implement comparison."""
         if not isinstance(other, Version):
             raise ValueError(f"not a Version instance: {other!r}")
+
         if self.tuple[:3] < other.tuple[:3]:
             return True
+
         if self.tuple[:3] == other.tuple[:3]:  # We need to compare suffixes
             if self.suffix and not other.suffix:
                 return True
+
             if other.suffix and not self.suffix:
                 return False
-            return self._parse_dotted_string(self.suffix) < self._parse_dotted_string(
-                other.suffix
-            )
+
+            self_suffix = self._parse_dotted_string(self.suffix)
+            other_suffix = self._parse_dotted_string(other.suffix)
+
+            for s, o in zip_longest(self_suffix, other_suffix):
+                if s is None:  # shorter value wins
+                    return True
+                if o is None:  # longer value loses
+                    return False
+                if isinstance(s, str) != isinstance(o, str):  # type coersion
+                    s, o = str(s), str(o)
+                elif s == o:  # next if the same compare
+                    continue
+                return s < o  # finally compare
 
         return False
 
@@ -295,6 +329,7 @@ class Version:
         """Implement comparison."""
         if not isinstance(other, Version):
             raise ValueError(f"not a Version instance: {other!r}")
+
         return self.tuple == other.tuple
 
     def __ne__(self, other):
@@ -304,13 +339,15 @@ class Version:
     def __gt__(self, other):
         """Implement comparison."""
         if not isinstance(other, Version):
-            raise ValueError(f"not a Version instance: {format(other)!r}")
+            raise ValueError(f"not a Version instance: {other!r}")
+
         return other.__lt__(self)
 
     def __le__(self, other):
         """Implement comparison."""
         if not isinstance(other, Version):
             raise ValueError(f"not a Version instance: {other!r}")
+
         return not other.__lt__(self)
 
     def __ge__(self, other):
@@ -320,10 +357,13 @@ class Version:
     def __str__(self):
         """Return semantic version string."""
         vstr = f"{self.major}.{self.minor}.{self.patch}"
+
         if self.suffix:
             vstr = f"{vstr}-{self.suffix}"
+
         if self.build:
             vstr = f"{vstr}+{self.build}"
+
         return vstr
 
     def __repr__(self):
@@ -397,14 +437,17 @@ def latest_download(dls, alfred_version=None, prereleases=False):
     """Return newest `Download`."""
     alfred_version = alfred_version or os.getenv("alfred_version")
     version = None
+
     if alfred_version:
         version = Version(alfred_version)
 
     dls.sort(reverse=True)
+
     for dl in dls:
         if dl.prerelease and not prereleases:
             wf.logger.debug("ignored prerelease: %s", dl.version)
             continue
+
         if version and dl.alfred_version > version:
             wf.logger.debug(
                 "ignored incompatible (%s > %s): %s",
@@ -444,6 +487,7 @@ def check_update(repo, current_version, prereleases=False, alfred_version=None):
     current = Version(current_version)
 
     dls = get_downloads(repo)
+
     if not dls:
         wf.logger.warning("no valid downloads for %s", repo)
         wf.cache_data(key, no_update)
@@ -486,6 +530,7 @@ def install_update():
         return False
 
     dl = status.get("download")
+
     if not dl:
         wf.logger.info("no download information")
         return False
@@ -510,6 +555,7 @@ if __name__ == "__main__":  # pragma: nocover
         sys.exit(status)
 
     argv = sys.argv[:]
+
     if "-h" in argv or "--help" in argv:
         show_help()
 

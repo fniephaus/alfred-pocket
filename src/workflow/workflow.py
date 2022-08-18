@@ -568,7 +568,7 @@ class JSONSerializer(BaseSerializer):
         :type file_obj: ``file`` object
 
         """
-        return json.dump(obj, file_obj, indent=2, encoding="utf-8")
+        return json.dump(obj, file_obj, indent=2)
 
 
 class PickleSerializer(BaseSerializer):
@@ -759,15 +759,18 @@ class Item:
 
         # Largetype and copytext
         text = self._text()
+
         if text:
             obj_["text"] = text
 
         icon = self._icon()
+
         if icon:
             obj_["icon"] = icon
 
         # Modifiers
         mods = self._modifiers()
+
         if mods:
             obj_["mods"] = mods
 
@@ -781,6 +784,7 @@ class Item:
 
         """
         icon = {}
+
         if self.icon is not None:
             icon["path"] = self.icon
 
@@ -797,6 +801,7 @@ class Item:
 
         """
         text = {}
+
         if self.largetext is not None:
             text["largetype"] = self.largetext
 
@@ -975,7 +980,7 @@ class Modifier:
 
     @property
     def obj(self):
-        """Modifier formatted for JSON serialization for Alfred 3.
+        """Modifier formatted for JSON serialization.
 
         Returns:
             dict: Modifier for serializing to JSON.
@@ -999,6 +1004,7 @@ class Modifier:
             obj_["config"] = self.config
 
         icon = self._icon()
+
         if icon:
             obj_["icon"] = icon
 
@@ -1012,6 +1018,7 @@ class Modifier:
 
         """
         icon = {}
+
         if self.icon is not None:
             icon["path"] = self.icon
 
@@ -1045,16 +1052,19 @@ class Settings(dict):
         self._filepath = filepath
         self._nosave = False
         self._original = {}
+
         if os.path.exists(self._filepath):
             self._load()
         elif defaults:
             for key, val in defaults.items():
                 self[key] = val
+
             self.save()  # save default settings
 
     def _load(self):
         """Load cached settings from JSON file `self._filepath`."""
         data = {}
+
         with LockFile(self._filepath, 0.5):
             with open(self._filepath, "rb") as f:
                 data.update(json.load(f))
@@ -1112,7 +1122,6 @@ class Workflow:
     It provides APIs for accessing the Alfred/workflow environment,
     storing & caching data, using Keychain, and generating Script
     Filter feedback.
-    ``Workflow`` is compatible with Alfred 3+.
     :param default_settings: default workflow settings. If no settings file
         exists, :class:`Workflow.settings` will be pre-populated with
         ``default_settings``.
@@ -1205,8 +1214,10 @@ class Workflow:
         self._rerun = 0
         # Get session ID from environment if present
         self._session_id = os.getenv("_WF_SESSION_ID") or None
+
         if self._session_id:
             self.setvar("_WF_SESSION_ID", self._session_id)
+
         if libraries:
             sys.path = libraries + sys.path
 
@@ -1295,8 +1306,6 @@ class Workflow:
             if value:
                 if key in ("debug", "version_build", "theme_subtext"):
                     value = int(value)
-                # else:
-                #     value = self.decode(value)
 
             data[key] = value
 
@@ -1374,7 +1383,6 @@ class Workflow:
             # environment variable has priority
             if self.alfred_env.get("workflow_version"):
                 version = self.alfred_env["workflow_version"]
-
             # Try `update_settings`
             elif self._update_settings:
                 version = self._update_settings.get("version")
@@ -1384,7 +1392,7 @@ class Workflow:
                 filepath = self.workflowfile("version")
 
                 if os.path.exists(filepath):
-                    with open(filepath, "rb") as fileobj:
+                    with open(filepath, "r", encoding="utf-8") as fileobj:
                         version = fileobj.read()
 
             # info.plist
@@ -1427,15 +1435,19 @@ class Workflow:
         if len(args) and self._capture_args:
             for k, v in self.magic_arguments.items():
                 key = f"{self.magic_prefix}{k}"
+
                 if key in args:
                     msg = v()
 
             if msg:
                 self.logger.debug(msg)
+
                 if not sys.stdout.isatty():  # Show message in Alfred
                     self.add_item(msg, valid=False, icon=ICON_INFO)
                     self.send_feedback()
+
                 sys.exit(0)
+
         return args
 
     @property
@@ -1453,21 +1465,15 @@ class Workflow:
         """
         if self.alfred_env.get("workflow_cache"):
             dirpath = self.alfred_env.get("workflow_cache")
-
         else:
-            dirpath = self._default_cachedir
+            dirpath = os.path.join(
+                os.path.expanduser(
+                    "~/Library/Caches/com.runningwithcrayons.Alfred/Workflow Data/"
+                ),
+                self.bundleid,
+            )
 
         return self._create(dirpath)
-
-    @property
-    def _default_cachedir(self):
-        """Alfred's default cache directory."""
-        return os.path.join(
-            os.path.expanduser(
-                "~/Library/Caches/com.runningwithcrayons.Alfred/Workflow Data/"
-            ),
-            self.bundleid,
-        )
 
     @property
     def datadir(self):
@@ -1484,7 +1490,6 @@ class Workflow:
         """
         if self.alfred_env.get("workflow_data"):
             dirpath = self.alfred_env.get("workflow_data")
-
         else:
             dirpath = self._default_datadir
 
@@ -1653,6 +1658,7 @@ class Workflow:
         """
         if not self._settings_path:
             self._settings_path = self.datafile("settings.json")
+
         return self._settings_path
 
     @property
@@ -1674,6 +1680,7 @@ class Workflow:
         if not self._settings:
             self.logger.debug("reading settings from %s", self.settings_path)
             self._settings = Settings(self.settings_path, self._default_settings)
+
         return self._settings
 
     @property
@@ -1788,6 +1795,7 @@ class Workflow:
 
         if not os.path.exists(data_path):
             self.logger.debug("no data stored: %s", name)
+
             if os.path.exists(metadata_path):
                 os.unlink(metadata_path)
 
@@ -1892,7 +1900,6 @@ class Workflow:
         age = self.cached_data_age(name)
 
         if (age < max_age or max_age == 0) and os.path.exists(cache_path):
-
             with open(cache_path, "rb") as file_obj:
                 self.logger.debug("loading cached data: %s", cache_path)
                 return serializer.load(file_obj)
@@ -1924,6 +1931,7 @@ class Workflow:
             if os.path.exists(cache_path):
                 os.unlink(cache_path)
                 self.logger.debug("deleted cache file: %s", cache_path)
+
             return
 
         with serializer.atomic_writer(cache_path, "w") as file_obj:
@@ -2093,15 +2101,19 @@ class Workflow:
             score = 0
             words = [s.strip() for s in query.split(" ")]
             value = key(item).strip()
+
             if value == "":
                 continue
+
             for word in words:
                 if word == "":
                     continue
+
                 score_, rule = self._filter_item(value, word, match_on, fold_diacritics)
 
                 if not score_:  # Skip items that don't match part of the query
                     skip = True
+
                 score += score_
 
             if skip:
@@ -2128,6 +2140,7 @@ class Workflow:
         # return list of ``(item, score, rule)``
         if include_score:
             return results
+
         # just return list of items
         return [result[0] for result in results]
 
@@ -2148,7 +2161,6 @@ class Workflow:
         # pre-filter any items that do not contain all characters
         # of ``query`` to save on running several more expensive tests
         if not set(query) <= set(value.lower()):
-
             return (0, None)
 
         # item starts with query
@@ -2161,9 +2173,9 @@ class Workflow:
         # e.g. of = OmniFocus
         if match_on & MATCH_CAPITALS:
             initials = "".join([c for c in value if c in INITIALS])
+
             if initials.lower().startswith(query):
                 score = 100.0 - (len(initials) / len(query))
-
                 return (score, MATCH_CAPITALS)
 
         # split the item into "atoms", i.e. words separated by
@@ -2183,7 +2195,6 @@ class Workflow:
             # a word within the item
             if query in atoms:
                 score = 100.0 - (len(value) / len(query))
-
                 return (score, MATCH_ATOM)
 
         # `query` matches start (or all) of the initials of the
@@ -2192,20 +2203,17 @@ class Workflow:
         # matches the former)
         if match_on & MATCH_INITIALS_STARTSWITH and initials.startswith(query):
             score = 100.0 - (len(initials) / len(query))
-
             return (score, MATCH_INITIALS_STARTSWITH)
 
         # `query` is a substring of initials, e.g. ``doh`` matches
         # "The Dukes of Hazzard"
         if match_on & MATCH_INITIALS_CONTAIN and query in initials:
             score = 95.0 - (len(initials) / len(query))
-
             return (score, MATCH_INITIALS_CONTAIN)
 
         # `query` is a substring of item
         if match_on & MATCH_SUBSTRING and query in value.lower():
             score = 90.0 - (len(value) / len(query))
-
             return (score, MATCH_SUBSTRING)
 
         # finally, assign a score based on how close together the
@@ -2217,7 +2225,6 @@ class Workflow:
                 score = 100.0 / (
                     (1 + match.start()) * (match.end() - match.start() + 1)
                 )
-
                 return (score, MATCH_ALLCHARS)
 
         # Nothing matched
@@ -2229,8 +2236,10 @@ class Workflow:
 
         # Build pattern: include all characters
         pattern = []
+
         for char in query:
             pattern.append(f".*?{re.escape(char)}")
+
         pattern = "".join(pattern)
         search = re.compile(pattern, re.IGNORECASE).search
 
@@ -2285,9 +2294,9 @@ class Workflow:
             # Set last version run to current version after a successful
             # run
             self.set_last_version()
-
         except Exception as err:  # pylint: disable=broad-except
             self.logger.exception(err)
+
             if self.help_url:
                 self.logger.info("for assistance, see: %s", self.help_url)
 
@@ -2296,18 +2305,19 @@ class Workflow:
                     print(str(err).encode("utf-8"), end="")
                 else:
                     self._items = []
+
                     if self._name:
                         name = self._name
                     elif self._bundleid:  # pragma: no cover
                         name = self._bundleid
                     else:  # pragma: no cover
                         name = os.path.dirname(__file__)
+
                     self.add_item(
                         f"Error in workflow '{name}'", str(err), icon=ICON_ERROR
                     )
                     self.send_feedback()
             return 1
-
         finally:
             self.logger.debug(
                 "---------- finished in %0.3fs ----------", time.time() - start
@@ -2485,14 +2495,18 @@ class Workflow:
 
         """
         items = []
+
         for item in self._items:
             items.append(item.obj)
 
         obj_ = {"items": items}
+
         if self.variables:
             obj_["variables"] = self.variables
+
         if self.rerun:
             obj_["rerun"] = self.rerun
+
         return obj_
 
     def warn_empty(self, title, subtitle="", icon=None):
@@ -2525,6 +2539,7 @@ class Workflow:
             json.dump(self.obj, sys.stdout, indent=2, separators=(",", ": "))
         else:
             json.dump(self.obj, sys.stdout)
+
         sys.stdout.flush()
 
     ####################################################################
@@ -2555,8 +2570,8 @@ class Workflow:
 
         """
         if self._last_version_run is UNSET:
-
             version = self.settings.get("__workflow_last_version")
+
             if version:
                 from .update import Version
 
@@ -2651,7 +2666,6 @@ class Workflow:
 
         # Check for new version if it's time
         if force or not self.cached_data_fresh(key, frequency * 86400):
-
             repo = self._update_settings["github_slug"]
             version = str(self.version)
 
@@ -2665,7 +2679,6 @@ class Workflow:
             self.logger.info("checking for update ...")
 
             run_in_background("__workflow_update_check", cmd)
-
         else:
             self.logger.debug("update check not due")
 
@@ -2726,14 +2739,12 @@ class Workflow:
                 "add-generic-password", service, account, "-w", password
             )
             self.logger.debug("saved password : %s:%s", service, account)
-
         except PasswordExists:
             self.logger.debug("password exists : %s:%s", service, account)
             current_password = self.get_password(account, service)
 
             if current_password == password:
                 self.logger.debug("password unchanged")
-
             else:
                 self.delete_password(account, service)
                 self._call_security(
@@ -2769,6 +2780,7 @@ class Workflow:
             groups = match.groupdict()
             hex_ = groups.get("hex")
             password = groups.get("pw")
+
             if hex_:
                 password = str(binascii.unhexlify(hex_), "utf-8")
 
@@ -2898,9 +2910,11 @@ class Workflow:
         def list_magic():
             """Display all available magic args in Alfred."""
             isatty = sys.stderr.isatty()
+
             for name in sorted(self.magic_arguments.keys()):
                 if name == "magic":
                     continue
+
                 arg = self.magic_prefix + name
                 self.logger.debug(arg)
 
@@ -3012,8 +3026,10 @@ class Workflow:
         """
         encoding = encoding or self._input_encoding
         normalization = normalization or self._normalization
+
         if not isinstance(text, str):
             text = str(text, encoding)
+
         return unicodedata.normalize(normalization, text)
 
     @staticmethod
@@ -3027,6 +3043,7 @@ class Workflow:
         """
         if isascii(text):
             return text
+
         text = "".join([ASCII_REPLACEMENTS.get(c, c) for c in text])
         return unicodedata.normalize("NFKD", text)
 
@@ -3059,11 +3076,14 @@ class Workflow:
             for filename in os.listdir(dirpath):
                 if not filter_func(filename):
                     continue
+
                 path = os.path.join(dirpath, filename)
+
                 if os.path.isdir(path):
                     shutil.rmtree(path)
                 else:
                     os.unlink(path)
+
                 self.logger.debug("deleted: %s", path)
 
     def _load_info_plist(self):
@@ -3083,6 +3103,7 @@ class Workflow:
         """
         if not os.path.exists(dirpath):
             os.makedirs(dirpath)
+
         return dirpath
 
     @staticmethod

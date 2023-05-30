@@ -99,8 +99,9 @@ if [[ -z "${notificator_message}" ]]; then
 fi
 
 readonly bundle_id="$(tr -cd '[:alnum:]._-' <<< "${alfred_workflow_bundleid}")"
+readonly name="$(tr -cd '[:alnum:]._- ' <<< "${alfred_workflow_name}")"
 readonly icon="${alfred_preferences}/workflows/${alfred_workflow_uid}/icon.png"
-readonly app="${alfred_workflow_cache}/Notificator.app"
+readonly app="${alfred_workflow_cache}/Notificator for ${name}.app"
 readonly plist="${app}/Contents/Info.plist"
 
 # Exit early if Notificator exists and was modified fewer than 30 days ago
@@ -112,6 +113,11 @@ fi
 # Pre-build checks
 if [[ -z "${bundle_id}" ]]; then
   echo "Workflow is missing the bundle identifier! Aborting…" >&2
+  exit 1
+fi
+
+if [[ -z "${name}" ]]; then
+  echo "Workflow is missing the name! Aborting…" >&2
   exit 1
 fi
 

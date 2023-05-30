@@ -9,9 +9,9 @@ import secrets
 import socket
 import string
 import unicodedata
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
 import zlib
 
 # pylint: disable=consider-using-with
@@ -116,8 +116,8 @@ class CaseInsensitiveDictionary(dict):
             v = dict.__getitem__(self, key.lower())
         except KeyError:
             return default
-        else:
-            return v["val"]
+
+        return v["val"]
 
     def update(self, other):
         """Update values from other ``dict``."""

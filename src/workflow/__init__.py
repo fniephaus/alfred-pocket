@@ -3,13 +3,6 @@
 """A helper library for `Alfred <http://www.alfredapp.com/>`_ workflows."""
 import os
 
-# Workflow objects
-from .workflow import Workflow, manager, Variables
-
-# Exceptions
-from .workflow import PasswordNotFound, KeychainError
-
-# Icons
 from .workflow import (
     ICON_ACCOUNT,
     ICON_BURN,
@@ -33,10 +26,6 @@ from .workflow import (
     ICON_TRASH,
     ICON_USER,
     ICON_WEB,
-)
-
-# Filter matching rules
-from .workflow import (
     MATCH_ALL,
     MATCH_ALLCHARS,
     MATCH_ATOM,
@@ -46,6 +35,11 @@ from .workflow import (
     MATCH_INITIALS_STARTSWITH,
     MATCH_STARTSWITH,
     MATCH_SUBSTRING,
+    KeychainError,
+    PasswordNotFound,
+    Variables,
+    Workflow,
+    manager,
 )
 
 # pylint: disable=consider-using-with
@@ -58,11 +52,11 @@ __license__ = "MIT"
 __copyright__ = "Copyright 2022 Arthur Pinheiro"
 
 __all__ = [
+    "KeychainError",
+    "PasswordNotFound",
     "Variables",
     "Workflow",
     "manager",
-    "PasswordNotFound",
-    "KeychainError",
     "ICON_ACCOUNT",
     "ICON_BURN",
     "ICON_CLOCK",

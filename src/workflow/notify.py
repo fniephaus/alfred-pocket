@@ -16,7 +16,6 @@ import subprocess
 
 from workflow import Workflow
 
-
 wf = Workflow()
 logger = wf.logger
 

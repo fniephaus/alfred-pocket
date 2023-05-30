@@ -214,7 +214,7 @@ def run_in_background(name, args, **kwargs):
         wf.logger.debug("[%s] command cached: %s", name, argcache)
 
     # Call this script
-    cmd = ["/usr/bin/python3", "-m", "workflow.background", name]
+    cmd = ["python3", "-m", "workflow.background", name]
     wf.logger.debug("[%s] passing job to background runner: %r", name, cmd)
     retcode = subprocess.run(cmd, check=True).returncode
 

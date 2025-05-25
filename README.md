@@ -1,4 +1,7 @@
-Pocket for Alfred [![Build Status](https://travis-ci.org/fniephaus/alfred-pocket.svg?branch=master)](https://travis-ci.org/fniephaus/alfred-pocket) [![Coverage Status](https://coveralls.io/repos/github/fniephaus/alfred-pocket/badge.svg?branch=master)](https://coveralls.io/github/fniephaus/alfred-pocket?branch=master)
+> [!WARNING]
+> This Alfred workflow is no longer maintained because [Mozilla will shut down Pocket’s services on July 8, 2025](https://support.mozilla.org/en-US/kb/future-of-pocket). At that time users will no longer be able to access the Pocket website, apps and API.
+
+Pocket for Alfred [![Coverage Status](https://coveralls.io/repos/github/fniephaus/alfred-pocket/badge.svg?branch=master)](https://coveralls.io/github/fniephaus/alfred-pocket?branch=master)
 ==============
 
 This workflow lets you manage your Pocket list with Alfred.
